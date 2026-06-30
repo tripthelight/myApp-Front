@@ -1,0 +1,35 @@
+name: Front CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: myapp-front-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    defaults:
+      run:
+        shell: bash
+
+    env:
+      IMAGE_NAME: myapp-front
+      IMAGE_TAG: ${{ github.sha }}
+      MYAPP_INFRA_DIR: /home/um/myApp-Infra
+      DRAIN_SECONDS: 10
+      STABILIZATION_SECONDS: 30
+      CHECK_INTERVAL_SECONDS: 2
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy Front
+        run: |
+          chmod +x scripts/*.sh
+          ./scripts/deploy-local.sh
