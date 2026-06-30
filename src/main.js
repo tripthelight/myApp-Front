@@ -5,57 +5,154 @@ const API_BASE_URL = '';
 const ACCESS_TOKEN_KEY = 'accessToken';
 const REFRESH_TOKEN_KEY = 'refreshToken';
 
-document.querySelector('#app').innerHTML = `
-  <main class="app">
-    <h1>myApp Front - Member Login Test</h1>
+const app = document.querySelector('#app');
 
-    <section class="card">
-      <h2>로그인</h2>
+renderApp();
 
-      <div class="form-row">
-        <label for="username">Username</label>
-        <input id="username" type="text" value="testuser1" />
-      </div>
+function renderApp() {
+  const isLoggedIn = Boolean(getAccessToken());
 
-      <div class="form-row">
-        <label for="password">Password</label>
-        <input id="password" type="password" value="1234" />
-      </div>
+  app.innerHTML = `
+    <main class="app">
+      <header class="app-header">
+        <h1>myApp</h1>
+        <p>Member 로그인 연동 화면</p>
+      </header>
 
-      <div class="button-row">
-        <button id="loginBtn">로그인</button>
-        <button id="meBtn">내 정보 조회</button>
-        <button id="refresh-test-btn">Refresh Token 재발급 테스트</button>
-        <button id="clearBtn">토큰 삭제</button>
-      </div>
-    </section>
+      ${
+        isLoggedIn
+          ? `
+            <section class="card">
+              <h2>로그인 상태</h2>
+              <p class="status success">현재 로그인 상태입니다.</p>
 
-    <section class="card">
-      <h2>Token</h2>
-      <pre id="tokenOutput">아직 토큰 없음</pre>
-    </section>
+              <div class="button-row">
+                <button id="meBtn">내 정보 조회</button>
+                <button id="refreshTestBtn">Refresh Token 재발급 테스트</button>
+                <button id="logoutBtn" class="danger">로그아웃</button>
+              </div>
+            </section>
+          `
+          : `
+            <section class="card">
+              <h2>로그인</h2>
 
-    <section class="card">
-      <h2>Result</h2>
-      <pre id="resultOutput">결과 없음</pre>
-    </section>
-  </main>
-`;
+              <div class="form-row">
+                <label for="username">Username</label>
+                <input id="username" type="text" value="testuser1" autocomplete="username" />
+              </div>
 
-const usernameInput = document.querySelector('#username');
-const passwordInput = document.querySelector('#password');
-const loginBtn = document.querySelector('#loginBtn');
-const meBtn = document.querySelector('#meBtn');
-const clearBtn = document.querySelector('#clearBtn');
-const tokenOutput = document.querySelector('#tokenOutput');
-const resultOutput = document.querySelector('#resultOutput');
-const refreshTestBtn = document.getElementById('refresh-test-btn');
+              <div class="form-row">
+                <label for="password">Password</label>
+                <input id="password" type="password" value="1234" autocomplete="current-password" />
+              </div>
+
+              <div class="button-row">
+                <button id="loginBtn">로그인</button>
+              </div>
+            </section>
+          `
+      }
+
+      <section class="card">
+        <h2>Token</h2>
+        <pre id="tokenOutput"></pre>
+      </section>
+
+      <section class="card">
+        <h2>Result</h2>
+        <pre id="resultOutput">결과 없음</pre>
+      </section>
+    </main>
+  `;
+
+  bindEvents();
+  displayToken();
+}
+
+function bindEvents() {
+  const loginBtn = document.querySelector('#loginBtn');
+  const meBtn = document.querySelector('#meBtn');
+  const refreshTestBtn = document.querySelector('#refreshTestBtn');
+  const logoutBtn = document.querySelector('#logoutBtn');
+
+  if (loginBtn) {
+    loginBtn.addEventListener('click', async () => {
+      const usernameInput = document.querySelector('#username');
+      const passwordInput = document.querySelector('#password');
+
+      const username = usernameInput.value.trim();
+      const password = passwordInput.value.trim();
+
+      if (!username || !password) {
+        alert('username과 password를 입력하세요.');
+        return;
+      }
+
+      try {
+        await login(username, password);
+
+        printResult('로그인 성공');
+        renderApp();
+      } catch (error) {
+        console.error(error);
+        printResult(error.message);
+      }
+    });
+  }
+
+  if (meBtn) {
+    meBtn.addEventListener('click', async () => {
+      try {
+        await getMyInfo();
+      } catch (error) {
+        console.error(error);
+        printResult(error.message);
+      }
+    });
+  }
+
+  if (refreshTestBtn) {
+    refreshTestBtn.addEventListener('click', async () => {
+      try {
+        await refreshAccessToken();
+
+        displayToken();
+        printResult('Refresh Token 재발급 성공');
+        alert('Refresh Token 재발급 성공');
+      } catch (error) {
+        console.error(error);
+        printResult(error.message);
+        alert('Refresh Token 재발급 실패');
+      }
+    });
+  }
+
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', async () => {
+      try {
+        await logout();
+
+        printResult('로그아웃 완료');
+        renderApp();
+      } catch (error) {
+        console.error(error);
+
+        clearTokens();
+        printResult('서버 로그아웃 요청 실패. 로컬 토큰은 삭제했습니다.');
+        renderApp();
+      }
+    });
+  }
+}
 
 function stringify(value) {
   return JSON.stringify(value, null, 2);
 }
 
 function printResult(value) {
+  const resultOutput = document.querySelector('#resultOutput');
+
   if (!resultOutput) {
     return;
   }
@@ -69,6 +166,8 @@ function printResult(value) {
 }
 
 function displayToken() {
+  const tokenOutput = document.querySelector('#tokenOutput');
+
   if (!tokenOutput) {
     return;
   }
@@ -284,7 +383,7 @@ async function apiFetch(url, options = {}, retry = true) {
     console.error('토큰 재발급 실패:', error);
 
     clearTokens();
-    displayToken();
+    renderApp();
 
     alert('로그인이 만료되었습니다. 다시 로그인해주세요.');
 
@@ -304,61 +403,31 @@ async function getMyInfo() {
     response: data,
   });
 
+  displayToken();
+
   return data;
 }
 
-refreshTestBtn.addEventListener('click', async () => {
-  try {
-    const newAccessToken = await refreshAccessToken();
+async function logout() {
+  const refreshToken = getRefreshToken();
 
-    displayToken();
+  if (refreshToken) {
+    const response = await fetch('/member/jwt/logout', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${refreshToken}`,
+        refresh: refreshToken,
+      },
+      body: JSON.stringify({
+        refreshToken,
+      }),
+    });
 
-    console.log('새 accessToken:', newAccessToken);
-
-    printResult('Refresh Token 재발급 성공');
-    alert('Refresh Token 재발급 성공');
-  } catch (error) {
-    console.error(error);
-    printResult(error.message);
-    alert('Refresh Token 재발급 실패');
-  }
-});
-
-loginBtn.addEventListener('click', async () => {
-  const username = usernameInput.value.trim();
-  const password = passwordInput.value.trim();
-
-  if (!username || !password) {
-    alert('username과 password를 입력하세요.');
-    return;
+    console.log('logout status:', response.status);
   }
 
-  try {
-    await login(username, password);
-
-    displayToken();
-    printResult('로그인 성공');
-  } catch (error) {
-    console.error(error);
-    printResult(error.message);
-  }
-});
-
-meBtn.addEventListener('click', async () => {
-  try {
-    await getMyInfo();
-  } catch (error) {
-    console.error(error);
-    printResult(error.message);
-  }
-});
-
-clearBtn.addEventListener('click', () => {
   clearTokens();
-  displayToken();
-  printResult('토큰 삭제 완료');
-});
-
-displayToken();
+}
 
 console.log('myApp Front initialized');
