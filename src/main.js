@@ -1,42 +1,43 @@
-import './scss/style.scss'
+import './scss/style.scss';
 
-const app = document.querySelector('#app');
+const API_BASE_URL = '';
 
-app.innerHTML = `
-  <main class="page">
+const ACCESS_TOKEN_KEY = 'accessToken';
+const REFRESH_TOKEN_KEY = 'refreshToken';
+
+document.querySelector('#app').innerHTML = `
+  <main class="app">
+    <h1>myApp Front - Member Login Test</h1>
+
     <section class="card">
-      <h1>myApp Member Login Test</h1>
-      <p class="description">
-        Member API 로그인, 토큰 저장, 내 정보 조회를 테스트합니다.
-      </p>
+      <h2>로그인</h2>
 
-      <div class="form">
-        <label>
-          Username
-          <input id="username" type="text" value="testuser1" />
-        </label>
-
-        <label>
-          Password
-          <input id="password" type="password" value="1234" />
-        </label>
-
-        <div class="buttons">
-          <button id="loginBtn" type="button">로그인</button>
-          <button id="meBtn" type="button">내 정보 조회</button>
-          <button id="clearBtn" type="button">토큰 삭제</button>
-        </div>
+      <div class="form-row">
+        <label for="username">Username</label>
+        <input id="username" type="text" value="testuser1" />
       </div>
 
-      <div class="token-box">
-        <h2>Access Token</h2>
-        <pre id="tokenOutput">아직 토큰 없음</pre>
+      <div class="form-row">
+        <label for="password">Password</label>
+        <input id="password" type="password" value="1234" />
       </div>
 
-      <div class="result-box">
-        <h2>Result</h2>
-        <pre id="resultOutput">아직 요청 없음</pre>
+      <div class="button-row">
+        <button id="loginBtn">로그인</button>
+        <button id="meBtn">내 정보 조회</button>
+        <button id="refresh-test-btn">Refresh Token 재발급 테스트</button>
+        <button id="clearBtn">토큰 삭제</button>
       </div>
+    </section>
+
+    <section class="card">
+      <h2>Token</h2>
+      <pre id="tokenOutput">아직 토큰 없음</pre>
+    </section>
+
+    <section class="card">
+      <h2>Result</h2>
+      <pre id="resultOutput">결과 없음</pre>
     </section>
   </main>
 `;
@@ -48,53 +49,120 @@ const meBtn = document.querySelector('#meBtn');
 const clearBtn = document.querySelector('#clearBtn');
 const tokenOutput = document.querySelector('#tokenOutput');
 const resultOutput = document.querySelector('#resultOutput');
+const refreshTestBtn = document.getElementById('refresh-test-btn');
 
-const ACCESS_TOKEN_KEY = 'myapp_member_access_token';
-const REFRESH_TOKEN_KEY = 'myapp_member_refresh_token';
-
-function pretty(data) {
-  return JSON.stringify(data, null, 2);
+function stringify(value) {
+  return JSON.stringify(value, null, 2);
 }
 
-function setResult(data) {
-  if (typeof data === 'string') {
-    resultOutput.textContent = data;
+function printResult(value) {
+  if (!resultOutput) {
     return;
   }
 
-  resultOutput.textContent = pretty(data);
+  if (typeof value === 'string') {
+    resultOutput.textContent = value;
+    return;
+  }
+
+  resultOutput.textContent = stringify(value);
 }
 
-function refreshTokenView() {
-  const accessToken = localStorage.getItem(ACCESS_TOKEN_KEY);
+function displayToken() {
+  if (!tokenOutput) {
+    return;
+  }
 
-  if (!accessToken) {
+  const accessToken = getAccessToken();
+  const refreshToken = getRefreshToken();
+
+  if (!accessToken && !refreshToken) {
     tokenOutput.textContent = '아직 토큰 없음';
     return;
   }
 
-  tokenOutput.textContent = accessToken;
+  tokenOutput.textContent = stringify({
+    accessToken,
+    refreshToken,
+  });
 }
 
-async function readResponse(response) {
-  const contentType = response.headers.get('content-type') || '';
-
-  if (contentType.includes('application/json')) {
-    return await response.json();
-  }
-
-  return await response.text();
+function getAccessToken() {
+  return localStorage.getItem(ACCESS_TOKEN_KEY);
 }
 
-async function login() {
-  const username = usernameInput.value.trim();
-  const password = passwordInput.value.trim();
+function getRefreshToken() {
+  return localStorage.getItem(REFRESH_TOKEN_KEY);
+}
 
-  if (!username || !password) {
-    setResult('username/password를 입력하세요.');
-    return;
+function saveTokens(accessToken, refreshToken) {
+  if (accessToken) {
+    localStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
   }
 
+  if (refreshToken) {
+    localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
+  }
+}
+
+function clearTokens() {
+  localStorage.removeItem(ACCESS_TOKEN_KEY);
+  localStorage.removeItem(REFRESH_TOKEN_KEY);
+}
+
+function removeBearerPrefix(token) {
+  if (!token) {
+    return null;
+  }
+
+  return token.replace(/^Bearer\s+/i, '');
+}
+
+async function readResponseSafely(response) {
+  const text = await response.text();
+
+  if (!text) {
+    return {};
+  }
+
+  try {
+    return JSON.parse(text);
+  } catch (error) {
+    console.warn('JSON 파싱 실패. 원본 응답:', text);
+    return text;
+  }
+}
+
+function extractTokens(response, data = {}) {
+  const accessToken =
+    data.accessToken ||
+    data.access ||
+    data.data?.accessToken ||
+    data.data?.access ||
+    response.headers.get('accessToken') ||
+    response.headers.get('access-token') ||
+    response.headers.get('access') ||
+    response.headers.get('Authorization') ||
+    response.headers.get('authorization');
+
+  const refreshToken =
+    data.refreshToken ||
+    data.refresh ||
+    data.data?.refreshToken ||
+    data.data?.refresh ||
+    response.headers.get('refreshToken') ||
+    response.headers.get('refresh-token') ||
+    response.headers.get('refresh') ||
+    response.headers.get('Authorization-Refresh') ||
+    response.headers.get('authorization-refresh');
+
+  return {
+    accessToken: removeBearerPrefix(accessToken),
+    refreshToken: removeBearerPrefix(refreshToken),
+  };
+}
+
+async function login(username, password) {
   const response = await fetch('/member/login', {
     method: 'POST',
     headers: {
@@ -106,63 +174,191 @@ async function login() {
     }),
   });
 
-  const data = await readResponse(response);
+  const data = await readResponseSafely(response);
+
+  console.log('login status:', response.status);
+  console.log('login body:', data);
+  console.log('login access header:', response.headers.get('access'));
+  console.log('login refresh header:', response.headers.get('refresh'));
+  console.log('login authorization header:', response.headers.get('Authorization'));
 
   if (!response.ok) {
-    setResult({
-      status: response.status,
-      error: data,
-    });
-    return;
+    throw new Error(`로그인 실패: ${response.status}`);
   }
 
-  localStorage.setItem(ACCESS_TOKEN_KEY, data.accessToken);
-  localStorage.setItem(REFRESH_TOKEN_KEY, data.refreshToken);
+  const { accessToken, refreshToken } = extractTokens(response, data);
 
-  refreshTokenView();
+  console.log('추출된 accessToken:', accessToken);
+  console.log('추출된 refreshToken:', refreshToken);
 
-  setResult({
-    status: response.status,
-    message: '로그인 성공',
-    response: data,
-  });
+  if (!accessToken || !refreshToken) {
+    throw new Error('로그인 응답에서 accessToken 또는 refreshToken을 찾지 못했습니다.');
+  }
+
+  saveTokens(accessToken, refreshToken);
+
+  return data;
 }
 
-async function getMe() {
-  const accessToken = localStorage.getItem(ACCESS_TOKEN_KEY);
+async function refreshAccessToken() {
+  const refreshToken = getRefreshToken();
 
-  if (!accessToken) {
-    setResult('accessToken이 없습니다. 먼저 로그인하세요.');
-    return;
+  if (!refreshToken) {
+    throw new Error('refreshToken이 없습니다.');
   }
 
-  const response = await fetch('/member/user', {
-    method: 'GET',
+  const response = await fetch('/member/jwt/refresh', {
+    method: 'POST',
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${refreshToken}`,
+      refresh: refreshToken,
     },
+    body: JSON.stringify({
+      refreshToken,
+    }),
   });
 
-  const data = await readResponse(response);
+  const data = await readResponseSafely(response);
 
-  setResult({
+  console.log('refresh status:', response.status);
+  console.log('refresh body:', data);
+  console.log('refresh access header:', response.headers.get('access'));
+  console.log('refresh refresh header:', response.headers.get('refresh'));
+  console.log('refresh authorization header:', response.headers.get('Authorization'));
+
+  if (!response.ok) {
+    throw new Error(`refresh 실패: ${response.status}`);
+  }
+
+  const tokens = extractTokens(response, data);
+
+  const newAccessToken = tokens.accessToken;
+  const newRefreshToken = tokens.refreshToken || refreshToken;
+
+  console.log('재발급 accessToken:', newAccessToken);
+  console.log('재발급 refreshToken:', newRefreshToken);
+
+  if (!newAccessToken) {
+    throw new Error('refresh 응답에서 새 accessToken을 찾지 못했습니다.');
+  }
+
+  saveTokens(newAccessToken, newRefreshToken);
+
+  return newAccessToken;
+}
+
+async function apiFetch(url, options = {}, retry = true) {
+  const accessToken = getAccessToken();
+
+  const headers = {
+    ...(options.headers || {}),
+  };
+
+  if (accessToken) {
+    headers.Authorization = `Bearer ${accessToken}`;
+  }
+
+  const response = await fetch(`${API_BASE_URL}${url}`, {
+    ...options,
+    headers,
+  });
+
+  if (response.status !== 401 || !retry) {
+    return response;
+  }
+
+  try {
+    const newAccessToken = await refreshAccessToken();
+
+    const retryHeaders = {
+      ...(options.headers || {}),
+      Authorization: `Bearer ${newAccessToken}`,
+    };
+
+    return await fetch(`${API_BASE_URL}${url}`, {
+      ...options,
+      headers: retryHeaders,
+    });
+  } catch (error) {
+    console.error('토큰 재발급 실패:', error);
+
+    clearTokens();
+    displayToken();
+
+    alert('로그인이 만료되었습니다. 다시 로그인해주세요.');
+
+    throw error;
+  }
+}
+
+async function getMyInfo() {
+  const response = await apiFetch('/member/user', {
+    method: 'GET',
+  });
+
+  const data = await readResponseSafely(response);
+
+  printResult({
     status: response.status,
     response: data,
   });
+
+  return data;
 }
 
-function clearToken() {
-  localStorage.removeItem(ACCESS_TOKEN_KEY);
-  localStorage.removeItem(REFRESH_TOKEN_KEY);
+refreshTestBtn.addEventListener('click', async () => {
+  try {
+    const newAccessToken = await refreshAccessToken();
 
-  refreshTokenView();
-  setResult('토큰 삭제 완료');
-}
+    displayToken();
 
-loginBtn.addEventListener('click', login);
-meBtn.addEventListener('click', getMe);
-clearBtn.addEventListener('click', clearToken);
+    console.log('새 accessToken:', newAccessToken);
 
-refreshTokenView();
+    printResult('Refresh Token 재발급 성공');
+    alert('Refresh Token 재발급 성공');
+  } catch (error) {
+    console.error(error);
+    printResult(error.message);
+    alert('Refresh Token 재발급 실패');
+  }
+});
+
+loginBtn.addEventListener('click', async () => {
+  const username = usernameInput.value.trim();
+  const password = passwordInput.value.trim();
+
+  if (!username || !password) {
+    alert('username과 password를 입력하세요.');
+    return;
+  }
+
+  try {
+    await login(username, password);
+
+    displayToken();
+    printResult('로그인 성공');
+  } catch (error) {
+    console.error(error);
+    printResult(error.message);
+  }
+});
+
+meBtn.addEventListener('click', async () => {
+  try {
+    await getMyInfo();
+  } catch (error) {
+    console.error(error);
+    printResult(error.message);
+  }
+});
+
+clearBtn.addEventListener('click', () => {
+  clearTokens();
+  displayToken();
+  printResult('토큰 삭제 완료');
+});
+
+displayToken();
 
 console.log('myApp Front initialized');
