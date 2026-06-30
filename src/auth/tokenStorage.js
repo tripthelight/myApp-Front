@@ -19,6 +19,12 @@ export function saveTokens(accessToken, refreshToken) {
   }
 }
 
+export function saveAccessToken(accessToken) {
+  if (accessToken) {
+    localStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
+  }
+}
+
 export function clearTokens() {
   localStorage.removeItem(ACCESS_TOKEN_KEY);
   localStorage.removeItem(REFRESH_TOKEN_KEY);

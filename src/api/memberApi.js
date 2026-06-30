@@ -1,66 +1,15 @@
 import {
-  clearTokens,
   getAccessToken,
   getRefreshToken,
   saveTokens,
+  saveAccessToken,
+  clearTokens,
 } from '../auth/tokenStorage.js';
 
-const API_BASE_URL = '';
+const MEMBER_API_BASE_URL = '/member';
 
-function removeBearerPrefix(token) {
-  if (!token) {
-    return null;
-  }
-
-  return token.replace(/^Bearer\s+/i, '');
-}
-
-export async function readResponseSafely(response) {
-  const text = await response.text();
-
-  if (!text) {
-    return {};
-  }
-
-  try {
-    return JSON.parse(text);
-  } catch (error) {
-    console.warn('JSON 파싱 실패. 원본 응답:', text);
-    return text;
-  }
-}
-
-function extractTokens(response, data = {}) {
-  const accessToken =
-    data.accessToken ||
-    data.access ||
-    data.data?.accessToken ||
-    data.data?.access ||
-    response.headers.get('accessToken') ||
-    response.headers.get('access-token') ||
-    response.headers.get('access') ||
-    response.headers.get('Authorization') ||
-    response.headers.get('authorization');
-
-  const refreshToken =
-    data.refreshToken ||
-    data.refresh ||
-    data.data?.refreshToken ||
-    data.data?.refresh ||
-    response.headers.get('refreshToken') ||
-    response.headers.get('refresh-token') ||
-    response.headers.get('refresh') ||
-    response.headers.get('Authorization-Refresh') ||
-    response.headers.get('authorization-refresh');
-
-  return {
-    accessToken: removeBearerPrefix(accessToken),
-    refreshToken: removeBearerPrefix(refreshToken),
-  };
-}
-
-export async function login(username, password) {
-  const response = await fetch('/member/login', {
+export async function loginMember(username, password) {
+  const response = await fetch(`${MEMBER_API_BASE_URL}/login`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -71,154 +20,107 @@ export async function login(username, password) {
     }),
   });
 
-  const data = await readResponseSafely(response);
-
-  console.log('login status:', response.status);
-  console.log('login body:', data);
-  console.log('login access header:', response.headers.get('access'));
-  console.log('login refresh header:', response.headers.get('refresh'));
-  console.log('login authorization header:', response.headers.get('Authorization'));
-
   if (!response.ok) {
     throw new Error(`로그인 실패: ${response.status}`);
   }
 
-  const { accessToken, refreshToken } = extractTokens(response, data);
+  const data = await response.json();
 
-  console.log('추출된 accessToken:', accessToken);
-  console.log('추출된 refreshToken:', refreshToken);
-
-  if (!accessToken || !refreshToken) {
-    throw new Error('로그인 응답에서 accessToken 또는 refreshToken을 찾지 못했습니다.');
-  }
-
-  saveTokens(accessToken, refreshToken);
+  saveTokens(data.accessToken, data.refreshToken);
 
   return data;
+}
+
+export async function fetchMemberUser() {
+  const accessToken = getAccessToken();
+
+  if (!accessToken) {
+    throw new Error('accessToken 없음');
+  }
+
+  const response = await fetch(`${MEMBER_API_BASE_URL}/user`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`내 정보 조회 실패: ${response.status}`);
+  }
+
+  return await response.json();
 }
 
 export async function refreshAccessToken() {
   const refreshToken = getRefreshToken();
 
   if (!refreshToken) {
-    throw new Error('refreshToken이 없습니다.');
+    throw new Error('refreshToken 없음');
   }
 
-  const response = await fetch('/member/jwt/refresh', {
+  const response = await fetch(`${MEMBER_API_BASE_URL}/jwt/refresh`, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
       Authorization: `Bearer ${refreshToken}`,
-      refresh: refreshToken,
     },
-    body: JSON.stringify({
-      refreshToken,
-    }),
   });
-
-  const data = await readResponseSafely(response);
-
-  console.log('refresh status:', response.status);
-  console.log('refresh body:', data);
-  console.log('refresh access header:', response.headers.get('access'));
-  console.log('refresh refresh header:', response.headers.get('refresh'));
-  console.log('refresh authorization header:', response.headers.get('Authorization'));
 
   if (!response.ok) {
-    throw new Error(`refresh 실패: ${response.status}`);
+    throw new Error(`accessToken 재발급 실패: ${response.status}`);
   }
 
-  const tokens = extractTokens(response, data);
+  const data = await response.json();
 
-  const newAccessToken = tokens.accessToken;
-  const newRefreshToken = tokens.refreshToken || refreshToken;
-
-  console.log('재발급 accessToken:', newAccessToken);
-  console.log('재발급 refreshToken:', newRefreshToken);
-
-  if (!newAccessToken) {
-    throw new Error('refresh 응답에서 새 accessToken을 찾지 못했습니다.');
+  if (!data.accessToken) {
+    throw new Error('재발급 응답에 accessToken 없음');
   }
 
-  saveTokens(newAccessToken, newRefreshToken);
+  saveAccessToken(data.accessToken);
 
-  return newAccessToken;
+  return data.accessToken;
 }
 
-export async function apiFetch(url, options = {}, retry = true) {
-  const accessToken = getAccessToken();
-
-  const headers = {
-    ...(options.headers || {}),
-  };
-
-  if (accessToken) {
-    headers.Authorization = `Bearer ${accessToken}`;
-  }
-
-  const response = await fetch(`${API_BASE_URL}${url}`, {
-    ...options,
-    headers,
-  });
-
-  if (response.status !== 401 || !retry) {
-    return response;
-  }
-
+export async function fetchMemberUserWithAutoRefresh() {
   try {
-    const newAccessToken = await refreshAccessToken();
+    return await fetchMemberUser();
+  } catch (accessError) {
+    console.log('accessToken으로 /member/user 조회 실패:', accessError.message);
+    console.log('refreshToken으로 accessToken 재발급 시도');
 
-    const retryHeaders = {
-      ...(options.headers || {}),
-      Authorization: `Bearer ${newAccessToken}`,
-    };
+    try {
+      await refreshAccessToken();
 
-    return await fetch(`${API_BASE_URL}${url}`, {
-      ...options,
-      headers: retryHeaders,
-    });
-  } catch (error) {
-    console.error('토큰 재발급 실패:', error);
+      return await fetchMemberUser();
+    } catch (refreshError) {
+      console.log('refreshToken 재발급 실패:', refreshError.message);
+      console.log('토큰 삭제 후 로그인 화면으로 이동 처리');
 
-    clearTokens();
+      clearTokens();
 
-    alert('로그인이 만료되었습니다. 다시 로그인해주세요.');
-
-    throw error;
+      throw refreshError;
+    }
   }
 }
 
-export async function getMyInfo() {
-  const response = await apiFetch('/member/user', {
-    method: 'GET',
-  });
-
-  const data = await readResponseSafely(response);
-
-  return {
-    status: response.status,
-    response: data,
-  };
-}
-
-export async function logout() {
+export async function logoutMember() {
   const refreshToken = getRefreshToken();
 
-  if (refreshToken) {
-    const response = await fetch('/member/jwt/logout', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${refreshToken}`,
-        refresh: refreshToken,
-      },
-      body: JSON.stringify({
-        refreshToken,
-      }),
-    });
-
-    console.log('logout status:', response.status);
+  if (!refreshToken) {
+    clearTokens();
+    return;
   }
 
+  const response = await fetch(`${MEMBER_API_BASE_URL}/jwt/logout`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${refreshToken}`,
+    },
+  });
+
   clearTokens();
+
+  if (!response.ok && response.status !== 204) {
+    throw new Error(`로그아웃 실패: ${response.status}`);
+  }
 }
