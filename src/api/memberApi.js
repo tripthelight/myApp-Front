@@ -83,11 +83,9 @@ export async function refreshAccessToken() {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      refresh: refreshToken,
     },
     body: JSON.stringify({
-      refreshToken: refreshToken,
-      refresh: refreshToken,
+      refreshToken,
     }),
   });
 
@@ -138,11 +136,9 @@ export async function logoutMember() {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      refresh: refreshToken,
     },
     body: JSON.stringify({
-      refreshToken: refreshToken,
-      refresh: refreshToken,
+      refreshToken,
     }),
   });
 
