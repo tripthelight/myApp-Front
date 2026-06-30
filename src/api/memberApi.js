@@ -92,7 +92,6 @@ export async function refreshAccessToken() {
   const response = await fetch(`${MEMBER_API_BASE_URL}/jwt/refresh`, {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${refreshToken}`,
       refresh: refreshToken,
     },
   });
@@ -154,7 +153,6 @@ export async function logoutMember() {
   const response = await fetch(`${MEMBER_API_BASE_URL}/jwt/logout`, {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${refreshToken}`,
       refresh: refreshToken,
     },
   });
