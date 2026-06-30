@@ -22,6 +22,61 @@ async function parseResponseBody(response) {
   }
 }
 
+function parseJwtPayload(token) {
+  if (!token || typeof token !== 'string') {
+    return null;
+  }
+
+  const parts = token.split('.');
+
+  if (parts.length !== 3) {
+    return null;
+  }
+
+  try {
+    const base64Url = parts[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const paddedBase64 = base64.padEnd(
+      base64.length + ((4 - (base64.length % 4)) % 4),
+      '=',
+    );
+
+    const json = atob(paddedBase64);
+    const decodedJson = decodeURIComponent(
+      Array.from(json)
+        .map((char) => {
+          return `%${char.charCodeAt(0).toString(16).padStart(2, '0')}`;
+        })
+        .join(''),
+    );
+
+    return JSON.parse(decodedJson);
+  } catch (error) {
+    return null;
+  }
+}
+
+function shouldRefreshBeforeFetchUser(accessToken) {
+  const payload = parseJwtPayload(accessToken);
+
+  if (!payload) {
+    return true;
+  }
+
+  if (payload.category !== 'access') {
+    return true;
+  }
+
+  if (!payload.exp) {
+    return true;
+  }
+
+  const nowSeconds = Math.floor(Date.now() / 1000);
+  const refreshBufferSeconds = 10;
+
+  return payload.exp <= nowSeconds + refreshBufferSeconds;
+}
+
 export async function loginMember(username, password) {
   const response = await fetch(`${MEMBER_API_BASE_URL}/login`, {
     method: 'POST',
@@ -109,7 +164,18 @@ export async function refreshAccessToken() {
 }
 
 export async function fetchMemberUserWithAutoRefresh() {
+  const accessToken = getAccessToken();
+
+  if (!accessToken) {
+    clearTokens();
+    throw new Error('accessToken 없음');
+  }
+
   try {
+    if (shouldRefreshBeforeFetchUser(accessToken)) {
+      await refreshAccessToken();
+    }
+
     return await fetchMemberUser();
   } catch (accessError) {
     try {
