@@ -92,8 +92,13 @@ export async function refreshAccessToken() {
   const response = await fetch(`${MEMBER_API_BASE_URL}/jwt/refresh`, {
     method: 'POST',
     headers: {
+      'Content-Type': 'application/json',
       refresh: refreshToken,
     },
+    body: JSON.stringify({
+      refreshToken: refreshToken,
+      refresh: refreshToken,
+    }),
   });
 
   const data = await parseResponseBody(response);
@@ -153,8 +158,13 @@ export async function logoutMember() {
   const response = await fetch(`${MEMBER_API_BASE_URL}/jwt/logout`, {
     method: 'POST',
     headers: {
+      'Content-Type': 'application/json',
       refresh: refreshToken,
     },
+    body: JSON.stringify({
+      refreshToken: refreshToken,
+      refresh: refreshToken,
+    }),
   });
 
   const data = await parseResponseBody(response);
