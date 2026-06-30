@@ -36,9 +36,6 @@ export async function loginMember(username, password) {
 
   const data = await parseResponseBody(response);
 
-  console.log('login status:', response.status);
-  console.log('login body:', data);
-
   if (!response.ok) {
     throw new Error(`로그인 실패: ${response.status}`);
   }
@@ -55,8 +52,6 @@ export async function loginMember(username, password) {
 export async function fetchMemberUser() {
   const accessToken = getAccessToken();
 
-  console.log('fetchMemberUser accessToken:', accessToken);
-
   if (!accessToken) {
     throw new Error('accessToken 없음');
   }
@@ -70,9 +65,6 @@ export async function fetchMemberUser() {
 
   const data = await parseResponseBody(response);
 
-  console.log('/member/user status:', response.status);
-  console.log('/member/user body:', data);
-
   if (!response.ok) {
     throw new Error(`내 정보 조회 실패: ${response.status}`);
   }
@@ -82,8 +74,6 @@ export async function fetchMemberUser() {
 
 export async function refreshAccessToken() {
   const refreshToken = getRefreshToken();
-
-  console.log('refreshAccessToken refreshToken:', refreshToken);
 
   if (!refreshToken) {
     throw new Error('refreshToken 없음');
@@ -103,9 +93,6 @@ export async function refreshAccessToken() {
 
   const data = await parseResponseBody(response);
 
-  console.log('/member/jwt/refresh status:', response.status);
-  console.log('/member/jwt/refresh body:', data);
-
   if (!response.ok) {
     throw new Error(`accessToken 재발급 실패: ${response.status}`);
   }
@@ -114,10 +101,10 @@ export async function refreshAccessToken() {
     throw new Error('재발급 응답에 accessToken 없음');
   }
 
-  saveAccessToken(data.accessToken);
-
   if (data.refreshToken) {
     saveTokens(data.accessToken, data.refreshToken);
+  } else {
+    saveAccessToken(data.accessToken);
   }
 
   return data.accessToken;
@@ -127,17 +114,11 @@ export async function fetchMemberUserWithAutoRefresh() {
   try {
     return await fetchMemberUser();
   } catch (accessError) {
-    console.log('accessToken으로 /member/user 조회 실패:', accessError.message);
-    console.log('refreshToken으로 accessToken 재발급 시도');
-
     try {
       await refreshAccessToken();
 
       return await fetchMemberUser();
     } catch (refreshError) {
-      console.log('refreshToken 재발급 실패:', refreshError.message);
-      console.log('토큰 삭제 후 로그인 화면으로 이동 처리');
-
       clearTokens();
 
       throw refreshError;
@@ -147,8 +128,6 @@ export async function fetchMemberUserWithAutoRefresh() {
 
 export async function logoutMember() {
   const refreshToken = getRefreshToken();
-
-  console.log('logout refreshToken:', refreshToken);
 
   if (!refreshToken) {
     clearTokens();
@@ -167,10 +146,7 @@ export async function logoutMember() {
     }),
   });
 
-  const data = await parseResponseBody(response);
-
-  console.log('/member/jwt/logout status:', response.status);
-  console.log('/member/jwt/logout body:', data);
+  await parseResponseBody(response);
 
   clearTokens();
 
