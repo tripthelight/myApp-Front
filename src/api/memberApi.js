@@ -8,6 +8,20 @@ import {
 
 const MEMBER_API_BASE_URL = '/member';
 
+async function parseResponseBody(response) {
+  const text = await response.text();
+
+  if (!text) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(text);
+  } catch (error) {
+    return text;
+  }
+}
+
 export async function loginMember(username, password) {
   const response = await fetch(`${MEMBER_API_BASE_URL}/login`, {
     method: 'POST',
@@ -20,11 +34,18 @@ export async function loginMember(username, password) {
     }),
   });
 
+  const data = await parseResponseBody(response);
+
+  console.log('login status:', response.status);
+  console.log('login body:', data);
+
   if (!response.ok) {
     throw new Error(`로그인 실패: ${response.status}`);
   }
 
-  const data = await response.json();
+  if (!data || !data.accessToken || !data.refreshToken) {
+    throw new Error('로그인 응답에 accessToken 또는 refreshToken 없음');
+  }
 
   saveTokens(data.accessToken, data.refreshToken);
 
@@ -33,6 +54,8 @@ export async function loginMember(username, password) {
 
 export async function fetchMemberUser() {
   const accessToken = getAccessToken();
+
+  console.log('fetchMemberUser accessToken:', accessToken);
 
   if (!accessToken) {
     throw new Error('accessToken 없음');
@@ -45,15 +68,22 @@ export async function fetchMemberUser() {
     },
   });
 
+  const data = await parseResponseBody(response);
+
+  console.log('/member/user status:', response.status);
+  console.log('/member/user body:', data);
+
   if (!response.ok) {
     throw new Error(`내 정보 조회 실패: ${response.status}`);
   }
 
-  return await response.json();
+  return data;
 }
 
 export async function refreshAccessToken() {
   const refreshToken = getRefreshToken();
+
+  console.log('refreshAccessToken refreshToken:', refreshToken);
 
   if (!refreshToken) {
     throw new Error('refreshToken 없음');
@@ -63,20 +93,28 @@ export async function refreshAccessToken() {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${refreshToken}`,
+      refresh: refreshToken,
     },
   });
+
+  const data = await parseResponseBody(response);
+
+  console.log('/member/jwt/refresh status:', response.status);
+  console.log('/member/jwt/refresh body:', data);
 
   if (!response.ok) {
     throw new Error(`accessToken 재발급 실패: ${response.status}`);
   }
 
-  const data = await response.json();
-
-  if (!data.accessToken) {
+  if (!data || !data.accessToken) {
     throw new Error('재발급 응답에 accessToken 없음');
   }
 
   saveAccessToken(data.accessToken);
+
+  if (data.refreshToken) {
+    saveTokens(data.accessToken, data.refreshToken);
+  }
 
   return data.accessToken;
 }
@@ -106,6 +144,8 @@ export async function fetchMemberUserWithAutoRefresh() {
 export async function logoutMember() {
   const refreshToken = getRefreshToken();
 
+  console.log('logout refreshToken:', refreshToken);
+
   if (!refreshToken) {
     clearTokens();
     return;
@@ -115,8 +155,14 @@ export async function logoutMember() {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${refreshToken}`,
+      refresh: refreshToken,
     },
   });
+
+  const data = await parseResponseBody(response);
+
+  console.log('/member/jwt/logout status:', response.status);
+  console.log('/member/jwt/logout body:', data);
 
   clearTokens();
 
