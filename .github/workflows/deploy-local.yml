@@ -1,0 +1,14 @@
+name: Deploy Front Local
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Deploy front with local blue green script
+        run: |
+          cd /home/um/myApp-Infra
+          ./scripts/deploy-front.sh
