@@ -2,13 +2,26 @@ name: Deploy Front Local
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
   deploy:
     runs-on: self-hosted
 
     steps:
-      - name: Deploy front with local blue green script
+      - name: Checkout front repository
+        uses: actions/checkout@v4
+
+      - name: Build front Docker image
         run: |
+          IMAGE_TAG="${GITHUB_SHA}"
+          docker build -t myapp-front:${IMAGE_TAG} .
+          docker tag myapp-front:${IMAGE_TAG} myapp-front:latest
+
+      - name: Deploy front with new image
+        run: |
+          IMAGE_TAG="${GITHUB_SHA}"
           cd /home/um/myApp-Infra
-          ./scripts/deploy-front.sh
+          IMAGE_OVERRIDE="myapp-front:${IMAGE_TAG}" ./scripts/deploy-front.sh
