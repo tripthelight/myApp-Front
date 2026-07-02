@@ -37,8 +37,16 @@ jobs:
           docker inspect myapp-nginx >/dev/null
           test -d /home/um/myApp-Infra
           test -f /home/um/myApp-Infra/scripts/deploy-front.sh
+          test -f /home/um/myApp-Infra/scripts/check-app-flow.sh
 
       - name: Deploy Front
         run: |
           chmod +x scripts/*.sh
           ./scripts/deploy-local.sh
+
+      - name: Run application flow regression check
+        run: |
+          cd /home/um/myApp-Infra
+          git pull --ff-only origin main
+          chmod +x scripts/*.sh
+          ./scripts/check-app-flow.sh
