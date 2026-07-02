@@ -32,7 +32,7 @@ export async function getBoard(id) {
 }
 
 export async function createBoard({ title, content, writer }) {
-  const response = await authFetch(BOARD_API_BASE_URL, {
+  const response = await authFetch(`${BOARD_API_BASE_URL}/write`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
