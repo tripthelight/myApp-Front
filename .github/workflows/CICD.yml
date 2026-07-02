@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 concurrency:
   group: myapp-front-deploy
@@ -28,6 +29,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Verify deployment environment
+        run: |
+          docker version
+          docker network inspect myapp-network >/dev/null
+          docker inspect myapp-nginx >/dev/null
+          test -d /home/um/myApp-Infra
+          test -f /home/um/myApp-Infra/scripts/deploy-front.sh
 
       - name: Deploy Front
         run: |
