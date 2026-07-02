@@ -92,3 +92,20 @@ export async function logoutMember({ refreshToken }) {
 
   removeTokens();
 }
+
+export async function exchangeSocialLoginToken() {
+  const response = await fetch(`${MEMBER_API_BASE_URL}/jwt/exchange`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({}),
+  });
+
+  const tokenResponse = await handleJsonResponse(response);
+
+  saveTokens(tokenResponse.accessToken, tokenResponse.refreshToken);
+
+  return tokenResponse;
+}

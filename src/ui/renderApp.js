@@ -2,6 +2,7 @@ import {
   loginMember,
   getMyInfo,
   logoutMember,
+  exchangeSocialLoginToken,
 } from "../api/memberApi.js";
 
 import {
@@ -25,6 +26,11 @@ let loginUser = null;
 let selectedBoardId = null;
 
 export async function renderApp() {
+  if (window.location.pathname === "/cookie") {
+    await handleSocialLoginCallback();
+    return;
+  }
+
   const accessToken = getAccessToken();
   const refreshToken = getRefreshToken();
 
@@ -81,11 +87,29 @@ function renderLoginPage() {
         </button>
       </form>
 
+      <div style="margin-top: 16px; display: grid; gap: 8px;">
+        <button id="googleLoginButton" type="button" style="width: 100%; padding: 10px;">
+          구글로 로그인
+        </button>
+
+        <button id="naverLoginButton" type="button" style="width: 100%; padding: 10px;">
+          네이버로 로그인
+        </button>
+      </div>
+
       <p id="loginMessage" style="color: red; margin-top: 16px;"></p>
     </div>
   `;
 
   document.querySelector("#loginForm").addEventListener("submit", handleLogin);
+
+  document.querySelector("#googleLoginButton").addEventListener("click", () => {
+    window.location.href = "/member/oauth2/authorization/google";
+  });
+
+  document.querySelector("#naverLoginButton").addEventListener("click", () => {
+    window.location.href = "/member/oauth2/authorization/naver";
+  });
 }
 
 async function handleLogin(event) {
@@ -112,6 +136,40 @@ async function handleLogin(event) {
   } catch (error) {
     removeTokens();
     loginMessage.textContent = "로그인에 실패했습니다.";
+  }
+}
+
+async function handleSocialLoginCallback() {
+  app.innerHTML = `
+    <div style="max-width: 420px; margin: 80px auto; font-family: sans-serif;">
+      <h1>소셜 로그인 처리 중</h1>
+      <p id="socialLoginMessage">로그인 토큰을 발급받고 있습니다.</p>
+    </div>
+  `;
+
+  const message = document.querySelector("#socialLoginMessage");
+
+  try {
+    await exchangeSocialLoginToken();
+
+    window.history.replaceState({}, "", "/");
+
+    loginUser = await getMyInfo();
+
+    renderMainPage();
+    await renderBoardList();
+  } catch (error) {
+    removeTokens();
+
+    if (message) {
+      message.textContent = "소셜 로그인 처리에 실패했습니다. 다시 로그인해 주세요.";
+      message.style.color = "red";
+    }
+
+    setTimeout(() => {
+      window.history.replaceState({}, "", "/");
+      renderLoginPage();
+    }, 1500);
   }
 }
 
