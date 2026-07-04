@@ -31,7 +31,7 @@ export async function getBoard(id) {
   return handleJsonResponse(response);
 }
 
-export async function createBoard({ title, content, writer }) {
+export async function createBoard({ title, content }) {
   const response = await authFetch(`${BOARD_API_BASE_URL}/write`, {
     method: "POST",
     headers: {
@@ -40,14 +40,13 @@ export async function createBoard({ title, content, writer }) {
     body: JSON.stringify({
       title,
       content,
-      writer,
     }),
   });
 
   return handleJsonResponse(response);
 }
 
-export async function updateBoard(id, { title, content, writer }) {
+export async function updateBoard(id, { title, content }) {
   const response = await authFetch(`${BOARD_API_BASE_URL}/${id}`, {
     method: "PUT",
     headers: {
@@ -56,7 +55,6 @@ export async function updateBoard(id, { title, content, writer }) {
     body: JSON.stringify({
       title,
       content,
-      writer,
     }),
   });
 

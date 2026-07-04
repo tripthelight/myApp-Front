@@ -307,12 +307,7 @@ async function handleSocialLoginCallback() {
 }
 
 function renderMainPage() {
-  const username =
-    loginUser?.username ||
-    loginUser?.name ||
-    loginUser?.email ||
-    loginUser?.id ||
-    "사용자";
+  const username = currentUsername();
 
   app.innerHTML = `
     <div style="max-width: 900px; margin: 40px auto; font-family: sans-serif;">
@@ -480,17 +475,9 @@ function renderMainPage() {
             </label>
           </div>
 
-          <div style="margin-bottom: 12px;">
-            <label>
-              작성자
-              <input
-                id="boardWriter"
-                type="text"
-                style="width: 100%; padding: 10px; margin-top: 4px;"
-                required
-              />
-            </label>
-          </div>
+          <p style="margin: 0 0 12px 0; color: #666;">
+            작성자는 로그인 계정 <strong>${escapeHtml(String(username))}</strong>으로 저장됩니다.
+          </p>
 
           <div style="display: flex; gap: 8px;">
             <button id="submitBoardButton" type="submit" style="padding: 10px 16px;">
@@ -521,9 +508,6 @@ function renderMainPage() {
       </section>
     </div>
   `;
-
-  const writerInput = document.querySelector("#boardWriter");
-  writerInput.value = String(username);
 
   document.querySelector("#logoutButton").addEventListener("click", handleLogout);
   document.querySelector("#profileForm").addEventListener("submit", handleProfileSubmit);
@@ -714,6 +698,19 @@ async function renderBoardList() {
         const title = escapeHtml(board.title ?? "");
         const content = escapeHtml(board.content ?? "");
         const writer = escapeHtml(board.writer ?? "");
+        const actionButtons = canManageBoard(board)
+          ? `
+            <div style="display: flex; gap: 8px;">
+              <button type="button" data-action="edit" data-id="${id}" style="padding: 6px 10px;">
+                수정
+              </button>
+
+              <button type="button" data-action="delete" data-id="${id}" style="padding: 6px 10px;">
+                삭제
+              </button>
+            </div>
+          `
+          : "";
 
         return `
           <article style="border: 1px solid #ddd; padding: 16px; margin-bottom: 12px;">
@@ -727,15 +724,7 @@ async function renderBoardList() {
               작성자: ${writer}
             </p>
 
-            <div style="display: flex; gap: 8px;">
-              <button type="button" data-action="edit" data-id="${id}" style="padding: 6px 10px;">
-                수정
-              </button>
-
-              <button type="button" data-action="delete" data-id="${id}" style="padding: 6px 10px;">
-                삭제
-              </button>
-            </div>
+            ${actionButtons}
           </article>
         `;
       })
@@ -768,18 +757,16 @@ async function handleBoardSubmit(event) {
 
   const titleInput = document.querySelector("#boardTitle");
   const contentInput = document.querySelector("#boardContent");
-  const writerInput = document.querySelector("#boardWriter");
   const boardMessage = document.querySelector("#boardMessage");
 
   const title = titleInput.value.trim();
   const content = contentInput.value.trim();
-  const writer = writerInput.value.trim();
 
   boardMessage.textContent = "";
   boardMessage.style.color = "black";
 
-  if (!title || !content || !writer) {
-    boardMessage.textContent = "제목, 내용, 작성자를 모두 입력하세요.";
+  if (!title || !content) {
+    boardMessage.textContent = "제목과 내용을 모두 입력하세요.";
     boardMessage.style.color = "red";
     return;
   }
@@ -789,7 +776,6 @@ async function handleBoardSubmit(event) {
       await updateBoard(selectedBoardId, {
         title,
         content,
-        writer,
       });
 
       boardMessage.textContent = "게시글이 수정되었습니다.";
@@ -797,7 +783,6 @@ async function handleBoardSubmit(event) {
       await createBoard({
         title,
         content,
-        writer,
       });
 
       boardMessage.textContent = "게시글이 등록되었습니다.";
@@ -829,7 +814,6 @@ async function handleEditBoard(id) {
     document.querySelector("#boardId").value = board.id;
     document.querySelector("#boardTitle").value = board.title ?? "";
     document.querySelector("#boardContent").value = board.content ?? "";
-    document.querySelector("#boardWriter").value = board.writer ?? "";
 
     document.querySelector("#submitBoardButton").textContent = "수정";
     document.querySelector("#cancelEditButton").style.display = "inline-block";
@@ -879,7 +863,6 @@ function resetBoardForm() {
   const boardIdInput = document.querySelector("#boardId");
   const titleInput = document.querySelector("#boardTitle");
   const contentInput = document.querySelector("#boardContent");
-  const writerInput = document.querySelector("#boardWriter");
   const submitButton = document.querySelector("#submitBoardButton");
   const cancelButton = document.querySelector("#cancelEditButton");
 
@@ -899,23 +882,65 @@ function resetBoardForm() {
     contentInput.value = "";
   }
 
-  if (writerInput) {
-    const username =
-      loginUser?.username ||
-      loginUser?.name ||
-      loginUser?.email ||
-      loginUser?.id ||
-      "사용자";
-
-    writerInput.value = String(username);
-  }
-
   if (submitButton) {
     submitButton.textContent = "등록";
   }
 
   if (cancelButton) {
     cancelButton.style.display = "none";
+  }
+}
+
+function currentUsername() {
+  return String(
+    loginUser?.username ||
+      loginUser?.name ||
+      loginUser?.email ||
+      loginUser?.id ||
+      "사용자"
+  );
+}
+
+function canManageBoard(board) {
+  if (isLoginUserAdmin()) {
+    return true;
+  }
+
+  return String(board?.writer ?? "") === currentUsername();
+}
+
+function isLoginUserAdmin() {
+  const role = String(
+    loginUser?.role ||
+      loginUser?.roleType ||
+      loginUser?.authority ||
+      decodeAccessTokenPayload()?.role ||
+      ""
+  ).toUpperCase();
+
+  return role === "ADMIN" || role === "ROLE_ADMIN";
+}
+
+function decodeAccessTokenPayload() {
+  const accessToken = getAccessToken();
+
+  if (!accessToken || accessToken.split(".").length !== 3) {
+    return null;
+  }
+
+  try {
+    const payloadBase64Url = accessToken.split(".")[1];
+    const payloadBase64 = payloadBase64Url
+      .replace(/-/g, "+")
+      .replace(/_/g, "/");
+    const paddedPayloadBase64 = payloadBase64.padEnd(
+      payloadBase64.length + ((4 - (payloadBase64.length % 4)) % 4),
+      "="
+    );
+
+    return JSON.parse(atob(paddedPayloadBase64));
+  } catch (error) {
+    return null;
   }
 }
 
@@ -929,5 +954,5 @@ function escapeHtml(value) {
 }
 
 function escapeAttribute(value) {
-  return escapeHtml(value).replaceAll("`", "&#096;");
+  return escapeHtml(value);
 }
