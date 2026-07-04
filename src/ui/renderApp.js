@@ -1,6 +1,10 @@
 import {
   loginMember,
+  existsMember,
+  joinMember,
   getMyInfo,
+  updateMyInfo,
+  deleteMyAccount,
   logoutMember,
   exchangeSocialLoginToken,
 } from "../api/memberApi.js";
@@ -24,6 +28,7 @@ const app = document.querySelector("#app");
 
 let loginUser = null;
 let selectedBoardId = null;
+let isJoinMode = false;
 
 export async function renderApp() {
   if (window.location.pathname === "/cookie") {
@@ -53,7 +58,7 @@ export async function renderApp() {
 function renderLoginPage() {
   app.innerHTML = `
     <div style="max-width: 420px; margin: 80px auto; font-family: sans-serif;">
-      <h1>myApp Login</h1>
+      <h1 id="authTitle">myApp Login</h1>
 
       <form id="loginForm">
         <div style="margin-bottom: 12px;">
@@ -87,6 +92,68 @@ function renderLoginPage() {
         </button>
       </form>
 
+      <form id="joinForm" style="display: none;">
+        <div style="margin-bottom: 12px;">
+          <label>
+            Username
+            <input
+              id="joinUsername"
+              type="text"
+              autocomplete="username"
+              minlength="4"
+              style="width: 100%; padding: 10px; margin-top: 4px;"
+              required
+            />
+          </label>
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <label>
+            Password
+            <input
+              id="joinPassword"
+              type="password"
+              autocomplete="new-password"
+              minlength="4"
+              style="width: 100%; padding: 10px; margin-top: 4px;"
+              required
+            />
+          </label>
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <label>
+            Nickname
+            <input
+              id="joinNickname"
+              type="text"
+              style="width: 100%; padding: 10px; margin-top: 4px;"
+              required
+            />
+          </label>
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <label>
+            Email
+            <input
+              id="joinEmail"
+              type="email"
+              autocomplete="email"
+              style="width: 100%; padding: 10px; margin-top: 4px;"
+            />
+          </label>
+        </div>
+
+        <button type="submit" style="width: 100%; padding: 10px;">
+          회원가입
+        </button>
+      </form>
+
+      <button id="toggleJoinButton" type="button" style="width: 100%; padding: 10px; margin-top: 8px;">
+        회원가입으로 전환
+      </button>
+
       <div style="margin-top: 16px; display: grid; gap: 8px;">
         <button id="googleLoginButton" type="button" style="width: 100%; padding: 10px;">
           구글로 로그인
@@ -102,6 +169,8 @@ function renderLoginPage() {
   `;
 
   document.querySelector("#loginForm").addEventListener("submit", handleLogin);
+  document.querySelector("#joinForm").addEventListener("submit", handleJoin);
+  document.querySelector("#toggleJoinButton").addEventListener("click", toggleJoinMode);
 
   document.querySelector("#googleLoginButton").addEventListener("click", () => {
     window.location.href = "/member/oauth2/authorization/google";
@@ -110,6 +179,22 @@ function renderLoginPage() {
   document.querySelector("#naverLoginButton").addEventListener("click", () => {
     window.location.href = "/member/oauth2/authorization/naver";
   });
+}
+
+function toggleJoinMode() {
+  isJoinMode = !isJoinMode;
+
+  const authTitle = document.querySelector("#authTitle");
+  const loginForm = document.querySelector("#loginForm");
+  const joinForm = document.querySelector("#joinForm");
+  const toggleJoinButton = document.querySelector("#toggleJoinButton");
+  const loginMessage = document.querySelector("#loginMessage");
+
+  authTitle.textContent = isJoinMode ? "myApp Join" : "myApp Login";
+  loginForm.style.display = isJoinMode ? "none" : "block";
+  joinForm.style.display = isJoinMode ? "block" : "none";
+  toggleJoinButton.textContent = isJoinMode ? "로그인으로 전환" : "회원가입으로 전환";
+  loginMessage.textContent = "";
 }
 
 async function handleLogin(event) {
@@ -136,6 +221,53 @@ async function handleLogin(event) {
   } catch (error) {
     removeTokens();
     loginMessage.textContent = "로그인에 실패했습니다.";
+  }
+}
+
+async function handleJoin(event) {
+  event.preventDefault();
+
+  const username = document.querySelector("#joinUsername").value.trim();
+  const password = document.querySelector("#joinPassword").value.trim();
+  const nickname = document.querySelector("#joinNickname").value.trim();
+  const email = document.querySelector("#joinEmail").value.trim();
+  const loginMessage = document.querySelector("#loginMessage");
+
+  loginMessage.textContent = "";
+  loginMessage.style.color = "red";
+
+  if (!username || !password || !nickname) {
+    loginMessage.textContent = "아이디, 비밀번호, 닉네임을 입력하세요.";
+    return;
+  }
+
+  try {
+    const exists = await existsMember({
+      username,
+    });
+
+    if (exists) {
+      loginMessage.textContent = "이미 사용 중인 아이디입니다.";
+      return;
+    }
+
+    await joinMember({
+      username,
+      password,
+      nickname,
+      email,
+    });
+
+    isJoinMode = true;
+    toggleJoinMode();
+
+    document.querySelector("#username").value = username;
+    document.querySelector("#password").focus();
+
+    loginMessage.style.color = "green";
+    loginMessage.textContent = "회원가입이 완료되었습니다. 로그인해 주세요.";
+  } catch (error) {
+    loginMessage.textContent = "회원가입에 실패했습니다.";
   }
 }
 
@@ -195,6 +327,72 @@ function renderMainPage() {
           로그아웃
         </button>
       </header>
+
+      <section style="margin-bottom: 32px; padding: 16px; border: 1px solid #ddd;">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px;">
+          <div>
+            <h2 style="margin: 0 0 8px 0;">회원정보</h2>
+            <p style="margin: 0; color: #666;">
+              로그인 방식: ${loginUser?.social ? "소셜 로그인" : "ID / Password 로그인"}
+            </p>
+          </div>
+
+          <button id="deleteAccountButton" type="button" style="padding: 8px 14px; color: #b00020;">
+            회원탈퇴
+          </button>
+        </div>
+
+        <form id="profileForm" style="margin-top: 16px;">
+          <div style="margin-bottom: 12px;">
+            <label>
+              Username
+              <input
+                id="profileUsername"
+                type="text"
+                value="${escapeAttribute(String(loginUser?.username ?? ""))}"
+                style="width: 100%; padding: 10px; margin-top: 4px;"
+                readonly
+              />
+            </label>
+          </div>
+
+          <div style="margin-bottom: 12px;">
+            <label>
+              Nickname
+              <input
+                id="profileNickname"
+                type="text"
+                value="${escapeAttribute(String(loginUser?.nickname ?? ""))}"
+                style="width: 100%; padding: 10px; margin-top: 4px;"
+                ${loginUser?.social ? "readonly" : "required"}
+              />
+            </label>
+          </div>
+
+          <div style="margin-bottom: 12px;">
+            <label>
+              Email
+              <input
+                id="profileEmail"
+                type="email"
+                value="${escapeAttribute(String(loginUser?.email ?? ""))}"
+                style="width: 100%; padding: 10px; margin-top: 4px;"
+                ${loginUser?.social ? "readonly" : ""}
+              />
+            </label>
+          </div>
+
+          <button
+            id="updateProfileButton"
+            type="submit"
+            style="padding: 10px 16px; ${loginUser?.social ? "display: none;" : ""}"
+          >
+            회원정보 수정
+          </button>
+
+          <p id="profileMessage" style="margin: 12px 0 0 0;"></p>
+        </form>
+      </section>
 
       <section style="margin-bottom: 32px;">
         <h2 id="formTitle">글쓰기</h2>
@@ -272,9 +470,91 @@ function renderMainPage() {
   writerInput.value = String(username);
 
   document.querySelector("#logoutButton").addEventListener("click", handleLogout);
+  document.querySelector("#profileForm").addEventListener("submit", handleProfileSubmit);
+  document.querySelector("#deleteAccountButton").addEventListener("click", handleDeleteAccount);
   document.querySelector("#boardForm").addEventListener("submit", handleBoardSubmit);
   document.querySelector("#cancelEditButton").addEventListener("click", resetBoardForm);
   document.querySelector("#reloadBoardButton").addEventListener("click", renderBoardList);
+}
+
+async function handleProfileSubmit(event) {
+  event.preventDefault();
+
+  const profileMessage = document.querySelector("#profileMessage");
+
+  if (loginUser?.social) {
+    profileMessage.textContent = "소셜 로그인 회원은 여기서 회원정보를 수정할 수 없습니다.";
+    profileMessage.style.color = "red";
+    return;
+  }
+
+  const username = document.querySelector("#profileUsername").value.trim();
+  const nickname = document.querySelector("#profileNickname").value.trim();
+  const email = document.querySelector("#profileEmail").value.trim();
+
+  profileMessage.textContent = "";
+  profileMessage.style.color = "black";
+
+  if (!username || !nickname) {
+    profileMessage.textContent = "닉네임을 입력하세요.";
+    profileMessage.style.color = "red";
+    return;
+  }
+
+  try {
+    await updateMyInfo({
+      username,
+      nickname,
+      email,
+    });
+
+    loginUser = await getMyInfo();
+    profileMessage.textContent = "회원정보가 수정되었습니다.";
+    profileMessage.style.color = "green";
+  } catch (error) {
+    profileMessage.textContent = "회원정보 수정에 실패했습니다.";
+    profileMessage.style.color = "red";
+  }
+}
+
+async function handleDeleteAccount() {
+  const username = loginUser?.username;
+
+  if (!username) {
+    return;
+  }
+
+  const ok = window.confirm("회원탈퇴를 진행할까요? 이 작업은 되돌릴 수 없습니다.");
+
+  if (!ok) {
+    return;
+  }
+
+  const confirmUsername = window.prompt("탈퇴하려면 현재 username을 입력하세요.");
+
+  if (confirmUsername !== username) {
+    window.alert("username이 일치하지 않아 회원탈퇴를 취소합니다.");
+    return;
+  }
+
+  try {
+    await deleteMyAccount({
+      username,
+    });
+
+    removeTokens();
+    loginUser = null;
+    selectedBoardId = null;
+    isJoinMode = false;
+    renderLoginPage();
+  } catch (error) {
+    const profileMessage = document.querySelector("#profileMessage");
+
+    if (profileMessage) {
+      profileMessage.textContent = "회원탈퇴에 실패했습니다.";
+      profileMessage.style.color = "red";
+    }
+  }
 }
 
 async function handleLogout() {
@@ -535,4 +815,8 @@ function escapeHtml(value) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
+}
+
+function escapeAttribute(value) {
+  return escapeHtml(value).replaceAll("`", "&#096;");
 }

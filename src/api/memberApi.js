@@ -1,10 +1,10 @@
 import {
   saveTokens,
   saveAccessToken,
-  getAccessToken,
   getRefreshToken,
   removeTokens,
 } from "../auth/tokenStorage.js";
+import { authFetch } from "../auth/authFetch.js";
 
 const MEMBER_API_BASE_URL = "/member";
 
@@ -40,17 +40,76 @@ export async function loginMember({ username, password }) {
   return tokenResponse;
 }
 
-export async function getMyInfo() {
-  const accessToken = getAccessToken();
-
-  const response = await fetch(`${MEMBER_API_BASE_URL}/user`, {
-    method: "GET",
+export async function existsMember({ username }) {
+  const response = await fetch(`${MEMBER_API_BASE_URL}/user/exist`, {
+    method: "POST",
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
     },
+    body: JSON.stringify({
+      username,
+    }),
   });
 
   return handleJsonResponse(response);
+}
+
+export async function joinMember({ username, password, nickname, email }) {
+  const response = await fetch(`${MEMBER_API_BASE_URL}/user`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      username,
+      password,
+      nickname,
+      email,
+    }),
+  });
+
+  return handleJsonResponse(response);
+}
+
+export async function getMyInfo() {
+  const response = await authFetch(`${MEMBER_API_BASE_URL}/user`, {
+    method: "GET",
+  });
+
+  return handleJsonResponse(response);
+}
+
+export async function updateMyInfo({ username, nickname, email }) {
+  const response = await authFetch(`${MEMBER_API_BASE_URL}/user`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      username,
+      nickname,
+      email,
+    }),
+  });
+
+  return handleJsonResponse(response);
+}
+
+export async function deleteMyAccount({ username }) {
+  const response = await authFetch(`${MEMBER_API_BASE_URL}/user`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      username,
+    }),
+  });
+
+  const result = await handleJsonResponse(response);
+  removeTokens();
+
+  return result;
 }
 
 export async function refreshAccessToken() {
