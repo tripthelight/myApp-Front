@@ -95,6 +95,21 @@ export async function updateMyInfo({ username, nickname, email }) {
   return handleJsonResponse(response);
 }
 
+export async function updateMyPassword({ currentPassword, password }) {
+  const response = await authFetch(`${MEMBER_API_BASE_URL}/user/password`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      currentPassword,
+      password,
+    }),
+  });
+
+  return handleJsonResponse(response);
+}
+
 export async function deleteMyAccount({ username }) {
   const response = await authFetch(`${MEMBER_API_BASE_URL}/user`, {
     method: "DELETE",

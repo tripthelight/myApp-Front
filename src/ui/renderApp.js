@@ -4,6 +4,7 @@ import {
   joinMember,
   getMyInfo,
   updateMyInfo,
+  updateMyPassword,
   deleteMyAccount,
   logoutMember,
   exchangeSocialLoginToken,
@@ -392,6 +393,61 @@ function renderMainPage() {
 
           <p id="profileMessage" style="margin: 12px 0 0 0;"></p>
         </form>
+
+        <form
+          id="passwordForm"
+          style="margin-top: 20px; padding-top: 16px; border-top: 1px solid #ddd; ${loginUser?.social ? "display: none;" : ""}"
+        >
+          <h3 style="margin: 0 0 12px 0;">비밀번호 변경</h3>
+
+          <div style="margin-bottom: 12px;">
+            <label>
+              Current Password
+              <input
+                id="currentPassword"
+                type="password"
+                autocomplete="current-password"
+                minlength="4"
+                style="width: 100%; padding: 10px; margin-top: 4px;"
+                required
+              />
+            </label>
+          </div>
+
+          <div style="margin-bottom: 12px;">
+            <label>
+              New Password
+              <input
+                id="newPassword"
+                type="password"
+                autocomplete="new-password"
+                minlength="4"
+                style="width: 100%; padding: 10px; margin-top: 4px;"
+                required
+              />
+            </label>
+          </div>
+
+          <div style="margin-bottom: 12px;">
+            <label>
+              New Password Confirm
+              <input
+                id="newPasswordConfirm"
+                type="password"
+                autocomplete="new-password"
+                minlength="4"
+                style="width: 100%; padding: 10px; margin-top: 4px;"
+                required
+              />
+            </label>
+          </div>
+
+          <button id="updatePasswordButton" type="submit" style="padding: 10px 16px;">
+            비밀번호 변경
+          </button>
+
+          <p id="passwordMessage" style="margin: 12px 0 0 0;"></p>
+        </form>
       </section>
 
       <section style="margin-bottom: 32px;">
@@ -471,6 +527,7 @@ function renderMainPage() {
 
   document.querySelector("#logoutButton").addEventListener("click", handleLogout);
   document.querySelector("#profileForm").addEventListener("submit", handleProfileSubmit);
+  document.querySelector("#passwordForm").addEventListener("submit", handlePasswordSubmit);
   document.querySelector("#deleteAccountButton").addEventListener("click", handleDeleteAccount);
   document.querySelector("#boardForm").addEventListener("submit", handleBoardSubmit);
   document.querySelector("#cancelEditButton").addEventListener("click", resetBoardForm);
@@ -514,6 +571,60 @@ async function handleProfileSubmit(event) {
   } catch (error) {
     profileMessage.textContent = "회원정보 수정에 실패했습니다.";
     profileMessage.style.color = "red";
+  }
+}
+
+async function handlePasswordSubmit(event) {
+  event.preventDefault();
+
+  const passwordMessage = document.querySelector("#passwordMessage");
+
+  if (loginUser?.social) {
+    passwordMessage.textContent = "소셜 로그인 회원은 비밀번호를 변경할 수 없습니다.";
+    passwordMessage.style.color = "red";
+    return;
+  }
+
+  const newPassword = document.querySelector("#newPassword").value.trim();
+  const currentPassword = document.querySelector("#currentPassword").value.trim();
+  const newPasswordConfirm = document.querySelector("#newPasswordConfirm").value.trim();
+
+  passwordMessage.textContent = "";
+  passwordMessage.style.color = "black";
+
+  if (currentPassword.length < 4) {
+    passwordMessage.textContent = "현재 비밀번호를 입력하세요.";
+    passwordMessage.style.color = "red";
+    return;
+  }
+
+  if (newPassword.length < 4) {
+    passwordMessage.textContent = "비밀번호는 4자 이상 입력하세요.";
+    passwordMessage.style.color = "red";
+    return;
+  }
+
+  if (newPassword !== newPasswordConfirm) {
+    passwordMessage.textContent = "새 비밀번호와 확인 값이 일치하지 않습니다.";
+    passwordMessage.style.color = "red";
+    return;
+  }
+
+  try {
+    await updateMyPassword({
+      currentPassword,
+      password: newPassword,
+    });
+
+    window.alert("비밀번호가 변경되었습니다. 다시 로그인해 주세요.");
+    removeTokens();
+    loginUser = null;
+    selectedBoardId = null;
+    isJoinMode = false;
+    renderLoginPage();
+  } catch (error) {
+    passwordMessage.textContent = "비밀번호 변경에 실패했습니다.";
+    passwordMessage.style.color = "red";
   }
 }
 
