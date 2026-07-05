@@ -6,6 +6,7 @@ import { renderHomePage } from "../pages/home/homePage.js";
 import { renderAuthPage } from "../pages/auth/authPage.js";
 import { renderProfilePage } from "../pages/member/profilePage.js";
 import { renderBoardPage } from "../pages/board/boardPage.js";
+import { renderPaymentPage } from "../pages/payments/paymentPage.js";
 import { renderSocialCallbackPage } from "../pages/social/socialCallbackPage.js";
 
 const routes = {
@@ -13,6 +14,7 @@ const routes = {
   auth: renderAuthPage,
   profile: renderProfilePage,
   board: renderBoardPage,
+  payments: renderPaymentPage,
 };
 
 export async function startApp() {
@@ -20,6 +22,26 @@ export async function startApp() {
 
   if (window.location.pathname === "/cookie") {
     await renderSocialCallbackPage();
+    return;
+  }
+
+  if (window.location.pathname === "/payment-success") {
+    if (getAccessToken() || getRefreshToken()) {
+      await restoreSession();
+    }
+
+    updateHeader();
+    await renderPaymentPage("결제가 완료되었습니다. 웹훅 반영까지 잠시 걸릴 수 있습니다.");
+    return;
+  }
+
+  if (window.location.pathname === "/payment-cancel") {
+    if (getAccessToken() || getRefreshToken()) {
+      await restoreSession();
+    }
+
+    updateHeader();
+    await renderPaymentPage("결제가 취소되었습니다.");
     return;
   }
 
@@ -34,7 +56,7 @@ export async function startApp() {
 export async function navigate(route) {
   const targetRoute = routes[route] ? route : "home";
 
-  if ((targetRoute === "profile" || targetRoute === "board") && !appState.loginUser) {
+  if ((targetRoute === "profile" || targetRoute === "board" || targetRoute === "payments") && !appState.loginUser) {
     await renderAuthPage("로그인 후 이용할 수 있습니다.");
     updateHeader();
     return;

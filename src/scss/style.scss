@@ -225,6 +225,62 @@ button[hidden],
   white-space: pre-wrap;
 }
 
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.pricing-card,
+.payment-row {
+  padding: 16px;
+  border: 1px solid #dde3ea;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.pricing-card {
+  display: grid;
+  gap: 10px;
+}
+
+.pricing-card h3,
+.pricing-card p {
+  margin: 0;
+}
+
+.pricing-card strong {
+  font-size: 24px;
+}
+
+.payment-list {
+  display: grid;
+  gap: 10px;
+}
+
+.payment-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.payment-row p {
+  margin: 4px 0 0;
+  color: #64748b;
+}
+
+.status-badge {
+  display: inline-flex;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #e0f2fe;
+  color: #0369a1;
+  font-size: 12px;
+  font-weight: 700;
+}
+
 @media (max-width: 720px) {
   .site-header,
   .section-header {
@@ -235,5 +291,13 @@ button[hidden],
   .home-actions button,
   .button-row button {
     flex: 1;
+  }
+
+  .pricing-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .payment-row {
+    display: grid;
   }
 }
