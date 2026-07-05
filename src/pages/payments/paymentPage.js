@@ -1,4 +1,4 @@
-import { createCheckout, getMyPayments } from "../../api/paymentsApi.js";
+import { createCheckout, getMyPayments, getPaymentEntitlement } from "../../api/paymentsApi.js";
 import { $, $all, renderView } from "../../shared/dom.js";
 
 const plans = [
@@ -28,6 +28,24 @@ function formatDate(value) {
   }
 
   return date.toLocaleString("ko-KR");
+}
+
+function renderEntitlement(entitlement) {
+  if (!entitlement?.paid) {
+    return `
+      <div class="empty-box">
+        현재 유료 플랜이 없습니다.
+      </div>
+    `;
+  }
+
+  return `
+    <div class="empty-box">
+      현재 유료 플랜: <strong>${entitlement.planName}</strong>
+      <br />
+      결제 완료 시간: ${formatDate(entitlement.paidAt)}
+    </div>
+  `;
 }
 
 function renderPaymentRows(payments) {
@@ -64,6 +82,9 @@ export async function renderPaymentPage(initialMessage = "") {
         <p class="eyebrow">Payments</p>
         <h2>결제 테스트</h2>
         <p class="help-text">Stripe 테스트 결제로 플랜 결제 흐름을 확인합니다.</p>
+
+        <div id="paymentEntitlementBox" class="empty-box">유료 상태를 확인하는 중입니다.</div>
+
         <div class="pricing-grid">
           ${plans
             .map(
@@ -97,9 +118,9 @@ export async function renderPaymentPage(initialMessage = "") {
     });
   });
 
-  $("#reloadPaymentsButton").addEventListener("click", loadMyPayments);
+  $("#reloadPaymentsButton").addEventListener("click", loadPaymentData);
 
-  await loadMyPayments();
+  await loadPaymentData();
 }
 
 async function handleCheckout(planCode) {
@@ -113,6 +134,26 @@ async function handleCheckout(planCode) {
   } catch (error) {
     message.textContent = "결제 페이지 생성에 실패했습니다.";
     message.className = "message message-error";
+  }
+}
+
+async function loadPaymentData() {
+  await Promise.all([
+    loadPaymentEntitlement(),
+    loadMyPayments(),
+  ]);
+}
+
+async function loadPaymentEntitlement() {
+  const box = $("#paymentEntitlementBox");
+
+  try {
+    const entitlement = await getPaymentEntitlement();
+    box.innerHTML = renderEntitlement(entitlement);
+    box.className = "";
+  } catch (error) {
+    box.className = "empty-box error-box";
+    box.textContent = "유료 상태를 확인하지 못했습니다.";
   }
 }
 

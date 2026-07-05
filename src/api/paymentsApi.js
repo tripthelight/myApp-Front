@@ -50,3 +50,11 @@ export async function getMyPayments() {
 
   return handleJsonResponse(response);
 }
+
+export async function getPaymentEntitlement() {
+  const response = await authFetch(`${PAYMENTS_API_BASE_URL}/entitlement`, {
+    method: "GET",
+  });
+
+  return handleJsonResponse(response);
+}
