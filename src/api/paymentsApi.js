@@ -15,7 +15,19 @@ async function handleJsonResponse(response) {
   return response.json();
 }
 
+function createPaymentReturnUrls() {
+  const isAdminPath = window.location.pathname.startsWith("/admin");
+  const returnBasePath = isAdminPath ? "/admin" : "";
+
+  return {
+    successUrl: `${window.location.origin}${returnBasePath}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+    cancelUrl: `${window.location.origin}${returnBasePath}/payment-cancel`,
+  };
+}
+
 export async function createCheckout({ planCode }) {
+  const { successUrl, cancelUrl } = createPaymentReturnUrls();
+
   const response = await authFetch(`${PAYMENTS_API_BASE_URL}/checkout`, {
     method: "POST",
     headers: {
@@ -23,6 +35,8 @@ export async function createCheckout({ planCode }) {
     },
     body: JSON.stringify({
       planCode,
+      successUrl,
+      cancelUrl,
     }),
   });
 
