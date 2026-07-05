@@ -47,7 +47,7 @@ export async function createBoard({ title, content }) {
 }
 
 export async function updateBoard(id, { title, content }) {
-  const response = await authFetch(`${BOARD_API_BASE_URL}/${id}`, {
+  const response = await authFetch(`${BOARD_API_BASE_URL}/update/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -62,7 +62,7 @@ export async function updateBoard(id, { title, content }) {
 }
 
 export async function deleteBoard(id) {
-  const response = await authFetch(`${BOARD_API_BASE_URL}/${id}`, {
+  const response = await authFetch(`${BOARD_API_BASE_URL}/delete/${id}`, {
     method: "DELETE",
   });
 

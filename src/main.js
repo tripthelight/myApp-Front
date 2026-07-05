@@ -1,3 +1,4 @@
-import { renderApp } from "./ui/renderApp.js";
+import { startApp } from "./app/router.js";
+import "./scss/style.scss";
 
-renderApp();
+startApp();

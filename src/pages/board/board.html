@@ -1,0 +1,35 @@
+<section class="card">
+  <h2 id="formTitle">글쓰기</h2>
+
+  <form id="boardForm" class="stack-form">
+    <input type="hidden" id="boardId" />
+
+    <label>
+      제목
+      <input id="boardTitle" type="text" required />
+    </label>
+
+    <label>
+      내용
+      <textarea id="boardContent" rows="6" required></textarea>
+    </label>
+
+    <p id="writerHelpText" class="help-text"></p>
+
+    <div class="button-row">
+      <button id="submitBoardButton" type="submit">등록</button>
+      <button id="cancelEditButton" type="button" class="secondary" hidden>수정 취소</button>
+    </div>
+  </form>
+
+  <p id="boardMessage" class="message"></p>
+</section>
+
+<section class="card">
+  <div class="section-header">
+    <h2>게시글 목록</h2>
+    <button id="reloadBoardButton" type="button" class="secondary">새로고침</button>
+  </div>
+
+  <div id="boardList">게시글을 불러오는 중입니다.</div>
+</section>

@@ -1,0 +1,54 @@
+<section class="auth-layout">
+  <div class="card">
+    <h2 id="authTitle">로그인</h2>
+
+    <form id="loginForm" class="stack-form">
+      <label>
+        Username
+        <input id="username" type="text" autocomplete="username" required />
+      </label>
+
+      <label>
+        Password
+        <input id="password" type="password" autocomplete="current-password" required />
+      </label>
+
+      <button type="submit">로그인</button>
+    </form>
+
+    <form id="joinForm" class="stack-form" hidden>
+      <label>
+        Username
+        <input id="joinUsername" type="text" autocomplete="username" minlength="4" required />
+      </label>
+
+      <label>
+        Password
+        <input id="joinPassword" type="password" autocomplete="new-password" minlength="4" required />
+      </label>
+
+      <label>
+        Nickname
+        <input id="joinNickname" type="text" required />
+      </label>
+
+      <label>
+        Email
+        <input id="joinEmail" type="email" autocomplete="email" />
+      </label>
+
+      <button type="submit">회원가입</button>
+    </form>
+
+    <button id="toggleJoinButton" type="button" class="secondary full-button">
+      회원가입으로 전환
+    </button>
+
+    <div class="social-login">
+      <button id="googleLoginButton" type="button" class="secondary">구글로 로그인</button>
+      <button id="naverLoginButton" type="button" class="secondary">네이버로 로그인</button>
+    </div>
+
+    <p id="loginMessage" class="message"></p>
+  </div>
+</section>

@@ -1,0 +1,54 @@
+<section class="card">
+  <div class="section-header">
+    <div>
+      <h2>회원정보</h2>
+      <p id="loginTypeText"></p>
+    </div>
+
+    <button id="deleteAccountButton" type="button" class="danger">회원탈퇴</button>
+  </div>
+
+  <form id="profileForm" class="stack-form">
+    <label>
+      Username
+      <input id="profileUsername" type="text" readonly />
+    </label>
+
+    <label>
+      Nickname
+      <input id="profileNickname" type="text" required />
+    </label>
+
+    <label>
+      Email
+      <input id="profileEmail" type="email" />
+    </label>
+
+    <button id="updateProfileButton" type="submit">회원정보 수정</button>
+    <p id="profileMessage" class="message"></p>
+  </form>
+</section>
+
+<section id="passwordSection" class="card">
+  <h2>비밀번호 변경</h2>
+
+  <form id="passwordForm" class="stack-form">
+    <label>
+      Current Password
+      <input id="currentPassword" type="password" autocomplete="current-password" minlength="4" required />
+    </label>
+
+    <label>
+      New Password
+      <input id="newPassword" type="password" autocomplete="new-password" minlength="4" required />
+    </label>
+
+    <label>
+      New Password Confirm
+      <input id="newPasswordConfirm" type="password" autocomplete="new-password" minlength="4" required />
+    </label>
+
+    <button id="updatePasswordButton" type="submit">비밀번호 변경</button>
+    <p id="passwordMessage" class="message"></p>
+  </form>
+</section>
