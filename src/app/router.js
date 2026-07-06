@@ -2,30 +2,12 @@ import { getAccessToken, getRefreshToken } from "../auth/tokenStorage.js";
 import { $ } from "../shared/dom.js";
 import { appState, currentUsername } from "./state.js";
 import { restoreSession, logoutSession } from "./session.js";
-import { renderHomePage } from "../pages/home/homePage.js";
 import { renderAuthPage } from "../pages/auth/authPage.js";
-import { renderProfilePage } from "../pages/member/profilePage.js";
-import { renderBoardPage } from "../pages/board/boardPage.js";
 import { renderPaymentPage } from "../pages/payments/paymentPage.js";
 import { renderSocialCallbackPage } from "../pages/social/socialCallbackPage.js";
-
-const routes = {
-  home: renderHomePage,
-  auth: renderAuthPage,
-  profile: renderProfilePage,
-  board: renderBoardPage,
-  payments: renderPaymentPage,
-};
-
-const routePaths = {
-  home: "/",
-  auth: "/auth",
-  profile: "/profile",
-  board: "/board",
-  payments: "/payments",
-};
-
-const protectedRoutes = new Set(["profile", "board", "payments"]);
+import { normalizeRoute, routeFromPath, routes } from "./routes.js";
+import { resolveRouteForSession } from "./routeGuard.js";
+import { replaceHistory, writeHistory } from "./browserHistory.js";
 
 export async function startApp() {
   bindLayoutEvents();
@@ -68,7 +50,7 @@ export async function startApp() {
 }
 
 export async function navigate(route, options = {}) {
-  const targetRoute = routes[route] ? route : "home";
+  const targetRoute = normalizeRoute(route);
   const resolvedRoute = resolveRouteForSession(targetRoute);
 
   writeHistory(resolvedRoute, options);
@@ -129,41 +111,4 @@ function bindLayoutEvents() {
     await logoutSession();
     await navigate("home", { replace: true });
   });
-}
-
-function routeFromPath(pathname) {
-  return Object.entries(routePaths)
-    .find(([, path]) => path === pathname)?.[0] || "home";
-}
-
-function resolveRouteForSession(route) {
-  if (route === "auth" && appState.loginUser) {
-    return "home";
-  }
-
-  if (protectedRoutes.has(route) && !appState.loginUser) {
-    return "auth";
-  }
-
-  return route;
-}
-
-function writeHistory(route, { replace = false } = {}) {
-  if (replace) {
-    replaceHistory(route);
-    return;
-  }
-
-  const path = routePaths[route] || routePaths.home;
-
-  if (window.location.pathname === path && window.history.state?.route === route) {
-    return;
-  }
-
-  window.history.pushState({ route }, "", path);
-}
-
-function replaceHistory(route) {
-  const path = routePaths[route] || routePaths.home;
-  window.history.replaceState({ route }, "", path);
 }
