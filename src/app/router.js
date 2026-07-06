@@ -26,6 +26,8 @@ export async function startApp() {
   }
 
   if (window.location.pathname === "/payment-success") {
+    clearPaymentReturnUrl();
+
     if (getAccessToken() || getRefreshToken()) {
       await restoreSession();
     }
@@ -36,6 +38,8 @@ export async function startApp() {
   }
 
   if (window.location.pathname === "/payment-cancel") {
+    clearPaymentReturnUrl();
+
     if (getAccessToken() || getRefreshToken()) {
       await restoreSession();
     }
@@ -94,4 +98,8 @@ function bindLayoutEvents() {
     await logoutSession();
     await navigate("home");
   });
+}
+
+function clearPaymentReturnUrl() {
+  window.history.replaceState({}, "", "/");
 }
