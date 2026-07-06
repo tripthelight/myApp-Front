@@ -1,0 +1,13 @@
+ul {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 10px;
+  box-sizing: border-box;
+  li {
+    button {
+      padding: 10px;
+    }
+  }
+}

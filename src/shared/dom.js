@@ -1,7 +1,24 @@
 const view = document.querySelector("#appView");
+const PAGE_STYLE_ID = "page-scoped-style";
 
-export function renderView(html) {
+export function renderView(html, pageStyle = null) {
+  removePageStyle();
   view.innerHTML = html;
+
+  if (pageStyle) {
+    applyPageStyle(pageStyle);
+  }
+}
+
+function applyPageStyle(cssText) {
+  const style = document.createElement("style");
+  style.id = PAGE_STYLE_ID;
+  style.textContent = cssText;
+  document.head.appendChild(style);
+}
+
+function removePageStyle() {
+  document.querySelector(`#${PAGE_STYLE_ID}`)?.remove();
 }
 
 export function $(selector, root = document) {

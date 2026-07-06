@@ -1,0 +1,11 @@
+:root {
+  --bottomSheetBg: #000;
+  --bottomSheetColor: #fff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bottomSheetBg: #fff;
+    --bottomSheetColor: #000;
+  }
+}

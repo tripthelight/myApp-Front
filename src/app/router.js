@@ -107,6 +107,11 @@ function bindLayoutEvents() {
     });
   });
 
+  const headerLogoutButton = $("#headerLogoutButton");
+  if (!headerLogoutButton) {
+    return;
+  }
+
   $("#headerLogoutButton").addEventListener("click", async () => {
     await logoutSession();
     await navigate("home", { replace: true });
