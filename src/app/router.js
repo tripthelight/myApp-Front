@@ -17,6 +17,16 @@ const routes = {
   payments: renderPaymentPage,
 };
 
+const routePaths = {
+  home: "/",
+  auth: "/auth",
+  profile: "/profile",
+  board: "/board",
+  payments: "/payments",
+};
+
+const protectedRoutes = new Set(["profile", "board", "payments"]);
+
 export async function startApp() {
   bindLayoutEvents();
 
@@ -26,7 +36,7 @@ export async function startApp() {
   }
 
   if (window.location.pathname === "/payment-success") {
-    clearPaymentReturnUrl();
+    replaceHistory("payments");
 
     if (getAccessToken() || getRefreshToken()) {
       await restoreSession();
@@ -38,7 +48,7 @@ export async function startApp() {
   }
 
   if (window.location.pathname === "/payment-cancel") {
-    clearPaymentReturnUrl();
+    replaceHistory("payments");
 
     if (getAccessToken() || getRefreshToken()) {
       await restoreSession();
@@ -54,19 +64,36 @@ export async function startApp() {
   }
 
   updateHeader();
-  await navigate("home");
+  await renderCurrentRoute({ replace: true });
 }
 
-export async function navigate(route) {
+export async function navigate(route, options = {}) {
   const targetRoute = routes[route] ? route : "home";
+  const resolvedRoute = resolveRouteForSession(targetRoute);
 
-  if ((targetRoute === "profile" || targetRoute === "board" || targetRoute === "payments") && !appState.loginUser) {
+  writeHistory(resolvedRoute, options);
+  await renderRoute(resolvedRoute, targetRoute);
+}
+
+export async function renderCurrentRoute(options = {}) {
+  const route = routeFromPath(window.location.pathname);
+  const resolvedRoute = resolveRouteForSession(route);
+
+  if (resolvedRoute !== route || options.replace) {
+    replaceHistory(resolvedRoute);
+  }
+
+  await renderRoute(resolvedRoute, route);
+}
+
+async function renderRoute(route, requestedRoute = route) {
+  if (route === "auth" && requestedRoute !== "auth") {
     await renderAuthPage("로그인 후 이용할 수 있습니다.");
     updateHeader();
     return;
   }
 
-  await routes[targetRoute]();
+  await routes[route]();
   updateHeader();
 }
 
@@ -88,6 +115,10 @@ export function updateHeader() {
 }
 
 function bindLayoutEvents() {
+  window.addEventListener("popstate", async () => {
+    await renderCurrentRoute({ replace: false });
+  });
+
   document.querySelectorAll("[data-route]").forEach((button) => {
     button.addEventListener("click", () => {
       navigate(button.dataset.route);
@@ -96,10 +127,43 @@ function bindLayoutEvents() {
 
   $("#headerLogoutButton").addEventListener("click", async () => {
     await logoutSession();
-    await navigate("home");
+    await navigate("home", { replace: true });
   });
 }
 
-function clearPaymentReturnUrl() {
-  window.history.replaceState({}, "", "/");
+function routeFromPath(pathname) {
+  return Object.entries(routePaths)
+    .find(([, path]) => path === pathname)?.[0] || "home";
+}
+
+function resolveRouteForSession(route) {
+  if (route === "auth" && appState.loginUser) {
+    return "home";
+  }
+
+  if (protectedRoutes.has(route) && !appState.loginUser) {
+    return "auth";
+  }
+
+  return route;
+}
+
+function writeHistory(route, { replace = false } = {}) {
+  if (replace) {
+    replaceHistory(route);
+    return;
+  }
+
+  const path = routePaths[route] || routePaths.home;
+
+  if (window.location.pathname === path && window.history.state?.route === route) {
+    return;
+  }
+
+  window.history.pushState({ route }, "", path);
+}
+
+function replaceHistory(route) {
+  const path = routePaths[route] || routePaths.home;
+  window.history.replaceState({ route }, "", path);
 }
