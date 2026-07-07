@@ -1,3 +1,60 @@
-* {
-  background-color: #000;
+.app-view {
+  position: relative;
+  [class^="rectangle-"] {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: calc(100vw / 4);
+    height: 100vh;
+    background-color: rgba(0,0,255,0);
+    transition-property: left, background-color;
+    transition-duration: 0.2s;
+    // transition-delay:1s;
+    transition-timing-function: ease-in;
+  }
+  
+  .judge-feedback {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    font-size: 72px;
+    font-weight: 800;
+    line-height: 1;
+    pointer-events: none;
+  }
+  
+  .judge-feedback.is-ok {
+    color: #1fbf75;
+  }
+  
+  .judge-feedback.is-fail {
+    color: #ff3b3b;
+  }
+  
+  .result-button {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    min-width: 140px;
+    height: 52px;
+    border: 0;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 20px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  
+  .result-button.is-next {
+    background: #1f6fff;
+  }
+  
+  .result-button.is-retry {
+    background: #222;
+  }
 }
+

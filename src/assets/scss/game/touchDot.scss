@@ -1,0 +1,125 @@
+.success-pop {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  z-index: 9999;
+  width: 260px;
+  height: 260px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.success-pop__mark {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 2;
+  width: 88px;
+  height: 88px;
+  transform: translate(-50%, -50%) scale(0);
+  border: 12px solid #1fbf75;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow:
+    0 10px 30px rgba(31, 191, 117, 0.35),
+    inset 0 0 0 6px rgba(31, 191, 117, 0.12);
+  animation: success-mark-pop 700ms ease-out forwards;
+}
+
+.success-pop__spark {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  width: 10px;
+  height: 28px;
+  border-radius: 999px;
+  background: var(--c);
+  transform: translate(-50%, -50%) rotate(var(--r)) scale(0);
+  box-shadow: 0 0 16px var(--c);
+  animation: success-spark-boom 620ms ease-out forwards;
+  animation-delay: var(--delay);
+}
+
+@keyframes success-mark-pop {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+  }
+
+  35% {
+    transform: translate(-50%, -50%) scale(1.18);
+    opacity: 1;
+  }
+
+  65% {
+    transform: translate(-50%, -50%) scale(0.94);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0;
+  }
+}
+
+@keyframes success-spark-boom {
+  0% {
+    transform: translate(-50%, -50%) rotate(var(--r)) scale(0);
+    opacity: 0;
+  }
+
+  15% {
+    opacity: 1;
+  }
+
+  70% {
+    transform:
+      translate(
+        calc(-50% + var(--x)),
+        calc(-50% + var(--y))
+      )
+      rotate(var(--r))
+      scale(1);
+    opacity: 1;
+  }
+
+  100% {
+    transform:
+      translate(
+        calc(-50% + var(--x)),
+        calc(-50% + var(--y))
+      )
+      rotate(var(--r))
+      scale(0.7);
+    opacity: 0;
+  }
+}
+
+.fail-pop {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: transparent;
+  
+  animation: fail-pop 700ms ease-out forwards;
+}
+
+@keyframes fail-pop {
+  0% {
+    box-shadow: inset 0 0 0 0 transparent;
+    opacity: 0;
+  }
+
+  50% {
+    box-shadow: inset 0 0 14px 14px #FF0000;
+    opacity: 0.4;
+  }
+
+  100% {
+    box-shadow: inset 0 0 0 0 transparent;
+    opacity: 0;
+  }
+}

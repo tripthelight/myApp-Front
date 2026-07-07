@@ -2,10 +2,7 @@ import { getAccessToken, getRefreshToken } from "../auth/tokenStorage.js";
 import { $ } from "../shared/dom.js";
 import { appState, currentUsername } from "./state.js";
 import { restoreSession, logoutSession } from "./session.js";
-import { renderAuthPage } from "../pages/auth/authPage.js";
-import { renderPaymentPage } from "../pages/payments/paymentPage.js";
-import { renderSocialCallbackPage } from "../pages/social/socialCallbackPage.js";
-import { normalizeRoute, routeFromPath, routes } from "./routes.js";
+import { normalizeRoute, routeFromPath, renderRoutePage } from "./routes.js";
 import { resolveRouteForSession } from "./routeGuard.js";
 import { replaceHistory, writeHistory } from "./browserHistory.js";
 
@@ -13,7 +10,7 @@ export async function startApp() {
   bindLayoutEvents();
 
   if (window.location.pathname === "/cookie") {
-    await renderSocialCallbackPage();
+    await renderRoutePage("socialCallback");
     return;
   }
 
@@ -25,7 +22,7 @@ export async function startApp() {
     }
 
     updateHeader();
-    await renderPaymentPage("결제가 완료되었습니다. 웹훅 반영까지 잠시 걸릴 수 있습니다.");
+    await renderRoutePage("payments", "결제가 완료되었습니다. 웹훅 반영까지 잠시 걸릴 수 있습니다.");
     return;
   }
 
@@ -37,7 +34,7 @@ export async function startApp() {
     }
 
     updateHeader();
-    await renderPaymentPage("결제가 취소되었습니다.");
+    await renderRoutePage("payments", "결제가 취소되었습니다.");
     return;
   }
 
@@ -70,12 +67,12 @@ export async function renderCurrentRoute(options = {}) {
 
 async function renderRoute(route, requestedRoute = route) {
   if (route === "auth" && requestedRoute !== "auth") {
-    await renderAuthPage("로그인 후 이용할 수 있습니다.");
+    await renderRoutePage("auth", "로그인 후 이용할 수 있습니다.");
     updateHeader();
     return;
   }
 
-  await routes[route]();
+  await renderRoutePage(route);
   updateHeader();
 }
 

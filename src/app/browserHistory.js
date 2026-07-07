@@ -1,4 +1,4 @@
-import { routePaths } from "./routes.js";
+import { pathForRoute } from "./routes.js";
 
 export function writeHistory(route, { replace = false } = {}) {
   if (replace) {
@@ -6,7 +6,7 @@ export function writeHistory(route, { replace = false } = {}) {
     return;
   }
 
-  const path = routePaths[route] || routePaths.home;
+  const path = pathForRoute(route);
 
   if (window.location.pathname === path && window.history.state?.route === route) {
     return;
@@ -16,6 +16,6 @@ export function writeHistory(route, { replace = false } = {}) {
 }
 
 export function replaceHistory(route) {
-  const path = routePaths[route] || routePaths.home;
+  const path = pathForRoute(route);
   window.history.replaceState({ route }, "", path);
 }
