@@ -4,35 +4,51 @@ let soundReady = false;
 let soundStartPromise = null;
 let soundUnlockBound = false;
 
+const masterLimiter = new Tone.Limiter(-8).toDestination();
+
 const startSynth = new Tone.PolySynth(Tone.Synth, {
-  oscillator: { type: "sawtooth" },
+  oscillator: { type: "triangle" },
   envelope: {
     attack: 0.01,
-    decay: 0.15,
-    sustain: 0.2,
-    release: 0.4,
+    decay: 0.14,
+    sustain: 0.18,
+    release: 0.28,
   },
-}).toDestination();
+  volume: -10,
+}).connect(masterLimiter);
+
+const appearSynth = new Tone.Synth({
+  oscillator: { type: "sine" },
+  envelope: {
+    attack: 0.004,
+    decay: 0.08,
+    sustain: 0.08,
+    release: 0.16,
+  },
+  volume: -11,
+}).connect(masterLimiter);
 
 const okSynth = new Tone.PolySynth(Tone.Synth, {
   oscillator: { type: "sine" },
   envelope: {
-    attack: 0.005,
+    attack: 0.004,
     decay: 0.08,
-    sustain: 0.15,
-    release: 0.2,
+    sustain: 0.12,
+    release: 0.18,
   },
-}).toDestination();
+  volume: -9,
+}).connect(masterLimiter);
 
-const failSynth = new Tone.PolySynth(Tone.Synth, {
-  oscillator: { type: "square" },
+const failSynth = new Tone.Synth({
+  oscillator: { type: "triangle" },
   envelope: {
-    attack: 0.005,
-    decay: 0.05,
+    attack: 0.004,
+    decay: 0.06,
     sustain: 0,
-    release: 0.08,
+    release: 0.12,
   },
-}).toDestination();
+  volume: -8,
+}).connect(masterLimiter);
 
 function isUserGestureActive() {
   return navigator.userActivation?.isActive === true;
@@ -44,6 +60,7 @@ function isAudioRunning() {
 
 export async function readySound() {
   if (soundReady && isAudioRunning()) return true;
+
   if (isAudioRunning()) {
     soundReady = true;
     return true;
@@ -85,27 +102,40 @@ function canPlaySound() {
   return soundReady && isAudioRunning();
 }
 
+function safeNow(offset = 0.02) {
+  return Tone.now() + offset;
+}
+
 export function playStartSound() {
   if (!canPlaySound()) return;
 
-  const now = Tone.now() + 0.03;
+  const now = safeNow();
 
-  startSynth.triggerAttackRelease("C3", 0.12, now);
-  startSynth.triggerAttackRelease("G3", 0.16, now + 0.08);
-  startSynth.triggerAttackRelease("C4", 0.25, now + 0.16);
+  startSynth.triggerAttackRelease("C4", 0.1, now);
+  startSynth.triggerAttackRelease("G4", 0.14, now + 0.07);
+  startSynth.triggerAttackRelease("C5", 0.18, now + 0.14);
+}
+
+export function playCircleAppearSound(step = 0) {
+  if (!canPlaySound()) return;
+
+  const notes = ["E5", "G5", "A5", "C6"];
+  const note = notes[step % notes.length];
+
+  appearSynth.triggerAttackRelease(note, 0.11, safeNow());
 }
 
 export function playOkSound() {
   if (!canPlaySound()) return;
 
-  const now = Tone.now() + 0.03;
+  const now = safeNow();
 
   okSynth.triggerAttackRelease("E5", 0.08, now);
-  okSynth.triggerAttackRelease("A5", 0.16, now + 0.06);
+  okSynth.triggerAttackRelease("A5", 0.16, now + 0.055);
 }
 
 export function playFailSound() {
   if (!canPlaySound()) return;
 
-  failSynth.triggerAttackRelease("C3", 0.12, Tone.now() + 0.03);
+  failSynth.triggerAttackRelease("C3", 0.13, safeNow());
 }

@@ -1,6 +1,7 @@
 import lv1Style from "../../../assets/scss/game/lv1/common.scss?inline";
 import lv1Template from "./lv1.html?raw";
 import { renderView } from "../../../shared/dom.js";
+import { navigate } from "../../../app/router.js";
 import {
   readySound,
   unlockSoundOnNextGesture,
@@ -110,20 +111,31 @@ function waitTransitionEnd(el, run) {
   });
 }
 
-function showResultButton(type, onClick) {
+function showResultButtons(resultType, onPrimaryClick) {
   const WRAP = document.getElementById("appView");
   if (!WRAP) return;
 
-  const oldButton = WRAP.querySelector(".result-button");
-  oldButton?.remove();
+  const oldButtonWrap = WRAP.querySelector(".result-button-wrap");
+  oldButtonWrap?.remove();
 
-  const button = document.createElement("button");
-  button.className = `result-button ${type === "NEXT" ? "is-next" : "is-retry"}`;
-  button.textContent = type;
+  const buttonWrap = document.createElement("div");
+  buttonWrap.className = "result-button-wrap";
 
-  button.addEventListener("click", onClick);
+  const primaryButton = document.createElement("button");
+  primaryButton.className = `result-button ${resultType === "NEXT" ? "is-next" : "is-retry"}`;
+  primaryButton.textContent = resultType;
+  primaryButton.addEventListener("click", onPrimaryClick);
 
-  WRAP.appendChild(button);
+  const homeButton = document.createElement("button");
+  homeButton.className = "result-button is-home";
+  homeButton.textContent = "HOME";
+  homeButton.addEventListener("click", () => {
+    stopActiveGame();
+    navigate("home", { replace: true });
+  });
+
+  buttonWrap.append(primaryButton, homeButton);
+  WRAP.appendChild(buttonWrap);
 }
 
 function resetRects(rects) {
@@ -293,11 +305,6 @@ function startTouchJudge(run) {
   });
 }
 
-function goToLv2() {
-  window.history.pushState({}, "", "/lv2");
-  window.dispatchEvent(new PopStateEvent("popstate"));
-}
-
 async function rectangleAni() {
   const run = createGameRun();
 
@@ -339,12 +346,13 @@ async function rectangleAni() {
   const allSuccess = results.every(Boolean);
 
   if (allSuccess) {
-    showResultButton("NEXT", () => {
+    showResultButtons("NEXT", () => {
       stopActiveGame();
-      goToLv2();
+      navigate("lv2", { replace: true });
     });
   } else {
-    showResultButton("RETRY", () => {
+    showResultButtons("RETRY", (event) => {
+      event.target?.closest(".result-button-wrap")?.remove()
       rectangleAni();
     });
   }

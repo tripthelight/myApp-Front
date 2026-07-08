@@ -84,7 +84,7 @@ function hasRoute(route) {
   return Boolean(staticPageLoaders[route]) || hasGamePage(route);
 }
 
-function isGameRoute(route) {
+export function isGameRoute(route) {
   return /^lv[1-9][0-9]*$/.test(route);
 }
 

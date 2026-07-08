@@ -1,4 +1,194 @@
 .app-view {
   position: relative;
+  min-height: 100dvh;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.12), transparent 32%),
+    #0f172a;
+  color: #ffffff;
 }
 
+.lv2-page {
+  position: relative;
+  width: 100%;
+  min-height: 100dvh;
+  overflow: hidden;
+  touch-action: manipulation;
+  user-select: none;
+}
+
+.lv2-status {
+  position: absolute;
+  z-index: 20;
+  top: max(16px, env(safe-area-inset-top));
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(calc(100vw - 32px), 520px);
+  padding: 10px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.72);
+  backdrop-filter: blur(10px);
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 14px;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.circles-wrap {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lv2-circle,
+.lv2-circle span {
+  border-radius: 999px;
+}
+
+.lv2-circle {
+  --circle-size: clamp(120px, 45vw, 280px);
+  position: absolute;
+  z-index: 5;
+  left: 50%;
+  top: 50%;
+  width: var(--circle-size);
+  height: var(--circle-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(96, 165, 250, 0.16);
+  border: 1px solid rgba(147, 197, 253, 0.42);
+  box-shadow: 0 18px 60px rgba(37, 99, 235, 0.18);
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.2);
+  pointer-events: none;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.lv2-circle > span {
+  width: 74%;
+  height: 74%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(59, 130, 246, 0.16);
+  border: 1px solid rgba(147, 197, 253, 0.22);
+}
+
+.lv2-circle > span > span {
+  width: 34%;
+  height: 34%;
+  display: block;
+  background: rgba(255, 255, 255, 0.86);
+  border: 2px solid rgba(255, 255, 255, 0.92);
+  box-shadow: 0 0 24px rgba(255, 255, 255, 0.22);
+}
+
+.lv2-circle.is-showing {
+  animation: lv2ZoomInOut 0.72s ease-in-out both;
+}
+
+.lv2-circle.is-touchable {
+  pointer-events: auto;
+}
+
+.lv2-circle.is-success {
+  background: rgba(34, 197, 94, 0.42);
+  border-color: rgba(134, 239, 172, 0.9);
+  box-shadow: 0 18px 64px rgba(34, 197, 94, 0.28);
+}
+
+.lv2-circle.is-fail {
+  background: rgba(239, 68, 68, 0.42);
+  border-color: rgba(252, 165, 165, 0.9);
+  box-shadow: 0 18px 64px rgba(239, 68, 68, 0.28);
+}
+
+.lv2-ready,
+.lv2-result {
+  position: absolute;
+  z-index: 30;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 24px;
+  background: rgba(15, 23, 42, 0.48);
+  text-align: center;
+}
+
+.lv2-ready[hidden],
+.lv2-result[hidden],
+.lv2-action-button[hidden] {
+  display: none;
+}
+
+.lv2-result__buttons {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.lv2-ready p {
+  max-width: 360px;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.lv2-action-button {
+  min-width: 144px;
+  min-height: 52px;
+  padding: 0 24px;
+  border: 0;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #0f172a;
+  font-weight: 800;
+  font-size: 16px;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.28);
+}
+
+.lv2-action-button.is-home {
+  background: #64748b;
+  color: #ffffff;
+}
+
+.lv2-action-button:active {
+  transform: translateY(1px) scale(0.99);
+}
+
+@keyframes lv2ZoomInOut {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.2);
+  }
+
+  42% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.08);
+  }
+
+  64% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.2);
+  }
+}

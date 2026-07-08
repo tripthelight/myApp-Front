@@ -2,7 +2,7 @@ import { getAccessToken, getRefreshToken } from "../auth/tokenStorage.js";
 import { $ } from "../shared/dom.js";
 import { appState, currentUsername } from "./state.js";
 import { restoreSession, logoutSession } from "./session.js";
-import { normalizeRoute, routeFromPath, renderRoutePage } from "./routes.js";
+import { normalizeRoute, routeFromPath, renderRoutePage, isGameRoute } from "./routes.js";
 import { resolveRouteForSession } from "./routeGuard.js";
 import { replaceHistory, writeHistory } from "./browserHistory.js";
 
@@ -47,15 +47,24 @@ export async function startApp() {
 }
 
 export async function navigate(route, options = {}) {
+  const currentRoute = routeFromPath(window.location.pathname);
   const targetRoute = normalizeRoute(route);
   const resolvedRoute = resolveRouteForSession(targetRoute);
+  const shouldReplace = Boolean(options.replace) || (isGameRoute(currentRoute) && isGameRoute(resolvedRoute));
 
-  writeHistory(resolvedRoute, options);
+  writeHistory(resolvedRoute, { ...options, replace: shouldReplace });
   await renderRoute(resolvedRoute, targetRoute);
 }
 
 export async function renderCurrentRoute(options = {}) {
   const route = routeFromPath(window.location.pathname);
+
+  if (options.fromPopState && isGameRoute(route)) {
+    replaceHistory("home");
+    await renderRoute("home", route);
+    return;
+  }
+
   const resolvedRoute = resolveRouteForSession(route);
 
   if (resolvedRoute !== route || options.replace) {
@@ -95,7 +104,7 @@ export function updateHeader() {
 
 function bindLayoutEvents() {
   window.addEventListener("popstate", async () => {
-    await renderCurrentRoute({ replace: false });
+    await renderCurrentRoute({ replace: false, fromPopState: true });
   });
 
   document.querySelectorAll("[data-route]").forEach((button) => {
