@@ -59,15 +59,22 @@ function isAudioRunning() {
 }
 
 export async function readySound() {
-  if (soundReady && isAudioRunning()) return true;
+  if (soundReady && isAudioRunning()) {
+    return true;
+  }
 
   if (isAudioRunning()) {
     soundReady = true;
     return true;
   }
 
-  if (!isUserGestureActive()) return false;
-  if (soundStartPromise) return soundStartPromise;
+  if (!isUserGestureActive()) {
+    return false;
+  }
+
+  if (soundStartPromise) {
+    return soundStartPromise;
+  }
 
   soundStartPromise = Tone.start()
     .then(() => {
@@ -83,7 +90,9 @@ export async function readySound() {
 }
 
 export function unlockSoundOnNextGesture() {
-  if (soundReady || soundUnlockBound) return;
+  if (soundReady || soundUnlockBound) {
+    return;
+  }
 
   const unlock = async () => {
     const ok = await readySound();
@@ -102,40 +111,143 @@ function canPlaySound() {
   return soundReady && isAudioRunning();
 }
 
+/*
+ * Tone.Synth는 같은 시각이나 이전 시각으로 연속 재생을 예약하면
+ * "Start time must be strictly greater than previous start time" 오류가 발생한다.
+ *
+ * 각 사운드 채널의 마지막 예약 시각을 저장하고,
+ * 다음 사운드는 반드시 그 시각보다 뒤에 예약한다.
+ */
+const lastStartTimes = new Map();
+
 function safeNow(offset = 0.02) {
   return Tone.now() + offset;
 }
 
+function getStrictStartTime(channel, gapSeconds = 0.025) {
+  const currentTime = safeNow();
+  const previousTime = lastStartTimes.get(channel) ?? -Infinity;
+
+  const startTime = Math.max(
+    currentTime,
+    previousTime + gapSeconds,
+  );
+
+  lastStartTimes.set(channel, startTime);
+
+  return startTime;
+}
+
 export function playStartSound() {
-  if (!canPlaySound()) return;
+  if (!canPlaySound()) {
+    return;
+  }
 
-  const now = safeNow();
+  const startTime = getStrictStartTime("start", 0.16);
 
-  startSynth.triggerAttackRelease("C4", 0.1, now);
-  startSynth.triggerAttackRelease("G4", 0.14, now + 0.07);
-  startSynth.triggerAttackRelease("C5", 0.18, now + 0.14);
+  startSynth.triggerAttackRelease(
+    "C4",
+    0.1,
+    startTime,
+  );
+
+  startSynth.triggerAttackRelease(
+    "G4",
+    0.14,
+    startTime + 0.07,
+  );
+
+  startSynth.triggerAttackRelease(
+    "C5",
+    0.18,
+    startTime + 0.14,
+  );
+
+  lastStartTimes.set(
+    "start",
+    startTime + 0.14,
+  );
 }
 
 export function playCircleAppearSound(step = 0) {
-  if (!canPlaySound()) return;
+  if (!canPlaySound()) {
+    return;
+  }
 
-  const notes = ["E5", "G5", "A5", "C6"];
+  const notes = [
+    "E5",
+    "G5",
+    "A5",
+    "C6",
+  ];
+
   const note = notes[step % notes.length];
+  const startTime = getStrictStartTime("appear", 0.03);
 
-  appearSynth.triggerAttackRelease(note, 0.11, safeNow());
+  appearSynth.triggerAttackRelease(
+    note,
+    0.11,
+    startTime,
+  );
+}
+
+export function playTouchDotAppearSound(step = 0) {
+  if (!canPlaySound()) {
+    return;
+  }
+
+  const notes = [
+    "D5",
+    "F5",
+    "A5",
+    "D6",
+  ];
+
+  const note = notes[step % notes.length];
+  const startTime = getStrictStartTime("appear", 0.03);
+
+  appearSynth.triggerAttackRelease(
+    note,
+    0.13,
+    startTime,
+  );
 }
 
 export function playOkSound() {
-  if (!canPlaySound()) return;
+  if (!canPlaySound()) {
+    return;
+  }
 
-  const now = safeNow();
+  const startTime = getStrictStartTime("ok", 0.08);
 
-  okSynth.triggerAttackRelease("E5", 0.08, now);
-  okSynth.triggerAttackRelease("A5", 0.16, now + 0.055);
+  okSynth.triggerAttackRelease(
+    "E5",
+    0.08,
+    startTime,
+  );
+
+  okSynth.triggerAttackRelease(
+    "A5",
+    0.16,
+    startTime + 0.055,
+  );
+
+  lastStartTimes.set(
+    "ok",
+    startTime + 0.055,
+  );
 }
 
 export function playFailSound() {
-  if (!canPlaySound()) return;
+  if (!canPlaySound()) {
+    return;
+  }
 
-  failSynth.triggerAttackRelease("C3", 0.13, safeNow());
+  const startTime = getStrictStartTime("fail", 0.03);
+
+  failSynth.triggerAttackRelease(
+    "C3",
+    0.13,
+    startTime,
+  );
 }

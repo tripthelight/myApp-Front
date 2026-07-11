@@ -1,0 +1,28 @@
+<section class="lv3-page" aria-label="레벨 3 꼭짓점 기억 게임">
+  <p id="lv3Status" class="lv3-status" aria-live="polite">
+    START 버튼을 누르면 시작합니다.
+  </p>
+
+  <ul id="rectanglesWrap" class="lv3-rectangles" aria-hidden="true"></ul>
+  <div id="touchDotsWrap" class="lv3-touch-dots" aria-label="터치 지점"></div>
+
+  <div id="lv3Ready" class="lv3-overlay">
+    <div class="lv3-panel">
+      <strong>LEVEL 3</strong>
+      <p>사각형이 만드는 네 꼭짓점의 등장 순서를 기억한 뒤, 같은 순서로 터치하세요.</p>
+      <button type="button" id="lv3StartButton" class="lv3-action-button">START</button>
+    </div>
+  </div>
+
+  <div id="lv3Result" class="lv3-overlay" hidden>
+    <div class="lv3-panel">
+      <strong id="lv3ResultTitle">RESULT</strong>
+      <p id="lv3ResultMessage"></p>
+      <div class="lv3-result-buttons">
+        <button type="button" id="lv3NextButton" class="lv3-action-button" hidden>NEXT</button>
+        <button type="button" id="lv3RetryButton" class="lv3-action-button is-retry" hidden>RETRY</button>
+        <button type="button" id="lv3HomeButton" class="lv3-action-button is-home">HOME</button>
+      </div>
+    </div>
+  </div>
+</section>
