@@ -1,6 +1,80 @@
-<section class="lv7-placeholder" aria-label="레벨 7 준비 화면">
-  <span>NEXT STAGE</span>
-  <strong>LEVEL 7</strong>
-  <p>다음 레벨을 준비하고 있습니다.</p>
-  <button type="button" id="lv7HomeButton">HOME</button>
+<section id="lv7Page" class="lv7-page" aria-label="레벨 7 시간 수열 리듬 게임">
+  <header class="lv7-hud">
+    <div class="lv7-title-wrap">
+      <span class="lv7-kicker">TIME SEQUENCE</span>
+      <strong>LEVEL 7</strong>
+    </div>
+    <p id="lv7Status" class="lv7-status" aria-live="polite">시간의 흐름에서 규칙을 찾아보세요.</p>
+    <div class="lv7-progress" aria-label="진행 상황">
+      <span id="lv7PhaseText">READY</span>
+      <span class="lv7-progress-dot" aria-hidden="true"></span>
+      <span id="lv7ProgressText">0 / 5</span>
+    </div>
+  </header>
+
+  <main id="lv7Stage" class="lv7-stage">
+    <div class="lv7-ambient" aria-hidden="true">
+      <span></span><span></span><span></span><span></span>
+    </div>
+
+    <section id="lv7WatchPhase" class="lv7-watch-phase" aria-label="시간 규칙 관찰 단계">
+      <span class="lv7-watch-label">OBSERVE</span>
+      <div id="lv7MainClock" class="lv7-main-clock">00 : 00</div>
+      <div id="lv7BeatRail" class="lv7-beat-rail" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+    </section>
+
+    <div id="lv7Blackout" class="lv7-blackout" aria-hidden="true">
+      <span>REMEMBER THE FLOW</span>
+    </div>
+
+    <section id="lv7AnswerPhase" class="lv7-answer-phase" hidden aria-label="정답 시간 터치 단계">
+      <div id="lv7Countdown" class="lv7-countdown" hidden aria-live="polite">
+        <span class="lv7-countdown-label">GET READY</span>
+        <strong id="lv7CountdownNumber">5</strong>
+        <span class="lv7-countdown-ring" aria-hidden="true"></span>
+      </div>
+      <div id="lv7TimeField" class="lv7-time-field"></div>
+      <div class="lv7-beat-guide" aria-hidden="true">
+        <span id="lv7BeatPulse"></span>
+      </div>
+    </section>
+  </main>
+
+  <div id="lv7Ready" class="lv7-overlay">
+    <div class="lv7-panel is-guide">
+      <span class="lv7-kicker">HOW TO PLAY</span>
+      <strong>시간의 다음 흐름을 찾으세요</strong>
+      <p>다섯 번 변하는 시간을 보고 숨은 규칙을 기억한 뒤, 이어질 시간을 1초 간격으로 순서대로 터치하세요.</p>
+
+      <div class="lv7-demo" aria-hidden="true">
+        <div class="lv7-demo-clock"><span>10 : 10</span><span>10 : 11</span><span>10 : 12</span></div>
+        <div class="lv7-demo-fade"></div>
+        <div class="lv7-demo-answers">
+          <i>10 : 14</i><i class="is-target">10 : 13</i><i>11 : 08</i>
+          <b></b>
+        </div>
+      </div>
+
+      <div class="lv7-guide-tags">
+        <span><i class="is-watch"></i> 규칙은 직접 발견하기</span>
+        <span><i class="is-touch"></i> 박자마다 하나씩 터치</span>
+      </div>
+      <button type="button" id="lv7StartButton" class="lv7-action-button">START</button>
+    </div>
+  </div>
+
+  <div id="lv7Result" class="lv7-overlay" hidden>
+    <div class="lv7-panel">
+      <span class="lv7-kicker">ROUND RESULT</span>
+      <strong id="lv7ResultTitle">RESULT</strong>
+      <p id="lv7ResultMessage"></p>
+      <div class="lv7-result-buttons">
+        <button type="button" id="lv7NextButton" class="lv7-action-button" hidden>NEXT</button>
+        <button type="button" id="lv7RetryButton" class="lv7-action-button is-retry" hidden>RETRY</button>
+        <button type="button" id="lv7HomeButton" class="lv7-action-button is-home">HOME</button>
+      </div>
+    </div>
+  </div>
 </section>
