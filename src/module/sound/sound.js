@@ -28,6 +28,17 @@ const appearSynth = new Tone.Synth({
   volume: -11,
 }).connect(masterLimiter);
 
+const overlapSynth = new Tone.Synth({
+  oscillator: { type: "sine" },
+  envelope: {
+    attack: 0.008,
+    decay: 0.12,
+    sustain: 0.06,
+    release: 0.22,
+  },
+  volume: -12,
+}).connect(masterLimiter);
+
 const okSynth = new Tone.PolySynth(Tone.Synth, {
   oscillator: { type: "sine" },
   envelope: {
@@ -209,6 +220,21 @@ export function playTouchDotAppearSound(step = 0) {
   appearSynth.triggerAttackRelease(
     note,
     0.13,
+    startTime,
+  );
+}
+
+export function playOverlapAppearSound(step = 0) {
+  if (!canPlaySound()) {
+    return;
+  }
+
+  const notes = ["C5", "E5", "G5", "B5", "D6", "A5"];
+  const startTime = getStrictStartTime("overlap", 0.055);
+
+  overlapSynth.triggerAttackRelease(
+    notes[step % notes.length],
+    0.16,
     startTime,
   );
 }

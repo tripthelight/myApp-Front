@@ -1,0 +1,30 @@
+<section class="lv4-page" aria-label="레벨 4 겹침 면 기억 게임">
+  <p id="lv4Status" class="lv4-status" aria-live="polite">
+    START 버튼을 누르면 시작합니다.
+  </p>
+
+  <div id="lv4CircleLayer" class="lv4-circle-layer" aria-hidden="true"></div>
+  <div id="lv4OverlapLayer" class="lv4-overlap-layer" aria-label="겹치는 면 터치 영역"></div>
+
+  <div id="lv4Ready" class="lv4-overlay">
+    <div class="lv4-panel">
+      <span class="lv4-level-label">MEMORY RHYTHM</span>
+      <strong>LEVEL 4</strong>
+      <p>원이 겹치며 만들어지는 네 면의 등장 순서와 위치를 기억한 뒤, 같은 순서로 네 번 터치하세요.</p>
+      <button type="button" id="lv4StartButton" class="lv4-action-button">START</button>
+    </div>
+  </div>
+
+  <div id="lv4Result" class="lv4-overlay" hidden>
+    <div class="lv4-panel">
+      <span class="lv4-level-label">ROUND RESULT</span>
+      <strong id="lv4ResultTitle">RESULT</strong>
+      <p id="lv4ResultMessage"></p>
+      <div class="lv4-result-buttons">
+        <button type="button" id="lv4NextButton" class="lv4-action-button" hidden>NEXT</button>
+        <button type="button" id="lv4RetryButton" class="lv4-action-button is-retry" hidden>RETRY</button>
+        <button type="button" id="lv4HomeButton" class="lv4-action-button is-home">HOME</button>
+      </div>
+    </div>
+  </div>
+</section>
