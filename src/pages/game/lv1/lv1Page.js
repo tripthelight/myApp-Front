@@ -76,7 +76,7 @@ function isCurrentGameRun(run) {
     run &&
     !run.signal.aborted &&
     run.id === activeGameRunId &&
-    Boolean(WRAP?.querySelector(".rectangle-1"))
+    Boolean(WRAP?.querySelector("#lv1Page .rectangle-1"))
   );
 }
 
@@ -141,7 +141,7 @@ function showResultButtons(resultType, onPrimaryClick) {
 function resetRects(rects) {
   rects.forEach((rect) => {
     rect.style.transition = "none";
-    rect.style.left = "0px";
+    rect.style.left = "0%";
     rect.style.backgroundColor = "rgba(0,0,255,0)";
   });
 
@@ -158,14 +158,12 @@ async function playRect(rects, index, run) {
   if (!isCurrentGameRun(run)) return;
 
   const rect = rects[index];
-  const w = rect.getBoundingClientRect().width;
-
-  const startLeft = index === 0 ? 0 : w * (index - 1);
-  const endLeft = index === 0 ? 0 : w * index;
+  const startLeft = index === 0 ? 0 : (index - 1) * 25;
+  const endLeft = index === 0 ? 0 : index * 25;
   const alpha = 1 - 0.2 * index;
 
   rect.style.transition = "none";
-  rect.style.left = `${startLeft}px`;
+  rect.style.left = `${startLeft}%`;
   rect.style.backgroundColor = "rgba(0,0,255,0)";
 
   rect.offsetWidth;
@@ -180,7 +178,7 @@ async function playRect(rects, index, run) {
 
   if (!isCurrentGameRun(run)) return;
 
-  rect.style.left = `${endLeft}px`;
+  rect.style.left = `${endLeft}%`;
   rect.style.backgroundColor = `rgba(0,0,255,${alpha})`;
 
   await transitionEnd;
@@ -365,5 +363,14 @@ export function renderPage() {
 }
 
 function lv1Main() {
-  rectangleAni();
+  const readyLayer = document.getElementById("lv1Ready");
+  const startButton = document.getElementById("lv1StartButton");
+
+  if (!readyLayer || !startButton) return;
+
+  unlockSoundOnNextGesture();
+  startButton.addEventListener("click", () => {
+    readyLayer.hidden = true;
+    rectangleAni();
+  }, { once: true });
 }

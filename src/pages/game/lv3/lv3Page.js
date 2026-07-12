@@ -148,6 +148,7 @@ function createRound() {
     position,
     order: index,
     size: dimensions[position],
+    sizeRatio: dimensions[position] / ((position === "t" || position === "b") ? viewport.height : viewport.width),
     color: createRectangleColor(index),
   }));
   const touchDots = createTouchDots(viewport, dimensions, orderIndex);
@@ -198,6 +199,8 @@ function createTouchDots(viewport, dimensions, orderIndex) {
     key: definition.key,
     x: boundaries[definition.horizontal],
     y: boundaries[definition.vertical],
+    xRatio: boundaries[definition.horizontal] / viewport.width,
+    yRatio: boundaries[definition.vertical] / viewport.height,
     revealStage: Math.max(
       orderIndex[definition.horizontal],
       orderIndex[definition.vertical],
@@ -380,9 +383,9 @@ function showRectangle(rectangle) {
   void element.offsetWidth;
 
   if (rectangle.position === "t" || rectangle.position === "b") {
-    element.style.height = `${rectangle.size}px`;
+    element.style.height = `${rectangle.sizeRatio * 100}%`;
   } else {
-    element.style.width = `${rectangle.size}px`;
+    element.style.width = `${rectangle.sizeRatio * 100}%`;
   }
 
   element.classList.add("is-visible");
@@ -414,8 +417,8 @@ function showDot(dot, options = {}) {
     element.className = "lv3-touch-dot";
     element.dataset.sequenceIndex = String(dot.sequenceIndex);
     element.setAttribute("aria-label", `${dot.sequenceIndex + 1}번째 터치 지점`);
-    element.style.left = `${dot.x}px`;
-    element.style.top = `${dot.y}px`;
+    element.style.left = `${dot.xRatio * 100}%`;
+    element.style.top = `${dot.yRatio * 100}%`;
     wrap.appendChild(element);
   }
 

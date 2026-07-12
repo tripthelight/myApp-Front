@@ -96,6 +96,7 @@ function beginGame() {
 
 async function runGame(gameId) {
   const round = createRound();
+  buildProgress(round.timingsMs);
 
   setBoardEnabled(false);
   setStatus("빛나는 위치와 순서를 기억하세요. 0 / 6");
@@ -108,6 +109,7 @@ async function runGame(gameId) {
   if (!isActive(gameId)) return;
 
   setStatus("기억한 순서와 타이밍에 맞춰 터치하세요. 0 / 6");
+  startProgress(round.timingsMs);
   const results = await playTouchPhase(gameId, round);
   if (!isActive(gameId)) return;
 
@@ -329,7 +331,56 @@ function resetBoard() {
   });
 
   setBoardEnabled(false);
+  resetProgress();
   setStatus("게임을 준비하고 있습니다.");
+}
+
+function buildProgress(timingsMs) {
+  const progress = document.getElementById("lv5Progress");
+  if (!progress) return;
+
+  const total = timingsMs.reduce((sum, value) => sum + value, 0);
+  progress.replaceChildren();
+  progress.classList.add("is-visible");
+
+  timingsMs.forEach((timingMs, index) => {
+    const segment = document.createElement("span");
+    segment.className = "lv5-progress__segment";
+    segment.style.flexBasis = `${(timingMs / total) * 100}%`;
+    segment.dataset.index = String(index);
+
+    const fill = document.createElement("i");
+    fill.className = "lv5-progress__fill";
+    segment.appendChild(fill);
+    progress.appendChild(segment);
+  });
+}
+
+function startProgress(timingsMs) {
+  const progress = document.getElementById("lv5Progress");
+  if (!progress) return;
+
+  let delayMs = 0;
+  [...progress.querySelectorAll(".lv5-progress__fill")].forEach((fill, index) => {
+    const duration = timingsMs[index];
+    fill.getAnimations().forEach((animation) => animation.cancel());
+    fill.animate(
+      [{ transform: "scaleX(0)" }, { transform: "scaleX(1)" }],
+      { duration, delay: delayMs, easing: "linear", fill: "forwards" }
+    );
+    delayMs += duration;
+  });
+}
+
+function resetProgress() {
+  const progress = document.getElementById("lv5Progress");
+  if (!progress) return;
+  progress.querySelectorAll(".lv5-progress__fill").forEach((fill) => {
+    fill.getAnimations().forEach((animation) => animation.cancel());
+    fill.style.transform = "scaleX(0)";
+  });
+  progress.classList.remove("is-visible");
+  progress.replaceChildren();
 }
 
 function hideResult() {

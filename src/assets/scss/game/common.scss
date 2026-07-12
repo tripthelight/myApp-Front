@@ -1,1 +1,150 @@
 @use './touchDot.scss' as touchDot;
+.app-view {
+  --game-bg: #f6f3fa;
+  --game-ink: #3f465c;
+  --game-muted: #747b90;
+  --game-panel: rgba(255, 255, 255, 0.88);
+  --game-line: rgba(79, 86, 112, 0.16);
+  --game-primary: #66769f;
+  --game-primary-hover: #56668d;
+  --game-retry: #c2737c;
+  --game-home: #858b9b;
+
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  min-width: 280px;
+  overflow: hidden;
+  background: var(--game-bg);
+  color: var(--game-ink);
+  touch-action: manipulation;
+  user-select: none;
+}
+
+.game-overlay,
+.lv2-ready,
+.lv2-result,
+.lv3-overlay,
+.lv4-overlay,
+.lv5-overlay {
+  position: absolute;
+  z-index: 100;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: clamp(16px, 4vw, 28px);
+  background: rgba(239, 240, 247, 0.5);
+  backdrop-filter: blur(10px);
+}
+
+.game-overlay[hidden],
+.game-action-button[hidden] { display: none; }
+
+.game-panel,
+.lv2-ready,
+.lv2-result > div,
+.lv3-panel,
+.lv4-panel,
+.lv5-panel {
+  box-sizing: border-box;
+  width: min(460px, 100%);
+  border: 1px solid rgba(255,255,255,.72);
+  border-radius: clamp(24px, 5vw, 32px);
+  background: var(--game-panel);
+  box-shadow: 0 28px 84px rgba(39, 43, 61, 0.16);
+  color: var(--game-ink);
+  text-align: center;
+}
+
+.game-panel { padding: clamp(28px, 7vw, 42px); }
+.game-level-label,
+.lv3-panel > strong:first-child:not([id]),
+.lv4-level-label,
+.lv5-level-label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--game-muted);
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: .22em;
+}
+.game-panel > strong { display:block; font-size:clamp(30px,8vw,46px); letter-spacing:.08em; }
+.game-panel p { margin:0 0 28px; color:var(--game-muted); font-size:15px; line-height:1.7; }
+
+.game-action-button,
+.lv2-action-button,
+.lv3-action-button,
+.lv4-action-button,
+.lv5-action-button,
+.result-button {
+  box-sizing: border-box;
+  min-width: 116px;
+  min-height: 48px;
+  padding: 13px 22px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--game-primary);
+  box-shadow: 0 10px 24px rgba(62, 77, 115, 0.22);
+  color: #fff;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 850;
+  letter-spacing: .1em;
+  cursor: pointer;
+  transition: transform 160ms ease, filter 160ms ease, background-color 160ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.game-action-button:hover,
+.lv2-action-button:hover,
+.lv3-action-button:hover,
+.lv4-action-button:hover,
+.lv5-action-button:hover,
+.result-button:hover { filter: brightness(.94); }
+.game-action-button:active,
+.lv2-action-button:active,
+.lv3-action-button:active,
+.lv4-action-button:active,
+.lv5-action-button:active,
+.result-button:active { transform:translateY(1px) scale(.99); }
+.is-retry { background:var(--game-retry) !important; }
+.is-home { background:var(--game-home) !important; }
+
+.result-button-wrap,
+.lv2-result__buttons,
+.lv3-result-buttons,
+.lv4-result-buttons,
+.lv5-result-buttons { display:flex; justify-content:center; gap:10px; flex-wrap:wrap; }
+
+@media (prefers-color-scheme: dark) {
+  .app-view {
+    --game-bg:#181a24;
+    --game-ink:#eef0f8;
+    --game-muted:#b7bccd;
+    --game-panel:rgba(35,38,51,.92);
+    --game-line:rgba(224,228,244,.16);
+    --game-primary:#7688b8;
+    --game-primary-hover:#8394c2;
+    --game-retry:#a95e68;
+    --game-home:#6f7585;
+  }
+  .game-overlay,
+  .lv2-ready,
+  .lv2-result,
+  .lv3-overlay,
+  .lv4-overlay,
+  .lv5-overlay { background:rgba(15,17,24,.58); }
+}
+
+@media (max-width: 520px) {
+  .game-action-button,
+  .lv2-action-button,
+  .lv3-action-button,
+  .lv4-action-button,
+  .lv5-action-button,
+  .result-button { min-width:104px; min-height:46px; padding:12px 18px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration:1ms !important; animation-iteration-count:1 !important; transition-duration:1ms !important; }
+}

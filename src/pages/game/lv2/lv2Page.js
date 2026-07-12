@@ -287,8 +287,8 @@ function randomNumber(start, end) {
 }
 
 function moveCircle(circle, center) {
-  circle.style.left = `${center.x}px`;
-  circle.style.top = `${center.y}px`;
+  circle.style.left = `${(center.x / window.innerWidth) * 100}%`;
+  circle.style.top = `${(center.y / window.innerHeight) * 100}%`;
 }
 
 function circleKey(index) {

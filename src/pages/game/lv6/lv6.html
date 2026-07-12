@@ -1,0 +1,73 @@
+<section id="lv6Page" class="lv6-page" aria-label="레벨 6 양방향 리듬 게임">
+  <header class="lv6-hud">
+    <div>
+      <span class="lv6-level-label">DUAL RHYTHM</span>
+      <strong>LEVEL 6</strong>
+    </div>
+    <p id="lv6Status" class="lv6-status" aria-live="polite">START 버튼을 누르면 시작합니다.</p>
+    <div class="lv6-score" aria-label="진행 상황">
+      <span id="lv6ProgressText">0 / 20</span>
+      <span class="lv6-score-dot" aria-hidden="true"></span>
+      <span id="lv6JudgeText">READY</span>
+    </div>
+  </header>
+
+  <div id="lv6Stage" class="lv6-stage">
+    <button id="lv6TopButton" class="lv6-key is-top" type="button" data-direction="up" aria-label="위쪽 리듬 버튼">
+      <span class="lv6-key-arrow" aria-hidden="true">↑</span>
+      <span class="lv6-key-text">TOP</span>
+    </button>
+
+    <div id="lv6Lane" class="lv6-lane" aria-hidden="true">
+      <div class="lv6-center-guide">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <div id="lv6Nodes" class="lv6-nodes"></div>
+    </div>
+
+    <button id="lv6BottomButton" class="lv6-key is-bottom" type="button" data-direction="down" aria-label="아래쪽 리듬 버튼">
+      <span class="lv6-key-text">BOTTOM</span>
+      <span class="lv6-key-arrow" aria-hidden="true">↓</span>
+    </button>
+  </div>
+
+  <div id="lv6Ready" class="lv6-overlay">
+    <div class="lv6-panel is-guide">
+      <span class="lv6-level-label">HOW TO PLAY</span>
+      <strong>양방향 리듬을 잡으세요</strong>
+      <p>위로 올라가는 노드는 위 버튼, 아래로 내려가는 노드는 아래 버튼을 타이밍에 맞춰 누르세요.</p>
+
+      <div class="lv6-demo" aria-hidden="true">
+        <div class="lv6-demo-key is-top">TOP</div>
+        <div class="lv6-demo-lane">
+          <span class="lv6-demo-node is-up"></span>
+          <span class="lv6-demo-node is-down is-hold"></span>
+          <span class="lv6-demo-touch is-top"></span>
+          <span class="lv6-demo-touch is-bottom"></span>
+        </div>
+        <div class="lv6-demo-key is-bottom">BOTTOM</div>
+      </div>
+
+      <div class="lv6-guide-tags">
+        <span><i class="is-tap"></i> 짧은 노드는 한 번 터치</span>
+        <span><i class="is-hold"></i> 긴 노드는 끝까지 누르기</span>
+      </div>
+      <button type="button" id="lv6StartButton" class="lv6-action-button">START</button>
+    </div>
+  </div>
+
+  <div id="lv6Result" class="lv6-overlay" hidden>
+    <div class="lv6-panel">
+      <span class="lv6-level-label">ROUND RESULT</span>
+      <strong id="lv6ResultTitle">RESULT</strong>
+      <p id="lv6ResultMessage"></p>
+      <div class="lv6-result-buttons">
+        <button type="button" id="lv6NextButton" class="lv6-action-button" hidden>NEXT</button>
+        <button type="button" id="lv6RetryButton" class="lv6-action-button is-retry" hidden>RETRY</button>
+        <button type="button" id="lv6HomeButton" class="lv6-action-button is-home">HOME</button>
+      </div>
+    </div>
+  </div>
+</section>
