@@ -1,0 +1,39 @@
+<section id="lv5Page" class="lv5-page" aria-label="레벨 5 사분면 순서 기억 게임">
+  <p id="lv5Status" class="lv5-status" aria-live="polite">
+    START 버튼을 누르면 시작합니다.
+  </p>
+
+  <div id="lv5Board" class="lv5-board" aria-label="네 개의 터치 영역">
+    <button type="button" class="lv5-quadrant is-lt" data-position="lt" aria-label="왼쪽 위"></button>
+    <button type="button" class="lv5-quadrant is-rt" data-position="rt" aria-label="오른쪽 위"></button>
+    <button type="button" class="lv5-quadrant is-lb" data-position="lb" aria-label="왼쪽 아래"></button>
+    <button type="button" class="lv5-quadrant is-rb" data-position="rb" aria-label="오른쪽 아래"></button>
+    <span class="lv5-cross is-horizontal" aria-hidden="true"></span>
+    <span class="lv5-cross is-vertical" aria-hidden="true"></span>
+    <div id="lv5PhaseMotion" class="lv5-phase-motion" aria-hidden="true">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+
+  <div id="lv5Ready" class="lv5-overlay">
+    <div class="lv5-panel">
+      <span class="lv5-level-label">SEQUENCE MEMORY</span>
+      <strong>LEVEL 5</strong>
+      <p>네 영역이 빛나는 순서를 기억한 뒤, 같은 순서로 여섯 번 터치하세요.</p>
+      <button type="button" id="lv5StartButton" class="lv5-action-button">START</button>
+    </div>
+  </div>
+
+  <div id="lv5Result" class="lv5-overlay" hidden>
+    <div class="lv5-panel">
+      <span class="lv5-level-label">ROUND RESULT</span>
+      <strong id="lv5ResultTitle">RESULT</strong>
+      <p id="lv5ResultMessage"></p>
+      <div class="lv5-result-buttons">
+        <button type="button" id="lv5NextButton" class="lv5-action-button" hidden>NEXT</button>
+        <button type="button" id="lv5RetryButton" class="lv5-action-button is-retry" hidden>RETRY</button>
+        <button type="button" id="lv5HomeButton" class="lv5-action-button is-home">HOME</button>
+      </div>
+    </div>
+  </div>
+</section>

@@ -28,6 +28,18 @@ const appearSynth = new Tone.Synth({
   volume: -11,
 }).connect(masterLimiter);
 
+
+const lv5BlinkSynth = new Tone.Synth({
+  oscillator: { type: "sine" },
+  envelope: {
+    attack: 0.006,
+    decay: 0.1,
+    sustain: 0.08,
+    release: 0.2,
+  },
+  volume: -11,
+}).connect(masterLimiter);
+
 const overlapSynth = new Tone.Synth({
   oscillator: { type: "sine" },
   envelope: {
@@ -277,3 +289,19 @@ export function playFailSound() {
     startTime,
   );
 }
+
+export function playLv5BlinkSound(step = 0) {
+  if (!canPlaySound()) {
+    return;
+  }
+
+  const notes = ["C5", "E5", "G5", "B5", "D6", "A5"];
+  const startTime = getStrictStartTime("lv5-blink", 0.04);
+
+  lv5BlinkSynth.triggerAttackRelease(
+    notes[step % notes.length],
+    0.14,
+    startTime,
+  );
+}
+
