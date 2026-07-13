@@ -1,0 +1,44 @@
+<section id="lv8Page" class="lv8-page" aria-label="레벨 8 대칭 노드 리듬 게임">
+  <header class="lv8-hud">
+    <div><span class="lv8-kicker">SYNC DIAMONDS</span><strong>LEVEL 8</strong></div>
+    <p id="lv8Status" aria-live="polite">같은 크기의 마름모가 중심에서 만나는 순간을 찾으세요.</p>
+    <div class="lv8-score"><span id="lv8Progress">0 / 10</span><i></i><span id="lv8Judge">READY</span></div>
+  </header>
+
+  <main id="lv8Stage" class="lv8-stage">
+    <div class="lv8-cross" aria-hidden="true"><span></span><span></span></div>
+    <div class="lv8-orbit" aria-hidden="true"></div>
+    <div id="lv8NodeLayer" class="lv8-node-layer" aria-hidden="true"></div>
+    <button id="lv8HitArea" class="lv8-hit-area" type="button" aria-label="중심에 겹친 노드 터치">
+      <span class="lv8-core"></span><span class="lv8-core-ring"></span>
+    </button>
+    <div id="lv8Feedback" class="lv8-feedback" aria-live="polite"><strong></strong><span></span></div>
+  </main>
+
+  <div id="lv8Ready" class="lv8-overlay">
+    <div class="lv8-panel is-guide">
+      <span class="lv8-kicker">HOW TO PLAY</span>
+      <strong>같은 크기가 만날 때 터치하세요</strong>
+      <p>상·하·좌·우에서 들어오는 마름모를 보고, 같은 크기의 마름모 두 개 이상이 중심에 정확히 겹치는 순간만 터치하세요.</p>
+      <div class="lv8-demo" aria-hidden="true">
+        <span class="demo-cross"></span>
+        <i class="demo-node is-top"></i><i class="demo-node is-right"></i>
+        <b class="demo-tap">TAP</b>
+      </div>
+      <div class="lv8-guide-tags"><span><i class="same"></i> 같은 크기 = 터치</span><span><i class="different"></i> 다른 크기 = 기다리기</span></div>
+      <button id="lv8StartButton" class="lv8-action-button" type="button">START</button>
+    </div>
+  </div>
+
+  <div id="lv8Result" class="lv8-overlay" hidden>
+    <div class="lv8-panel">
+      <span class="lv8-kicker">ROUND RESULT</span>
+      <strong id="lv8ResultTitle">RESULT</strong><p id="lv8ResultMessage"></p>
+      <div class="lv8-result-buttons">
+        <button id="lv8NextButton" class="lv8-action-button" type="button" hidden>NEXT</button>
+        <button id="lv8RetryButton" class="lv8-action-button is-retry" type="button" hidden>RETRY</button>
+        <button id="lv8HomeButton" class="lv8-action-button is-home" type="button">HOME</button>
+      </div>
+    </div>
+  </div>
+</section>
