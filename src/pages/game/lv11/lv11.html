@@ -1,0 +1,60 @@
+<section id="lv11Page" class="lv11-page app-view" aria-label="Level 11 melody memory game">
+  <div class="lv11-ambient" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+
+  <header class="lv11-hud">
+    <div><span>LEVEL 11</span><strong>MELODY MIRROR</strong></div>
+    <p id="lv11StatusText">멜로디를 듣고 같은 타이밍으로 되돌려 주세요.</p>
+    <div class="lv11-progress"><b id="lv11StepText">READY</b><i></i><span id="lv11ScoreText">0 / 4</span></div>
+  </header>
+
+  <main id="lv11Stage" class="lv11-stage" style="--split-angle: 0deg; --listen-size: 50%;">
+    <section id="lv11ListenZone" class="lv11-zone lv11-listen-zone" aria-label="멜로디가 재생되는 영역">
+      <div class="lv11-zone-label"><span>LISTEN</span><strong>기억하세요</strong></div>
+      <div id="lv11NoteTrack" class="lv11-note-track" aria-hidden="true"></div>
+      <div class="lv11-listen-glow" aria-hidden="true"></div>
+    </section>
+
+    <button id="lv11TouchZone" class="lv11-zone lv11-touch-zone" type="button" aria-label="멜로디 타이밍에 맞춰 터치하는 영역" disabled>
+      <span class="lv11-zone-label"><small>PLAY</small><strong id="lv11TouchLabel">기다려 주세요</strong></span>
+      <span id="lv11TouchPulse" class="lv11-touch-pulse" aria-hidden="true"></span>
+      <span id="lv11TouchRipples" class="lv11-touch-ripples" aria-hidden="true"></span>
+    </button>
+
+    <div class="lv11-divider" aria-hidden="true"><i></i></div>
+    <div id="lv11Feedback" class="lv11-feedback" aria-live="polite"><strong></strong><span></span></div>
+    <div id="lv11Particles" class="lv11-particles" aria-hidden="true"></div>
+  </main>
+
+  <div id="lv11Ready" class="lv11-overlay">
+    <div class="lv11-panel is-guide">
+      <span class="lv11-kicker">HOW TO PLAY</span>
+      <strong>듣고, 기억하고, 그대로 터치하세요</strong>
+      <p>한쪽 화면을 지나가는 색 조각과 멜로디의 간격을 기억한 뒤, 반대쪽 화면을 같은 리듬으로 터치하세요.</p>
+      <div class="lv11-demo" aria-hidden="true">
+        <div class="demo-half is-listen"><i></i><i></i><i></i><span>♪</span></div>
+        <div class="demo-half is-touch"><b></b><em></em></div>
+        <div class="demo-divider"></div>
+      </div>
+      <div class="lv11-guide-tags">
+        <span><i>1</i> 색과 소리를 기억</span>
+        <span><i>2</i> 같은 박자로 터치</span>
+        <span><i>3</i> 끝까지 계속 진행</span>
+      </div>
+      <button id="lv11StartButton" class="lv11-primary-button" type="button">START</button>
+    </div>
+  </div>
+
+  <div id="lv11Result" class="lv11-overlay" hidden>
+    <div class="lv11-panel is-result">
+      <span id="lv11ResultKicker" class="lv11-kicker">COMPLETE</span>
+      <strong id="lv11ResultTitle">멜로디 완성</strong>
+      <p id="lv11ResultDescription"></p>
+      <div class="lv11-result-orb" aria-hidden="true"><i></i><i></i><i></i><b>♪</b></div>
+      <div class="lv11-actions">
+        <button id="lv11RetryButton" class="lv11-primary-button" type="button" hidden>RETRY</button>
+        <button id="lv11NextButton" class="lv11-primary-button" type="button" hidden>NEXT</button>
+        <button id="lv11HomeButton" class="lv11-secondary-button" type="button">HOME</button>
+      </div>
+    </div>
+  </div>
+</section>
