@@ -1,0 +1,7 @@
+.lv10-page { width:100vw; height:100vh; min-height:100svh; display:grid; place-items:center; padding:24px; color:#263138; background:radial-gradient(circle at top left,#dce8f7,#f7f1ed 48%,#dceee7); }
+.lv10-card { width:min(90vw,460px); padding:52px 34px; border:1px solid rgba(255,255,255,.72); border-radius:30px; background:rgba(255,255,255,.66); box-shadow:0 28px 80px rgba(45,59,67,.12); text-align:center; backdrop-filter:blur(18px); }
+.lv10-card span { font-size:.68rem; font-weight:800; letter-spacing:.22em; color:#718087; }
+.lv10-card strong { display:block; margin-top:12px; font-size:clamp(2rem,7vw,4rem); letter-spacing:.06em; }
+.lv10-card p { margin:14px 0 0; color:#718087; }
+.lv10-card button { margin-top:28px; padding:13px 26px; border:0; border-radius:999px; background:#263138; color:#fff; font-weight:800; letter-spacing:.14em; cursor:pointer; }
+@media (prefers-color-scheme:dark) { .lv10-page { color:#eef4f2; background:radial-gradient(circle at top left,#25313a,#11171b 58%,#17251f); }.lv10-card { background:rgba(22,30,35,.78); border-color:rgba(255,255,255,.12); }.lv10-card span,.lv10-card p { color:#a7b1b5; }.lv10-card button { background:#eef4f2; color:#182126; } }

@@ -1,0 +1,63 @@
+<section id="lv9Page" class="lv9-page" aria-label="레벨 9 자이로스코프 리듬 게임">
+  <div id="lv9World" class="lv9-world">
+    <div class="lv9-backdrop" aria-hidden="true"><span></span><span></span><span></span></div>
+    <div class="lv9-depth-scene" aria-hidden="true">
+      <div class="lv9-grid-plane"></div>
+      <div class="lv9-aurora is-a"></div>
+      <div class="lv9-aurora is-b"></div>
+      <div class="lv9-dust"></div>
+      <div class="lv9-light-sweep"></div>
+      <div class="lv9-vignette"></div>
+    </div>
+
+    <header class="lv9-hud">
+      <div><span class="lv9-kicker">TILT RHYTHM</span><strong>LEVEL 9</strong></div>
+      <p id="lv9Status" aria-live="polite">화면의 움직임을 느껴보세요.</p>
+      <div class="lv9-score"><span id="lv9Progress">0 / 10</span><i></i><span id="lv9Judge">READY</span></div>
+    </header>
+
+    <main id="lv9Stage" class="lv9-stage">
+      <div class="lv9-edge-light" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      <div class="lv9-frame" aria-hidden="true"></div>
+      <div class="lv9-cross" aria-hidden="true"><span></span><span></span><b></b></div>
+      <div class="lv9-corner is-lt" aria-hidden="true">┌</div>
+      <div class="lv9-corner is-rt" aria-hidden="true">┐</div>
+      <div class="lv9-corner is-lb" aria-hidden="true">└</div>
+      <div class="lv9-corner is-rb" aria-hidden="true">┘</div>
+      <div id="lv9NodeLayer" class="lv9-node-layer" aria-hidden="true"></div>
+      <div id="lv9Feedback" class="lv9-feedback" aria-live="polite"><strong></strong><span></span></div>
+      <div id="lv9DirectionHint" class="lv9-direction-hint" aria-hidden="true"><span></span></div>
+    </main>
+  </div>
+
+  <div id="lv9Ready" class="lv9-overlay">
+    <div class="lv9-panel is-guide">
+      <span class="lv9-kicker">HOW TO PLAY</span>
+      <strong id="lv9GuideTitle">도착하는 모서리로 기울이세요</strong>
+      <p id="lv9GuideDescription">중앙에서 출발한 노드가 모서리에 닿는 순간, 모바일은 그 방향으로 기울이고 PC는 마우스를 그 방향으로 이동하세요.</p>
+      <div class="lv9-demo" aria-hidden="true">
+        <div class="demo-board"><i class="demo-node">┐</i><b></b></div>
+        <span class="demo-caption">TILT · MOVE</span>
+      </div>
+      <div class="lv9-guide-tags">
+        <span><i class="sensor"></i><b>모바일</b> 기기 기울이기</span>
+        <span><i class="pointer"></i><b>PC</b> 마우스 이동</span>
+      </div>
+      <p id="lv9SensorNotice" class="lv9-sensor-notice" hidden></p>
+      <button id="lv9StartButton" class="lv9-action-button" type="button">START</button>
+    </div>
+  </div>
+
+  <div id="lv9Result" class="lv9-overlay" hidden>
+    <div class="lv9-panel">
+      <span class="lv9-kicker">ROUND RESULT</span>
+      <strong id="lv9ResultTitle">RESULT</strong>
+      <p id="lv9ResultMessage"></p>
+      <div class="lv9-result-buttons">
+        <button id="lv9NextButton" class="lv9-action-button" type="button" hidden>NEXT</button>
+        <button id="lv9RetryButton" class="lv9-action-button is-retry" type="button" hidden>RETRY</button>
+        <button id="lv9HomeButton" class="lv9-action-button is-home" type="button">HOME</button>
+      </div>
+    </div>
+  </div>
+</section>
