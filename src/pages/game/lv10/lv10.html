@@ -1,8 +1,60 @@
-<section class="lv10-page" aria-label="레벨 10 준비 화면">
-  <div class="lv10-card">
-    <span>NEW RHYTHM</span>
-    <strong>LEVEL 10</strong>
-    <p>다음 게임을 준비하고 있습니다.</p>
-    <button id="lv10HomeButton" type="button">HOME</button>
+<section id="lv10Page" class="lv10-page app-view" aria-label="Level 10 swipe game">
+  <div class="lv10-backdrop" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+
+  <header class="lv10-hud">
+    <div><span>LEVEL 10</span><strong>JEWEL GUARD</strong></div>
+    <p>도둑을 잡아 보석 반대편, 화면 밖으로 밀어내세요.</p>
+    <div class="lv10-progress"><b id="lv10BatchText">READY</b><i></i><span id="lv10ScoreText">0 / 9</span></div>
+  </header>
+
+  <main id="lv10Arena" class="lv10-arena">
+    <div class="lv10-orbit is-one" aria-hidden="true"></div>
+    <div class="lv10-orbit is-two" aria-hidden="true"></div>
+    <div id="lv10ThiefLayer" class="lv10-thief-layer"></div>
+
+    <div id="lv10JewelWrap" class="lv10-jewel-wrap" aria-label="보호해야 할 보석">
+      <div id="lv10Jewel" class="lv10-jewel">
+        <i class="facet f1"></i><i class="facet f2"></i><i class="facet f3"></i>
+        <b></b><span></span>
+      </div>
+      <div class="lv10-jewel-shadow"></div>
+      <div id="lv10DamageMarks" class="lv10-damage-marks" aria-hidden="true"></div>
+    </div>
+
+    <div id="lv10WaveBanner" class="lv10-wave-banner" aria-live="polite"><span></span><strong></strong></div>
+    <div id="lv10Feedback" class="lv10-feedback" aria-live="polite"><strong></strong><span></span></div>
+    <div id="lv10Effects" class="lv10-effects" aria-hidden="true"></div>
+  </main>
+
+  <div id="lv10Ready" class="lv10-overlay">
+    <div class="lv10-panel is-guide">
+      <span class="lv10-kicker">HOW TO PLAY</span>
+      <strong>잡고, 화면 밖으로 밀어내세요</strong>
+      <p>사방에서 다가오는 도둑을 빠르게 스와이프하세요. 밀어낸 방향과 속도가 그대로 적용되며, 보석 쪽으로 밀면 충돌합니다.</p>
+      <div class="lv10-demo" aria-hidden="true">
+        <div class="demo-jewel">◆</div>
+        <div class="demo-thief"><i></i><b></b><span></span></div>
+        <div class="demo-trail"><i></i><i></i><i></i></div>
+        <div class="demo-hand"></div>
+      </div>
+      <div class="lv10-guide-tags">
+        <span><i class="fast"></i><b>빠른 SWIPE</b> 강하게 퇴장</span>
+        <span><i class="safe"></i><b>바깥 방향</b> 보석 보호</span>
+      </div>
+      <button id="lv10StartButton" class="lv10-action-button" type="button">START</button>
+    </div>
+  </div>
+
+  <div id="lv10Result" class="lv10-overlay" hidden>
+    <div class="lv10-panel">
+      <span class="lv10-kicker">ROUND RESULT</span>
+      <strong id="lv10ResultTitle">RESULT</strong>
+      <p id="lv10ResultMessage"></p>
+      <div class="lv10-result-buttons">
+        <button id="lv10NextButton" class="lv10-action-button" type="button" hidden>NEXT</button>
+        <button id="lv10RetryButton" class="lv10-action-button is-retry" type="button" hidden>RETRY</button>
+        <button id="lv10HomeButton" class="lv10-action-button is-home" type="button">HOME</button>
+      </div>
+    </div>
   </div>
 </section>
