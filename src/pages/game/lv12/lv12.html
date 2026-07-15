@@ -1,0 +1,51 @@
+<section id="lv12Page" class="lv12-page app-view" aria-label="Level 12 direction swipe game">
+  <div class="lv12-ambient" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+
+  <header class="lv12-hud">
+    <div><span>LEVEL 12</span><strong>PASTEL SLASH</strong></div>
+    <p id="lv12StatusText">화살표 방향으로 노드를 베어 주세요.</p>
+    <div class="lv12-progress"><b id="lv12RoundText">READY</b><i></i><span id="lv12ScoreText">0 / 12</span></div>
+  </header>
+
+  <main id="lv12Arena" class="lv12-arena">
+    <div class="lv12-depth" aria-hidden="true"><i></i><i></i><i></i><i></i><b></b></div>
+    <div class="lv12-lanes" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div id="lv12NodeLayer" class="lv12-node-layer"></div>
+    <div id="lv12SlashLayer" class="lv12-slash-layer" aria-hidden="true"></div>
+    <div id="lv12Feedback" class="lv12-feedback" aria-live="polite"><strong></strong><span></span></div>
+    <div class="lv12-center-mark" aria-hidden="true"><i></i><b></b></div>
+  </main>
+
+  <section id="lv12Ready" class="lv12-overlay">
+    <div class="lv12-panel">
+      <span class="lv12-kicker">SWIPE TUTORIAL</span>
+      <strong>화살표를 따라 베어 주세요</strong>
+      <p>노드가 가까워지는 순간, 표시된 방향으로 빠르고 또렷하게 스와이프하세요.</p>
+      <div class="lv12-demo" aria-hidden="true">
+        <div class="demo-depth"><i></i><i></i><i></i></div>
+        <div class="demo-node"><b>➜</b></div>
+        <span class="demo-finger"></span><em></em>
+      </div>
+      <div class="lv12-guide-tags">
+        <span><i>1</i>중앙에서 날아오는 노드를 기다립니다</span>
+        <span><i>2</i>화살표 방향을 확인합니다</span>
+        <span><i>3</i>판정선에서 같은 방향으로 스와이프합니다</span>
+      </div>
+      <button id="lv12StartButton" class="lv12-primary-button" type="button">START</button>
+    </div>
+  </section>
+
+  <section id="lv12Result" class="lv12-overlay" hidden>
+    <div class="lv12-panel">
+      <span id="lv12ResultKicker" class="lv12-kicker">ALL COMPLETE</span>
+      <strong id="lv12ResultTitle">완벽하게 베어냈어요</strong>
+      <p id="lv12ResultDescription"></p>
+      <div class="lv12-result-orb" aria-hidden="true"><b>✦</b><i></i><i></i><i></i></div>
+      <div class="lv12-actions">
+        <button id="lv12NextButton" class="lv12-primary-button" type="button">NEXT</button>
+        <button id="lv12RetryButton" class="lv12-primary-button" type="button" hidden>RETRY</button>
+        <button id="lv12HomeButton" class="lv12-secondary-button" type="button">HOME</button>
+      </div>
+    </div>
+  </section>
+</section>
