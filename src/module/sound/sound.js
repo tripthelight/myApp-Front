@@ -276,6 +276,58 @@ const lv12FailSynth = new Tone.PolySynth(Tone.Synth, {
   volume: -14,
 }).connect(lv12FailFilter);
 
+
+const lv13NodeDelay = new Tone.FeedbackDelay({ delayTime: "16n", feedback: 0.16, wet: 0.2 }).connect(masterLimiter);
+const lv13NodeSynth = new Tone.PolySynth(Tone.Synth, {
+  oscillator: { type: "sine8" },
+  envelope: { attack: 0.008, decay: 0.15, sustain: 0.06, release: 0.46 },
+  volume: -16,
+}).connect(lv13NodeDelay);
+const lv13SpinNoise = new Tone.NoiseSynth({
+  noise: { type: "pink" },
+  envelope: { attack: 0.003, decay: 0.1, sustain: 0, release: 0.12 },
+  volume: -27,
+}).connect(masterLimiter);
+const lv13SpinSynth = new Tone.Synth({
+  oscillator: { type: "triangle8" },
+  envelope: { attack: 0.004, decay: 0.11, sustain: 0.03, release: 0.25 },
+  volume: -16,
+}).connect(masterLimiter);
+const lv13SuccessSynth = new Tone.PolySynth(Tone.Synth, {
+  oscillator: { type: "triangle8" },
+  envelope: { attack: 0.005, decay: 0.14, sustain: 0.11, release: 0.52 },
+  volume: -12,
+}).connect(masterLimiter);
+const lv13FailFilter = new Tone.Filter({ frequency: 820, type: "lowpass", rolloff: -12 }).connect(masterLimiter);
+const lv13FailSynth = new Tone.PolySynth(Tone.Synth, {
+  oscillator: { type: "triangle" },
+  envelope: { attack: 0.004, decay: 0.15, sustain: 0.02, release: 0.3 },
+  volume: -14,
+}).connect(lv13FailFilter);
+
+const lv14StepDelay = new Tone.FeedbackDelay({ delayTime: "16n", feedback: 0.12, wet: 0.16 }).connect(masterLimiter);
+const lv14StepSynth = new Tone.Synth({
+  oscillator: { type: "sine8" },
+  envelope: { attack: 0.004, decay: 0.1, sustain: 0.03, release: 0.3 },
+  volume: -17,
+}).connect(lv14StepDelay);
+const lv14HitSynth = new Tone.PolySynth(Tone.Synth, {
+  oscillator: { type: "triangle8" },
+  envelope: { attack: 0.004, decay: 0.16, sustain: 0.12, release: 0.58 },
+  volume: -12,
+}).connect(masterLimiter);
+const lv14HitBell = new Tone.Synth({
+  oscillator: { type: "sine" },
+  envelope: { attack: 0.002, decay: 0.2, sustain: 0, release: 0.46 },
+  volume: -16,
+}).connect(lv14StepDelay);
+const lv14FailFilter = new Tone.Filter({ frequency: 720, type: "lowpass", rolloff: -12 }).connect(masterLimiter);
+const lv14FailSynth = new Tone.PolySynth(Tone.Synth, {
+  oscillator: { type: "triangle" },
+  envelope: { attack: 0.004, decay: 0.15, sustain: 0.01, release: 0.28 },
+  volume: -14,
+}).connect(lv14FailFilter);
+
 let lv6HoldActive = false;
 
 const failSynth = new Tone.Synth({
@@ -758,4 +810,66 @@ export function playLv12FailSound(step = 0) {
   const chords = [["G3", "Db4"], ["F#3", "C4"], ["F3", "B3"]];
   const startTime = getStrictStartTime("lv12-fail", 0.075);
   lv12FailSynth.triggerAttackRelease(chords[step % chords.length], 0.2, startTime, 0.44);
+}
+
+
+export function playLv13NodeSound(step = 0, snake = false) {
+  if (!canPlaySound()) return;
+  const notes = ["C5", "D5", "E5", "G5", "A5", "B5"];
+  const startTime = getStrictStartTime("lv13-node", 0.055);
+  lv13NodeSynth.triggerAttackRelease(notes[step % notes.length], snake ? 0.18 : 0.12, startTime, snake ? 0.48 : 0.4);
+  if (snake) lv13NodeSynth.triggerAttackRelease(notes[(step + 3) % notes.length], 0.12, startTime + 0.09, 0.3);
+}
+
+export function playLv13SpinSound(direction = "right", power = 0.5) {
+  if (!canPlaySound()) return;
+  const startTime = getStrictStartTime("lv13-spin", 0.05);
+  const note = direction === "left" ? "D5" : "A5";
+  lv13SpinNoise.triggerAttackRelease(0.09, startTime, 0.14 + power * 0.12);
+  lv13SpinSynth.triggerAttackRelease(note, 0.11, startTime + 0.012, 0.28 + power * 0.18);
+}
+
+export function playLv13SuccessSound(step = 0, snake = false) {
+  if (!canPlaySound()) return;
+  const chords = [["E5", "A5", "C6"], ["F#5", "B5", "D6"], ["G5", "C6", "E6"], ["A5", "D6", "F#6"]];
+  const startTime = getStrictStartTime("lv13-success", 0.085);
+  lv13SuccessSynth.triggerAttackRelease(chords[step % chords.length], snake ? 0.31 : 0.25, startTime, snake ? 0.62 : 0.54);
+}
+
+export function playLv13FailSound(step = 0) {
+  if (!canPlaySound()) return;
+  const chords = [["G3", "Db4"], ["F#3", "C4"], ["F3", "B3"]];
+  const startTime = getStrictStartTime("lv13-fail", 0.075);
+  lv13FailSynth.triggerAttackRelease(chords[step % chords.length], 0.2, startTime, 0.43);
+}
+
+
+export function playLv14StepSound(step = 0, level = 1) {
+  if (!canPlaySound()) return;
+  const notes = ["C5", "D5", "E5", "G5", "A5", "B5"];
+  const startTime = getStrictStartTime("lv14-step", 0.045);
+  lv14StepSynth.triggerAttackRelease(notes[(step + level - 1) % notes.length], 0.1, startTime, 0.28 + level * 0.035);
+}
+
+export function playLv14HitSound(step = 0, direction = "left", level = 1) {
+  if (!canPlaySound()) return;
+  const roots = { left: 0, down: 1, up: 2, right: 3 };
+  const chords = [
+    ["E5", "A5", "C6"],
+    ["F#5", "B5", "D6"],
+    ["G5", "C6", "E6"],
+    ["A5", "D6", "F#6"],
+  ];
+  const index = (roots[direction] + step + level) % chords.length;
+  const startTime = getStrictStartTime("lv14-hit", 0.085);
+  lv14HitSynth.triggerAttackRelease(chords[index], 0.28, startTime, 0.55 + level * 0.025);
+  lv14HitBell.triggerAttackRelease(["A6", "B6", "C7", "D7"][index], 0.13, startTime + 0.045, 0.3);
+}
+
+export function playLv14FailSound(step = 0, direction = "left") {
+  if (!canPlaySound()) return;
+  const offsets = { left: 0, down: 1, up: 2, right: 3 };
+  const chords = [["G3", "Db4"], ["F#3", "C4"], ["F3", "B3"], ["E3", "Bb3"]];
+  const startTime = getStrictStartTime("lv14-fail", 0.075);
+  lv14FailSynth.triggerAttackRelease(chords[(step + offsets[direction]) % chords.length], 0.2, startTime, 0.44);
 }

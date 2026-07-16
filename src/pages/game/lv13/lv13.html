@@ -1,0 +1,70 @@
+<section id="lv13Page" class="lv13-page app-view" aria-label="Level 13 turntable rhythm game">
+  <div class="lv13-ambient" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+
+  <header class="lv13-hud">
+    <div><span>LEVEL 13</span><strong>PASTEL SPIN</strong></div>
+    <p id="lv13StatusText">내려오는 방향에 맞춰 턴테이블을 돌려 주세요.</p>
+    <div class="lv13-progress"><b id="lv13RoundText">READY</b><i></i><span id="lv13ScoreText">0 / 0</span></div>
+  </header>
+
+  <main id="lv13Arena" class="lv13-arena">
+    <div class="lv13-lane-glow" aria-hidden="true"></div>
+    <div class="lv13-grid" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+    <div id="lv13NodeLayer" class="lv13-node-layer"></div>
+    <div id="lv13SpinInputZone" class="lv13-hit-zone" aria-label="턴테이블 회전 입력 영역"><span>SPIN ZONE</span><i></i></div>
+
+    <div id="lv13Feedback" class="lv13-feedback" aria-live="polite">
+      <strong></strong><span></span>
+    </div>
+
+    <div id="lv13TurntableWrap" class="lv13-turntable-wrap">
+      <div id="lv13Turntable" class="lv13-turntable" aria-label="스와이프로 회전하는 턴테이블">
+        <div class="lv13-platter">
+          <span class="lv13-platter-glow" aria-hidden="true"></span>
+          <span class="lv13-spindle"></span>
+          <b class="lv13-direction-mark">◆</b>
+        </div>
+      </div>
+      <div class="lv13-spin-hint" aria-hidden="true"><span>↶</span><b>DRAG THE DISC</b><span>↷</span></div>
+    </div>
+  </main>
+
+  <section id="lv13Ready" class="lv13-overlay">
+    <div class="lv13-panel">
+      <span class="lv13-kicker">SPIN TUTORIAL</span>
+      <strong>흐름을 따라 돌려 주세요</strong>
+      <p>화살표 노드가 판정선에 닿는 동안, 화살표가 흐르는 방향으로 턴테이블을 돌려 주세요.</p>
+
+      <div class="lv13-demo" aria-hidden="true">
+        <div class="demo-track">
+          <div class="demo-wide-node"><span>➜</span><span>➜</span><span>➜</span></div>
+          <div class="demo-wide-node is-second"><span>➜</span><span>➜</span><span>➜</span></div>
+          <em></em>
+        </div>
+        <div class="demo-turntable"><i></i><b>◆</b></div>
+        <span class="demo-finger"></span>
+      </div>
+
+      <div class="lv13-guide-tags">
+        <span><i>1</i>화살표 노드는 불규칙한 타이밍으로 연속해서 내려옵니다</span>
+        <span><i>2</i>노드가 판정선을 지나는 동안 화살표 방향을 유지합니다</span>
+        <span><i>3</i>턴테이블의 원을 따라 손가락이나 마우스를 드래그합니다</span>
+      </div>
+      <button id="lv13StartButton" class="lv13-primary-button" type="button">START</button>
+    </div>
+  </section>
+
+  <section id="lv13Result" class="lv13-overlay" hidden>
+    <div class="lv13-panel">
+      <span id="lv13ResultKicker" class="lv13-kicker">ALL COMPLETE</span>
+      <strong id="lv13ResultTitle">완벽한 스핀입니다</strong>
+      <p id="lv13ResultDescription"></p>
+      <div class="lv13-result-disc" aria-hidden="true"><i></i><i></i><b>◆</b></div>
+      <div class="lv13-actions">
+        <button id="lv13NextButton" class="lv13-primary-button" type="button">NEXT</button>
+        <button id="lv13RetryButton" class="lv13-primary-button" type="button" hidden>RETRY</button>
+        <button id="lv13HomeButton" class="lv13-secondary-button" type="button">HOME</button>
+      </div>
+    </div>
+  </section>
+</section>

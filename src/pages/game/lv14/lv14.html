@@ -1,0 +1,71 @@
+<section id="lv14Page" class="lv14-page app-view" aria-label="Level 14 pastel arrow rhythm game">
+  <div class="lv14-ambient" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+
+  <header class="lv14-hud">
+    <div class="lv14-brand"><span>LEVEL 14</span><strong>PASTEL STEP</strong></div>
+    <p id="lv14StatusText">화살표가 판정 화살표와 겹치는 순간 터치하세요.</p>
+    <div class="lv14-progress"><b id="lv14StepText">READY</b><i></i><span id="lv14ScoreText">0 / 0</span></div>
+  </header>
+
+  <main id="lv14Arena" class="lv14-arena is-step-1">
+    <div class="lv14-lanes" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    <div id="lv14NodeLayer" class="lv14-node-layer"></div>
+    <div id="lv14VisibilityMask" class="lv14-visibility-mask" aria-hidden="true"></div>
+
+    <div id="lv14Feedback" class="lv14-feedback" aria-live="polite">
+      <strong></strong><span></span><i></i><i></i><i></i>
+    </div>
+
+    <div id="lv14Receptors" class="lv14-receptors" aria-label="화살표 입력 영역">
+      <button class="lv14-receptor is-left" data-direction="left" type="button" aria-label="왼쪽 화살표">
+        <span class="lv14-arrow">←</span><small>LEFT</small>
+      </button>
+      <button class="lv14-receptor is-down" data-direction="down" type="button" aria-label="아래쪽 화살표">
+        <span class="lv14-arrow">↓</span><small>DOWN</small>
+      </button>
+      <button class="lv14-receptor is-up" data-direction="up" type="button" aria-label="위쪽 화살표">
+        <span class="lv14-arrow">↑</span><small>UP</small>
+      </button>
+      <button class="lv14-receptor is-right" data-direction="right" type="button" aria-label="오른쪽 화살표">
+        <span class="lv14-arrow">→</span><small>RIGHT</small>
+      </button>
+    </div>
+  </main>
+
+  <section id="lv14Ready" class="lv14-overlay">
+    <div class="lv14-panel">
+      <span class="lv14-kicker">RHYTHM TUTORIAL</span>
+      <strong>겹치는 순간, 한 번의 STEP</strong>
+      <p>내려오는 화살표가 같은 방향의 하단 화살표와 절반 이상 겹칠 때 터치하거나 PC 방향키를 누르세요.</p>
+
+      <div class="lv14-demo" aria-hidden="true">
+        <div class="demo-lanes"><i></i><i></i><i></i><i></i></div>
+        <span class="demo-node">↓</span>
+        <div class="demo-receptors"><b>←</b><b class="is-target">↓</b><b>↑</b><b>→</b></div>
+        <em class="demo-touch"></em>
+        <div class="demo-burst"><i></i><i></i><i></i></div>
+      </div>
+
+      <div class="lv14-guide-tags">
+        <span><i>1</i>각 순간에는 좌·하·상·우 중 하나만 내려옵니다</span>
+        <span><i>2</i>절반 이상 겹쳤을 때 터치하거나 PC 방향키를 누릅니다</span>
+        <span><i>3</i>STEP이 오를수록 빨라지고 일부 구간이 완전히 가려집니다</span>
+      </div>
+      <button id="lv14StartButton" class="lv14-primary-button" type="button">START</button>
+    </div>
+  </section>
+
+  <section id="lv14Result" class="lv14-overlay" hidden>
+    <div class="lv14-panel is-result">
+      <span id="lv14ResultKicker" class="lv14-kicker">ALL COMPLETE</span>
+      <strong id="lv14ResultTitle">완벽한 리듬입니다</strong>
+      <p id="lv14ResultDescription"></p>
+      <div class="lv14-result-mark" aria-hidden="true"><i>←</i><i>↓</i><i>↑</i><i>→</i></div>
+      <div class="lv14-actions">
+        <button id="lv14NextButton" class="lv14-primary-button" type="button">NEXT</button>
+        <button id="lv14RetryButton" class="lv14-primary-button" type="button" hidden>RETRY</button>
+        <button id="lv14HomeButton" class="lv14-secondary-button" type="button">HOME</button>
+      </div>
+    </div>
+  </section>
+</section>
