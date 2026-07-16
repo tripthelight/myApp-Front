@@ -1,0 +1,49 @@
+<section id="lv16Page" class="lv16-page app-view" aria-label="Level 16 hold memory rhythm game">
+  <header class="lv16-hud">
+    <div class="lv16-brand"><span>LEVEL 16</span><strong>PASTEL HOLD</strong></div>
+    <div class="lv16-progress"><b id="lv16Phase">READY</b><i><em id="lv16Progress"></em></i><span id="lv16Score">0 / 4</span></div>
+    <div id="lv16Timer" class="lv16-timer" aria-label="현재 STEP 제한시간"><span>TIME</span><strong id="lv16TimerValue">--</strong><i></i></div>
+  </header>
+
+  <main class="lv16-stage">
+    <div id="lv16Blocks" class="lv16-blocks" aria-label="길게 누르는 네 개의 블럭"></div>
+    <div id="lv16Countdown" class="lv16-countdown" hidden><span>YOUR TURN</span><strong>3</strong></div>
+    <div id="lv16Feedback" class="lv16-feedback" aria-live="polite"><span></span><strong></strong><small></small><div><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+    <p id="lv16Guide" class="lv16-guide">BAR의 길이와 순서를 기억하세요</p>
+  </main>
+
+  <section id="lv16Ready" class="lv16-overlay">
+    <div class="lv16-panel">
+      <span class="lv16-kicker">HOLD MEMORY TUTORIAL</span>
+      <strong>길이와 순서를 기억하고 그대로 누르세요</strong>
+      <p>네 BAR가 차오르는 순서와 길이를 기억하세요. 블럭이 섞인 뒤 같은 색의 블럭을 같은 순서로 누르고, 라인에 정확히 닿았을 때 손을 떼세요.</p>
+      <div class="lv16-demo" aria-hidden="true">
+        <div class="demo-block"><span></span><i></i><b></b></div>
+        <div class="demo-block"><span></span><i></i><b></b></div>
+        <div class="demo-block"><span></span><i></i><b></b></div>
+        <div class="demo-block"><span></span><i></i><b></b></div>
+        <em class="demo-hand"></em>
+      </div>
+      <div class="lv16-rules">
+        <span><i>1</i>중앙에서 퍼지는 BAR의 순서와 길이를 기억합니다</span>
+        <span><i>2</i>섞인 뒤에도 색을 따라 처음 순서대로 누릅니다</span>
+        <span><i>3</i>라인에 맞춰 한 번만 손을 떼며, 실수해도 끝까지 진행합니다</span>
+      </div>
+      <button id="lv16Start" class="lv16-primary" type="button">START</button>
+    </div>
+  </section>
+
+  <section id="lv16Result" class="lv16-overlay" hidden>
+    <div class="lv16-panel is-result">
+      <span id="lv16ResultKicker" class="lv16-kicker">HOLD COMPLETE</span>
+      <strong id="lv16ResultTitle">완벽한 컨트롤입니다</strong>
+      <p id="lv16ResultText"></p>
+      <div class="lv16-result-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      <div class="lv16-actions">
+        <button id="lv16Next" class="lv16-primary" type="button">NEXT</button>
+        <button id="lv16Retry" class="lv16-primary" type="button" hidden>RETRY</button>
+        <button id="lv16Home" class="lv16-secondary" type="button">HOME</button>
+      </div>
+    </div>
+  </section>
+</section>
