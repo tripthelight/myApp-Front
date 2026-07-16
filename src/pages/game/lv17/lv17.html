@@ -1,0 +1,49 @@
+<section id="lv17Page" class="lv17-page app-view" aria-label="Level 17 bouncing ball rhythm game">
+  <header class="lv17-hud">
+    <div class="lv17-brand"><span>LEVEL 17</span><strong>PASTEL BOUNCE</strong></div>
+  </header>
+
+  <main id="lv17Arena" class="lv17-arena">
+    <div id="lv17Balls" class="lv17-balls" aria-hidden="true"></div>
+    <div id="lv17TouchRail" class="lv17-touch-rail" aria-label="공이 닿는 순간 터치하는 라인">
+      <span class="lv17-touch-rail-flow"></span>
+      <i class="lv17-touch-target"></i>
+    </div>
+    <div id="lv17HitZone" class="lv17-hit-zone" aria-label="공이 닿는 하단 터치 영역">
+      <div class="lv17-floor-copy"><span>TOUCH THE BOUNCE</span><small>HIT ON THE LINE</small></div>
+      <div class="lv17-floor-timer"><span>TIME</span><strong id="lv17Time">60</strong><i>SEC</i></div>
+    </div>
+    <div id="lv17Feedback" class="lv17-feedback" aria-live="polite"><span></span><strong></strong><small></small><div></div></div>
+  </main>
+
+  <section id="lv17Ready" class="lv17-overlay">
+    <div class="lv17-panel">
+      <span class="lv17-kicker">BOUNCE RHYTHM TUTORIAL</span>
+      <strong>바닥에 닿는 순간, 그 위치를 터치하세요</strong>
+      <p>공들은 당구공처럼 일정한 각도로 사방을 튕깁니다. 하단에 닿는 정확한 순간과 위치를 맞춰 터치하세요.</p>
+      <div class="lv17-demo" aria-hidden="true">
+        <div class="demo-board"><i class="demo-ball"></i><em></em><b></b><span class="demo-touch"></span></div>
+      </div>
+      <div class="lv17-rules">
+        <span><i>1</i>공은 랜덤한 순서로 하나씩 나타나 총 5개가 됩니다</span>
+        <span><i>2</i>좌·상·우 충돌은 듣고, 하단 충돌은 보고 터치합니다</span>
+        <span><i>3</i>한 번이라도 놓치거나 잘못 터치하면 마지막 결과는 RETRY입니다</span>
+      </div>
+      <button id="lv17Start" class="lv17-primary" type="button">START</button>
+    </div>
+  </section>
+
+  <section id="lv17Result" class="lv17-overlay" hidden>
+    <div class="lv17-panel is-result">
+      <span id="lv17ResultKicker" class="lv17-kicker">BOUNCE COMPLETE</span>
+      <strong id="lv17ResultTitle">완벽한 리듬입니다</strong>
+      <p id="lv17ResultText"></p>
+      <div class="lv17-result-orbit" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="lv17-actions">
+        <button id="lv17Next" class="lv17-primary" type="button">NEXT</button>
+        <button id="lv17Retry" class="lv17-primary" type="button" hidden>RETRY</button>
+        <button id="lv17Home" class="lv17-secondary" type="button">HOME</button>
+      </div>
+    </div>
+  </section>
+</section>
