@@ -1,0 +1,106 @@
+<section id="lv15Page" class="lv15-page app-view" aria-label="Level 15 pastel piano memory rhythm game">
+  <div class="lv15-ambient" aria-hidden="true">
+    <span class="lv15-orbit orbit-one"><i></i><i></i><i></i></span>
+    <span class="lv15-orbit orbit-two"><i></i><i></i><i></i></span>
+    <span class="lv15-wave wave-top"></span>
+    <span class="lv15-wave wave-bottom"></span>
+  </div>
+
+  <header class="lv15-hud">
+    <div class="lv15-brand"><span>LEVEL 15</span><strong>PASTEL SONATA</strong></div>
+    <div class="lv15-progress">
+      <b id="lv15PhaseText">READY</b>
+      <i><em id="lv15ProgressBar"></em></i>
+      <span id="lv15ScoreText">0 / 0</span>
+    </div>
+  </header>
+
+  <main class="lv15-stage">
+    <section class="lv15-visualizer visualizer-top" aria-hidden="true">
+      <div class="lv15-staff"><i></i><i></i><i></i><i></i><i></i></div>
+      <div id="lv15TopNotes" class="lv15-floating-notes"></div>
+      <span class="lv15-glow-core"></span>
+      <div class="lv15-phase-copy lv15-phase-copy-top">
+        <span id="lv15TurnLabel">LISTEN</span>
+      </div>
+    </section>
+
+    <section class="lv15-keyboard-shell" aria-label="피아노 건반 영역">
+      <div id="lv15Keyboard" class="lv15-keyboard" role="group" aria-label="반응형 피아노 건반"></div>
+      <div id="lv15TimingRail" class="lv15-timing-rail" aria-hidden="true">
+        <i></i><span id="lv15TimingPulse"></span><b></b>
+      </div>
+    </section>
+
+    <section class="lv15-visualizer visualizer-bottom" aria-hidden="true">
+      <span class="lv15-glow-core"></span>
+      <div id="lv15BottomNotes" class="lv15-floating-notes"></div>
+      <div class="lv15-staff"><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="lv15-phase-copy lv15-phase-copy-bottom">
+        <strong id="lv15PromptText">리듬을 기억하세요</strong>
+      </div>
+    </section>
+
+    <div id="lv15Countdown" class="lv15-countdown" aria-live="polite" aria-atomic="true" hidden>
+      <span>YOUR TURN</span>
+      <strong>3</strong>
+    </div>
+
+    <div id="lv15Feedback" class="lv15-feedback" aria-live="polite">
+      <span class="lv15-feedback-ring"></span>
+      <strong></strong>
+      <small></small>
+      <div class="lv15-feedback-sparks" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    </div>
+  </main>
+
+  <section id="lv15Ready" class="lv15-overlay">
+    <div class="lv15-panel">
+      <span class="lv15-kicker">MEMORY TUTORIAL</span>
+      <strong>듣고, 기억하고, 그대로 연주하세요</strong>
+      <p>피아노가 먼저 들려주는 건반의 순서와 간격을 기억한 뒤, 1 STEP부터 5 STEP까지 같은 리듬으로 연주해 주세요.</p>
+
+      <div class="lv15-demo" aria-hidden="true">
+        <div class="demo-score"><span>LISTEN</span><i></i><i></i><i></i></div>
+        <div class="demo-piano">
+          <div class="demo-white-keys">
+            <b></b><b></b><b class="is-playing"></b><b></b><b></b><b class="is-target"></b><b></b><b></b><b></b><b></b><b></b><b></b>
+          </div>
+          <div class="demo-black-keys">
+            <b style="--demo-black-position:1"></b>
+            <b style="--demo-black-position:3"></b>
+            <b style="--demo-black-position:4"></b>
+            <b style="--demo-black-position:6"></b>
+            <b style="--demo-black-position:7"></b>
+            <b style="--demo-black-position:8"></b>
+            <b style="--demo-black-position:10"></b>
+            <b style="--demo-black-position:11"></b>
+          </div>
+        </div>
+        <span class="demo-hand"></span>
+        <div class="demo-rhythm"><i></i><i></i><i></i><i></i></div>
+      </div>
+
+      <div class="lv15-guide-tags">
+        <span><i>1</i>STEP마다 2개에서 6개까지 늘어나는 음을 기억합니다</span>
+        <span><i>2</i>YOUR TURN 이후 같은 건반을 같은 리듬으로 연주합니다</span>
+        <span><i>3</i>실수가 있어도 마지막 음까지 계속 연주합니다</span>
+      </div>
+      <button id="lv15StartButton" class="lv15-primary-button" type="button">START</button>
+    </div>
+  </section>
+
+  <section id="lv15Result" class="lv15-overlay" hidden>
+    <div class="lv15-panel is-result">
+      <span id="lv15ResultKicker" class="lv15-kicker">SONATA COMPLETE</span>
+      <strong id="lv15ResultTitle">아름다운 연주입니다</strong>
+      <p id="lv15ResultDescription"></p>
+      <div class="lv15-result-chord" aria-hidden="true"><i>♪</i><i>♩</i><i>♫</i><i>♬</i></div>
+      <div class="lv15-actions">
+        <button id="lv15NextButton" class="lv15-primary-button" type="button">NEXT</button>
+        <button id="lv15RetryButton" class="lv15-primary-button" type="button" hidden>RETRY</button>
+        <button id="lv15HomeButton" class="lv15-secondary-button" type="button">HOME</button>
+      </div>
+    </div>
+  </section>
+</section>
