@@ -1,0 +1,112 @@
+.lv18-page {
+  --lv18-vh: 100dvh;
+  --keyboard-h: clamp(132px, 24vh, 230px);
+  --hud-h: clamp(66px, 10vh, 92px);
+  --ink: #32364a;
+  --muted: rgba(55, 60, 82, .62);
+  --glass: rgba(255, 255, 255, .64);
+  position: relative;
+  width: 100vw;
+  height: var(--lv18-vh);
+  min-height: 420px;
+  overflow: hidden;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 14% 18%, rgba(255, 190, 213, .34), transparent 28%),
+    radial-gradient(circle at 86% 22%, rgba(178, 214, 255, .36), transparent 30%),
+    linear-gradient(145deg, #fff9fc 0%, #f5f8ff 48%, #f6fffd 100%);
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  isolation: isolate;
+}
+
+.lv18-page *, .lv18-page *::before, .lv18-page *::after { box-sizing: border-box; }
+.lv18-page [hidden] { display: none !important; }
+
+.lv18-ambient { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.lv18-ambient i { position: absolute; width: 34vw; aspect-ratio: 1; border: 1px solid rgba(255,255,255,.7); border-radius: 50%; filter: blur(1px); animation: lv18Drift 13s ease-in-out infinite alternate; }
+.lv18-ambient i:nth-child(1) { left: -14vw; top: 12%; box-shadow: inset 0 0 60px rgba(255,183,212,.16); }
+.lv18-ambient i:nth-child(2) { right: -16vw; top: 30%; animation-delay: -5s; box-shadow: inset 0 0 70px rgba(164,208,255,.18); }
+.lv18-ambient i:nth-child(3) { left: 32%; bottom: -27vw; animation-delay: -9s; box-shadow: inset 0 0 70px rgba(169,235,216,.15); }
+
+.lv18-hud { position: absolute; z-index: 20; inset: 0 0 auto; height: var(--hud-h); display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: max(14px, env(safe-area-inset-top)) clamp(18px, 4vw, 56px) 10px; pointer-events: none; }
+.lv18-brand { display: grid; gap: 2px; letter-spacing: .08em; }
+.lv18-brand span { font-size: 10px; font-weight: 800; opacity: .52; }
+.lv18-brand strong { font-size: clamp(15px, 2vw, 22px); font-weight: 850; }
+.lv18-meter { width: min(42vw, 390px); display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 10px; font-size: 10px; font-weight: 850; letter-spacing: .08em; }
+.lv18-meter i { height: 5px; overflow: hidden; border-radius: 999px; background: rgba(68,74,100,.1); box-shadow: inset 0 1px 2px rgba(38,44,69,.08); }
+.lv18-meter em { display: block; width: 0; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #ffb6cf, #9ac8ff, #95e3cf); transition: width .25s linear; }
+
+.lv18-stage { position: absolute; inset: 0; }
+.lv18-lane-field { position: absolute; z-index: 2; inset: var(--hud-h) 0 var(--keyboard-h); overflow: hidden; }
+.lv18-lane-field::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent 0, transparent calc(12.5% - 1px), rgba(97,106,143,.045) calc(12.5% - 1px), rgba(97,106,143,.045) 12.5%); mask-image: linear-gradient(to bottom, transparent, #000 16%, #000 86%, transparent); }
+.lv18-nodes { position: absolute; inset: 0; }
+.lv18-node { --node-x: 0px; --node-w: 60px; --node-y: -100px; --node-h: 100px; --node-color: #a7d7ff; position: absolute; left: 0; top: 0; width: var(--node-w); height: var(--node-h); transform: translate3d(var(--node-x),var(--node-y),0); border: 1px solid color-mix(in srgb, var(--node-color), white 35%); border-radius: 12px 12px 5px 5px; background: linear-gradient(90deg, color-mix(in srgb, var(--node-color), white 15%), var(--node-color)); box-shadow: 0 12px 30px color-mix(in srgb, var(--node-color), transparent 66%), inset 0 1px rgba(255,255,255,.72); opacity: .96; will-change: transform; }
+.lv18-node::before { content: ''; position: absolute; inset: 5px; border: 1px solid rgba(255,255,255,.46); border-radius: 8px 8px 3px 3px; }
+.lv18-node::after { content: ''; position: absolute; left: 15%; right: 15%; bottom: 5px; height: 3px; border-radius: 999px; background: rgba(255,255,255,.75); box-shadow: 0 0 12px rgba(255,255,255,.8); }
+.lv18-node.is-holding { filter: saturate(1.2) brightness(1.05); box-shadow: 0 0 0 2px rgba(255,255,255,.75), 0 0 34px var(--node-color); }
+.lv18-node.is-success { animation: lv18NodeSuccess .5s ease-out forwards; }
+.lv18-node.is-fail { animation: lv18NodeFail .5s ease-out forwards; }
+
+.lv18-hit-line { position: absolute; z-index: 5; left: 0; right: 0; bottom: 0; height: 12px; transform: translateY(50%); display: flex; align-items: center; pointer-events: none; }
+.lv18-hit-line::before { content: ''; position: absolute; inset: 4px 0; background: linear-gradient(90deg, transparent, rgba(125,151,206,.55) 15%, rgba(255,157,194,.65) 50%, rgba(118,203,185,.55) 85%, transparent); box-shadow: 0 0 16px rgba(143,174,222,.28); }
+.lv18-hit-line span, .lv18-hit-line i, .lv18-hit-line b { position: absolute; width: 74px; height: 100%; border-radius: 999px; background: rgba(255,255,255,.76); filter: blur(2px); animation: lv18Rail 2.4s linear infinite; }
+.lv18-hit-line i { animation-delay: -.8s; }.lv18-hit-line b { animation-delay: -1.6s; }
+
+.lv18-keyboard-shell { position: absolute; z-index: 8; left: 0; right: 0; bottom: 0; height: var(--keyboard-h); padding-bottom: env(safe-area-inset-bottom); background: rgba(244,247,255,.72); border-top: 1px solid rgba(255,255,255,.8); box-shadow: 0 -18px 55px rgba(69,77,113,.11); backdrop-filter: blur(16px); }
+.lv18-keyboard { position: relative; width: 100%; height: 100%; overflow: hidden; touch-action: none; }
+.lv18-keyboard-track { position: absolute; left: 50%; top: 0; width: 0; height: 100%; }
+.lv18-key { position: absolute; top: 0; border: 0; padding: 0; touch-action: none; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: transform .1s ease, filter .16s ease, box-shadow .16s ease; }
+.lv18-white-key { z-index: 1; left: var(--key-left); width: 70px; height: 100%; transform: translateX(-50%); border: 1px solid rgba(91,98,128,.16); border-top: 0; border-radius: 0 0 10px 10px; background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(241,244,252,.98)); box-shadow: inset 0 -12px 20px rgba(78,86,119,.05), 0 4px 8px rgba(69,76,108,.08); }
+.lv18-black-key { z-index: 3; left: var(--key-left); width: 43px; height: 62%; transform: translateX(-50%); border-radius: 0 0 8px 8px; background: linear-gradient(180deg,#44495e,#262a3a); box-shadow: inset 0 -10px 14px rgba(0,0,0,.28), 0 7px 11px rgba(35,39,57,.25); }
+.lv18-key.is-active, .lv18-key:active { transform: translateX(-50%) translateY(4px) scaleY(.98); filter: brightness(.98); }
+.lv18-white-key.is-active { background: linear-gradient(180deg, color-mix(in srgb, var(--key-color), white 68%), color-mix(in srgb, var(--key-color), white 35%)); box-shadow: inset 0 0 28px var(--key-color), 0 0 22px color-mix(in srgb,var(--key-color),transparent 54%); }
+.lv18-key.is-success { animation: lv18KeyGood .55s ease-out; }
+.lv18-key.is-fail { animation: lv18KeyBad .5s ease-out; }
+
+.lv18-feedback { position: absolute; z-index: 18; left: 50%; bottom: calc(var(--keyboard-h) + 30px); transform: translate(-50%, 18px) scale(.92); display: grid; place-items: center; opacity: 0; pointer-events: none; transition: .2s ease; }
+.lv18-feedback.is-visible { opacity: 1; transform: translate(-50%,0) scale(1); }
+.lv18-feedback-mark { width: 56px; height: 56px; border: 1px solid rgba(255,255,255,.85); border-radius: 50%; box-shadow: 0 10px 35px rgba(75,82,115,.15); backdrop-filter: blur(10px); }
+.lv18-feedback strong { margin-top: -41px; font-size: 17px; }.lv18-feedback small { margin-top: 25px; font-size: 10px; font-weight: 800; letter-spacing: .08em; }
+.lv18-feedback.is-good .lv18-feedback-mark { background: rgba(159,232,210,.68); box-shadow: 0 0 0 10px rgba(159,232,210,.12), 0 0 34px rgba(112,213,183,.45); }
+.lv18-feedback.is-bad .lv18-feedback-mark { background: rgba(255,174,194,.68); box-shadow: 0 0 0 10px rgba(255,174,194,.12), 0 0 34px rgba(239,126,158,.36); }
+
+.lv18-overlay { position: absolute; z-index: 40; inset: 0; display: grid; place-items: center; padding: max(18px,env(safe-area-inset-top)) 18px max(18px,env(safe-area-inset-bottom)); background: rgba(244,247,255,.48); backdrop-filter: blur(18px); }
+.lv18-panel { width: min(620px,94vw); max-height: 94%; overflow: auto; text-align: center; padding: clamp(24px,4vw,42px); border: 1px solid rgba(255,255,255,.82); border-radius: 28px; background: rgba(255,255,255,.68); box-shadow: 0 28px 80px rgba(65,73,109,.16), inset 0 1px rgba(255,255,255,.9); }
+.lv18-kicker { display: inline-block; margin-bottom: 10px; font-size: 10px; font-weight: 900; letter-spacing: .16em; color: #7480a6; }
+.lv18-panel h1,.lv18-panel h2 { margin: 0; font-size: clamp(24px,4.2vw,40px); line-height: 1.2; letter-spacing: -.04em; }
+.lv18-panel p { margin: 14px 0 20px; color: var(--muted); font-size: clamp(12px,1.8vw,15px); line-height: 1.65; }
+.lv18-demo { position: relative; width: min(360px,86%); height: 150px; margin: 8px auto 18px; overflow: hidden; border-radius: 20px; background: linear-gradient(180deg,rgba(225,235,255,.58),rgba(255,255,255,.75)); border: 1px solid rgba(255,255,255,.9); }
+.lv18-demo-lane { position:absolute; inset:0 31% 36%; }.lv18-demo-lane i { position:absolute; left:50%; width:46px; height:74px; border-radius:10px 10px 4px 4px; background:linear-gradient(135deg,#b5d8ff,#ddc4ff); animation:lv18DemoNode 2.7s ease-in-out infinite; }
+.lv18-demo-line { position:absolute; left:0; right:0; bottom:36%; height:3px; background:linear-gradient(90deg,transparent,#9aadd7,transparent); }
+.lv18-demo-key { position:absolute; left:31%; right:31%; bottom:0; height:36%; border:1px solid rgba(91,98,128,.18); border-radius:0 0 10px 10px; background:#fff; }.lv18-demo-key span { position:absolute; inset:0; border-radius:inherit; animation:lv18DemoKey 2.7s ease-in-out infinite; }
+.lv18-demo-finger { position:absolute; left:58%; bottom:6px; width:24px; height:42px; border-radius:16px 16px 10px 10px; background:rgba(255,188,209,.75); transform-origin:bottom; animation:lv18DemoFinger 2.7s ease-in-out infinite; }
+.lv18-guide-tags { display:flex; justify-content:center; flex-wrap:wrap; gap:8px; margin-bottom:20px; }.lv18-guide-tags span { padding:8px 11px; border-radius:999px; background:rgba(239,243,252,.9); font-size:10px; font-weight:750; color:#69728f; }.lv18-guide-tags i { display:inline-grid; place-items:center; width:17px; height:17px; margin-right:4px; border-radius:50%; background:#fff; font-style:normal; }
+.lv18-primary-button,.lv18-secondary-button { min-width:124px; min-height:45px; border:0; border-radius:999px; font-weight:900; letter-spacing:.08em; cursor:pointer; }
+.lv18-primary-button { color:#fff; background:linear-gradient(135deg,#8998d4,#a487ca); box-shadow:0 12px 28px rgba(112,111,172,.25); }.lv18-secondary-button { color:#68708f; background:rgba(233,237,248,.92); }
+.lv18-actions { display:flex; justify-content:center; flex-wrap:wrap; gap:10px; margin-top:24px; }.lv18-result-orbit { position:relative; width:140px; height:70px; margin:12px auto; }.lv18-result-orbit i { position:absolute; left:50%; top:50%; width:12px; height:12px; border-radius:50%; background:#b8d8ff; animation:lv18Result 2.2s ease-in-out infinite; }.lv18-result-orbit i:nth-child(2){background:#ffc0d5;animation-delay:-.55s}.lv18-result-orbit i:nth-child(3){background:#a9e6d2;animation-delay:-1.1s}.lv18-result-orbit i:nth-child(4){background:#d5c0ff;animation-delay:-1.65s}
+
+@keyframes lv18Drift { to { transform: translate3d(5vw,-3vh,0) scale(1.08); } }
+@keyframes lv18Rail { from { left:-90px; opacity:0 } 20%,80%{opacity:.7} to{left:100%;opacity:0} }
+@keyframes lv18NodeSuccess { to { opacity:0; transform:translate3d(var(--node-x),var(--node-y),0) scale(1.18); filter:blur(5px) brightness(1.2); } }
+@keyframes lv18NodeFail { 25%{margin-left:-5px}50%{margin-left:5px} to{opacity:0;filter:grayscale(.35) blur(3px)} }
+@keyframes lv18KeyGood { 50%{box-shadow:inset 0 0 35px #a8e8d5,0 0 35px rgba(105,213,181,.5)} }
+@keyframes lv18KeyBad { 25%,75%{transform:translateX(-50%) translateX(-4px)}50%{transform:translateX(-50%) translateX(4px);box-shadow:inset 0 0 30px #ffc0cf} }
+@keyframes lv18DemoNode { 0%{transform:translate(-50%,-90px)}38%{transform:translate(-50%,8px)}72%{transform:translate(-50%,82px)}100%{transform:translate(-50%,82px);opacity:0} }
+@keyframes lv18DemoKey { 0%,35%,76%,100%{background:transparent}42%,70%{background:rgba(171,224,208,.6);box-shadow:inset 0 0 24px rgba(105,202,177,.45)} }
+@keyframes lv18DemoFinger { 0%,35%,76%,100%{transform:translateY(28px)}42%,70%{transform:translateY(4px) scaleY(.94)} }
+@keyframes lv18Result { 0%,100%{transform:rotate(0deg) translateX(58px)}50%{transform:rotate(180deg) translateX(58px)} }
+
+@media (max-height: 650px) { .lv18-page{--keyboard-h:clamp(110px,23vh,155px);--hud-h:60px}.lv18-panel{padding:20px}.lv18-demo{height:110px}.lv18-guide-tags{margin-bottom:12px}.lv18-panel p{margin:8px 0 12px} }
+@media (max-width: 560px) { .lv18-brand strong{font-size:14px}.lv18-meter{width:52vw;grid-template-columns:1fr auto}.lv18-meter>span{display:none}.lv18-panel{border-radius:22px}.lv18-guide-tags span{font-size:9px} }
+@media (prefers-reduced-motion: reduce) { .lv18-page *{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important} }
+
+@media (prefers-color-scheme: dark) {
+  .lv18-page { --ink:#eef1ff; --muted:rgba(229,233,255,.65); --glass:rgba(30,34,52,.68); background:radial-gradient(circle at 15% 18%,rgba(173,91,129,.2),transparent 30%),radial-gradient(circle at 85% 25%,rgba(75,116,170,.24),transparent 32%),linear-gradient(145deg,#151824,#1d2232 50%,#172725); }
+  .lv18-keyboard-shell { background:rgba(26,30,45,.8);border-color:rgba(255,255,255,.08); }
+  .lv18-white-key { border-color:rgba(255,255,255,.09); background:linear-gradient(180deg,#e4e7f0,#cdd2df); }  .lv18-black-key { background:linear-gradient(180deg,#333849,#141722); }
+  .lv18-overlay { background:rgba(15,18,28,.58); }.lv18-panel{background:rgba(31,36,53,.76);border-color:rgba(255,255,255,.12);box-shadow:0 28px 80px rgba(0,0,0,.35)}
+  .lv18-demo { background:linear-gradient(180deg,rgba(44,52,76,.8),rgba(31,36,53,.9));border-color:rgba(255,255,255,.1) }.lv18-demo-key{background:#d9dde7}.lv18-guide-tags span{background:rgba(255,255,255,.08);color:#c7cee8}.lv18-guide-tags i{background:rgba(255,255,255,.1)}
+  .lv18-secondary-button{color:#d5daf0;background:rgba(255,255,255,.09)}
+}

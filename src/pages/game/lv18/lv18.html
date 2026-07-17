@@ -1,0 +1,64 @@
+<section id="lv18Page" class="lv18-page app-view" aria-label="Level 18 piano hold rhythm game">
+  <div class="lv18-ambient" aria-hidden="true"><i></i><i></i><i></i></div>
+
+  <header class="lv18-hud">
+    <div class="lv18-brand"><span>LEVEL 18</span><strong>PASTEL FLOW</strong></div>
+    <div class="lv18-meter" aria-label="게임 진행 시간">
+      <span id="lv18PhaseText">READY</span>
+      <i><em id="lv18ProgressBar"></em></i>
+      <b id="lv18TimeText">01:00</b>
+    </div>
+  </header>
+
+  <main class="lv18-stage">
+    <div id="lv18LaneField" class="lv18-lane-field" aria-hidden="true">
+      <div id="lv18Nodes" class="lv18-nodes"></div>
+      <div class="lv18-hit-line"><span></span><i></i><b></b></div>
+    </div>
+
+    <div id="lv18Feedback" class="lv18-feedback" aria-live="polite">
+      <span class="lv18-feedback-mark"></span>
+      <strong></strong><small></small>
+    </div>
+
+    <section class="lv18-keyboard-shell" aria-label="화면 하단 피아노 건반">
+      <div id="lv18Keyboard" class="lv18-keyboard" role="group" aria-label="반응형 피아노 건반"></div>
+    </section>
+  </main>
+
+  <section id="lv18Ready" class="lv18-overlay">
+    <div class="lv18-panel">
+      <span class="lv18-kicker">HOLD RHYTHM TUTORIAL</span>
+      <h1>내려오는 길이만큼<br>건반을 눌러주세요</h1>
+      <p>노드의 아래쪽이 라인에 닿을 때 누르고,<br>노드의 위쪽이 라인을 통과할 때 손을 떼세요.</p>
+
+      <div class="lv18-demo" aria-hidden="true">
+        <div class="lv18-demo-lane"><i></i><span></span></div>
+        <div class="lv18-demo-line"></div>
+        <div class="lv18-demo-key"><span></span></div>
+        <div class="lv18-demo-finger"><i></i></div>
+      </div>
+
+      <div class="lv18-guide-tags">
+        <span><i>1</i> 라인에 닿으면 누르기</span>
+        <span><i>2</i> 길이만큼 유지하기</span>
+        <span><i>3</i> 끝에서 정확히 떼기</span>
+      </div>
+      <button id="lv18StartButton" class="lv18-primary-button" type="button">START</button>
+    </div>
+  </section>
+
+  <section id="lv18Result" class="lv18-overlay" hidden>
+    <div class="lv18-panel is-result">
+      <span id="lv18ResultKicker" class="lv18-kicker">FLOW COMPLETE</span>
+      <h2 id="lv18ResultTitle">완벽한 연주입니다</h2>
+      <p id="lv18ResultDescription"></p>
+      <div class="lv18-result-orbit" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      <div class="lv18-actions">
+        <button id="lv18NextButton" class="lv18-primary-button" type="button">NEXT</button>
+        <button id="lv18RetryButton" class="lv18-primary-button" type="button" hidden>RETRY</button>
+        <button id="lv18HomeButton" class="lv18-secondary-button" type="button">HOME</button>
+      </div>
+    </div>
+  </section>
+</section>
