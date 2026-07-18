@@ -1,0 +1,60 @@
+<section id="lv20Page" class="lv20-page app-view" aria-label="Level 20 alphabet space memory rhythm game">
+  <div class="lv20-aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+
+  <header class="lv20-hud">
+    <div class="lv20-brand"><span>LEVEL 20</span><strong>LINE MEMORY</strong></div>
+    <div class="lv20-progress" aria-label="게임 진행도">
+      <span id="lv20PhaseText">READY</span>
+      <i><em id="lv20ProgressBar"></em></i>
+      <b id="lv20RoundText">Z · 1 / 4</b>
+    </div>
+  </header>
+
+  <main id="lv20Stage" class="lv20-stage">
+    <svg id="lv20Glyph" class="lv20-glyph" aria-hidden="true"></svg>
+    <div id="lv20Beat" class="lv20-beat" aria-hidden="true"><i></i></div>
+    <div id="lv20Feedback" class="lv20-feedback" aria-live="polite">
+      <span></span><strong></strong><small></small>
+    </div>
+    <div id="lv20RoundBadge" class="lv20-round-badge" aria-hidden="true"><small>ROUND 1</small><strong>Z</strong></div>
+  </main>
+
+  <section id="lv20Ready" class="lv20-overlay">
+    <div class="lv20-panel">
+      <span class="lv20-kicker">ALPHABET SPACE TUTORIAL</span>
+      <h1>빛나는 여백의 순서를<br>1초 박자로 기억하세요</h1>
+      <p>알파벳 선으로 나뉜 여백이 차례로 빛납니다.<br><b>같은 순서로, 매번 1초 안에</b> 여백을 터치하세요.</p>
+
+      <div class="lv20-demo" aria-hidden="true">
+        <svg viewBox="0 0 240 140">
+          <polygon class="demo-zone demo-zone-a" points="12,12 228,12 12,128"></polygon>
+          <polygon class="demo-zone demo-zone-b" points="228,12 12,128 228,128"></polygon>
+          <polyline points="12,12 228,12 12,128 228,128"></polyline>
+        </svg>
+        <span class="lv20-demo-finger"></span>
+        <i class="lv20-demo-beat"></i>
+      </div>
+
+      <div class="lv20-guide-tags">
+        <span><i>1</i> 색의 순서 기억</span>
+        <span><i>2</i> 같은 여백 터치</span>
+        <span><i>3</i> 각 입력은 1초</span>
+      </div>
+      <button id="lv20StartButton" class="lv20-primary-button" type="button">START</button>
+    </div>
+  </section>
+
+  <section id="lv20Result" class="lv20-overlay" hidden>
+    <div class="lv20-panel is-result">
+      <span id="lv20ResultKicker" class="lv20-kicker">LINE MEMORY COMPLETE</span>
+      <h2 id="lv20ResultTitle">완벽한 라인 리듬입니다</h2>
+      <p id="lv20ResultDescription"></p>
+      <div class="lv20-result-orbit" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      <div class="lv20-actions">
+        <button id="lv20NextButton" class="lv20-primary-button" type="button">NEXT</button>
+        <button id="lv20RetryButton" class="lv20-primary-button" type="button" hidden>RETRY</button>
+        <button id="lv20HomeButton" class="lv20-secondary-button" type="button">HOME</button>
+      </div>
+    </div>
+  </section>
+</section>
