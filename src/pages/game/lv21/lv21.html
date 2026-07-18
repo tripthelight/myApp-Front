@@ -1,0 +1,78 @@
+<section id="lv21Page" class="lv21-page app-view" aria-label="Level 21 card castanet rhythm game">
+  <div class="lv21-ambient" aria-hidden="true"><i></i><i></i><i></i></div>
+
+  <header class="lv21-hud">
+    <div class="lv21-brand"><span>LEVEL 21</span><strong>CARD RHYTHM</strong></div>
+    <div class="lv21-status">
+      <span id="lv21PhaseText">READY</span>
+      <i><em id="lv21ProgressBar"></em></i>
+      <b id="lv21CountText">0 / 16</b>
+    </div>
+  </header>
+
+  <main id="lv21Stage" class="lv21-stage">
+    <div id="lv21Deck" class="lv21-deck" aria-label="남은 카드 묶음">
+      <i></i><i></i><i></i><span>21</span><small id="lv21DeckCount">16</small>
+    </div>
+
+    <div class="lv21-lanes" role="group" aria-label="네 개의 카드 리듬 블록">
+      <section class="lv21-lane" data-lane="0" style="--lane:0">
+        <div class="lv21-card-stack" id="lv21Stack0"></div>
+        <button class="lv21-castanet" data-lane="0" type="button" aria-label="첫 번째 캐스터네츠"><span></span><i></i><b></b></button>
+      </section>
+      <section class="lv21-lane" data-lane="1" style="--lane:1">
+        <div class="lv21-card-stack" id="lv21Stack1"></div>
+        <button class="lv21-castanet" data-lane="1" type="button" aria-label="두 번째 캐스터네츠"><span></span><i></i><b></b></button>
+      </section>
+      <section class="lv21-lane" data-lane="2" style="--lane:2">
+        <div class="lv21-card-stack" id="lv21Stack2"></div>
+        <button class="lv21-castanet" data-lane="2" type="button" aria-label="세 번째 캐스터네츠"><span></span><i></i><b></b></button>
+      </section>
+      <section class="lv21-lane" data-lane="3" style="--lane:3">
+        <div class="lv21-card-stack" id="lv21Stack3"></div>
+        <button class="lv21-castanet" data-lane="3" type="button" aria-label="네 번째 캐스터네츠"><span></span><i></i><b></b></button>
+      </section>
+    </div>
+
+    <div id="lv21Timer" class="lv21-timer" aria-hidden="true"><i></i></div>
+  </main>
+
+  <section id="lv21Ready" class="lv21-overlay">
+    <div class="lv21-panel">
+      <span class="lv21-kicker">CARD RHYTHM TUTORIAL</span>
+      <h1>카드 숫자만큼<br>캐스터네츠를 눌러보세요</h1>
+      <p>카드는 현재 진행 방향을 따라 차례로 연주합니다.<br><b>숫자만큼 누르고, 건너뛰기는 쉬고, 순서 바꾸기 카드는 연주 후 방향을 바꿉니다.</b></p>
+
+      <div class="lv21-demo" aria-hidden="true">
+        <div class="lv21-demo-deck"><i></i><i></i><span>21</span></div>
+        <div class="lv21-demo-card"><small>3</small><strong>3</strong><b>3</b></div>
+        <div class="lv21-demo-castanet"><span></span><i></i><b></b></div>
+        <div class="lv21-demo-finger"></div>
+        <div class="lv21-demo-pips"><i></i><i></i><i></i></div>
+      </div>
+
+      <div class="lv21-guide-tags">
+        <span><i>1</i> 좌 → 우 순서</span>
+        <span><i>2</i> 숫자만큼 터치</span>
+        <span><i>3</i> 시간 안에 완료</span>
+        <span><i>Ø</i> 건너뛰기는 터치 금지</span>
+        <span><i>↻</i> 끝 블럭에서 방향 전환</span>
+      </div>
+      <button id="lv21StartButton" class="lv21-primary-button" type="button">START</button>
+    </div>
+  </section>
+
+  <section id="lv21Result" class="lv21-overlay" hidden>
+    <div class="lv21-panel is-result">
+      <span id="lv21ResultKicker" class="lv21-kicker">CARD RHYTHM COMPLETE</span>
+      <h2 id="lv21ResultTitle">완벽한 카드 리듬입니다</h2>
+      <p id="lv21ResultDescription"></p>
+      <div class="lv21-result-cards" aria-hidden="true"><i>1</i><i>2</i><i>3</i><i>4</i></div>
+      <div class="lv21-actions">
+        <button id="lv21NextButton" class="lv21-primary-button" type="button">NEXT</button>
+        <button id="lv21RetryButton" class="lv21-primary-button is-retry" type="button" hidden>RETRY</button>
+        <button id="lv21HomeButton" class="lv21-secondary-button" type="button">HOME</button>
+      </div>
+    </div>
+  </section>
+</section>
