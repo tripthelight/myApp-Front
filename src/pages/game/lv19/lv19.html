@@ -1,0 +1,57 @@
+<section id="lv19Page" class="lv19-page app-view" aria-label="Level 19 color sequence memory rhythm game">
+  <div class="lv19-ambient" aria-hidden="true"><i></i><i></i><i></i></div>
+
+  <header class="lv19-hud">
+    <div class="lv19-brand"><span>LEVEL 19</span><strong>COLOR SIGNAL</strong></div>
+    <div class="lv19-step-meter" aria-label="게임 진행 단계">
+      <span id="lv19PhaseText">READY</span>
+      <i><em id="lv19ProgressBar"></em></i>
+      <b id="lv19StepText">1 / 4</b>
+    </div>
+  </header>
+
+  <main class="lv19-stage">
+    <div id="lv19Board" class="lv19-board" aria-label="컬러 리듬 블럭"></div>
+    <div id="lv19BeatRail" class="lv19-beat-rail" aria-hidden="true"></div>
+    <div id="lv19Feedback" class="lv19-feedback" aria-live="polite"><span></span><strong></strong><small></small></div>
+  </main>
+
+  <section id="lv19Ready" class="lv19-overlay">
+    <div class="lv19-panel">
+      <span class="lv19-kicker">COLOR MEMORY TUTORIAL</span>
+      <h1>숫자의 색을 기억하고<br>같은 색의 블럭을 누르세요</h1>
+      <p>선택된 판에 적힌 숫자 색을 <b>1부터 순서대로</b> 기억한 뒤,<br>1초 박자에 맞춰 같은 색의 블럭을 터치하세요.</p>
+
+      <div class="lv19-demo" aria-hidden="true">
+        <div class="lv19-demo-memory">
+          <div><b style="--demo-color:#ff9fb8">1</b><b style="--demo-color:#88cfe0">2</b><b style="--demo-color:#a9d89c">3</b></div>
+          <div><b style="--demo-color:#d5a9ed">1</b><b style="--demo-color:#f4c879">2</b><b style="--demo-color:#91b7ed">3</b></div>
+        </div>
+        <span class="lv19-demo-signal"></span>
+        <div class="lv19-demo-answer"><i></i><i></i><i></i></div>
+        <span class="lv19-demo-finger"></span>
+      </div>
+
+      <div class="lv19-guide-tags">
+        <span><i>1</i> 선택된 판의 색 기억</span>
+        <span><i>2</i> 숫자 1부터 순서대로</span>
+        <span><i>3</i> 매 1초 안에 터치</span>
+      </div>
+      <button id="lv19StartButton" class="lv19-primary-button" type="button">START</button>
+    </div>
+  </section>
+
+  <section id="lv19Result" class="lv19-overlay" hidden>
+    <div class="lv19-panel is-result">
+      <span id="lv19ResultKicker" class="lv19-kicker">SEQUENCE COMPLETE</span>
+      <h2 id="lv19ResultTitle">완벽한 컬러 리듬입니다</h2>
+      <p id="lv19ResultDescription"></p>
+      <div class="lv19-result-symbol" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="lv19-actions">
+        <button id="lv19NextButton" class="lv19-primary-button" type="button">NEXT</button>
+        <button id="lv19RetryButton" class="lv19-primary-button" type="button" hidden>RETRY</button>
+        <button id="lv19HomeButton" class="lv19-secondary-button" type="button">HOME</button>
+      </div>
+    </div>
+  </section>
+</section>
