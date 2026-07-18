@@ -6,7 +6,7 @@ import {
   playLv17AppearSound, playLv17WallSound, playLv17FloorSound,
   playLv17SuccessSound, playLv17FailSound, playLv17FinishSound,
   stopLv17Sounds, playStartSound, readySound, unlockSoundOnNextGesture,
-} from "../../../module/sound/sound.js";
+} from "../../../module/sound/levels/lv17Sound.js";
 
 const GAME_MS = 60000;
 const BALL_TOTAL = 5;

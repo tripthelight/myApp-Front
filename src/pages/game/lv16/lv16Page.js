@@ -12,7 +12,7 @@ import {
   playStartSound,
   readySound,
   unlockSoundOnNextGesture,
-} from "../../../module/sound/sound.js";
+} from "../../../module/sound/levels/lv16Sound.js";
 
 const COLORS = Object.freeze([
   { bg: "#efbfd0", bar: "#f8dce7", deep: "#d990aa" },

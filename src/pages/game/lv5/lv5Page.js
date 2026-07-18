@@ -9,7 +9,7 @@ import {
   playStartSound,
   readySound,
   unlockSoundOnNextGesture,
-} from "../../../module/sound/sound.js";
+} from "../../../module/sound/levels/lv5Sound.js";
 
 const LEVEL_CONFIG = Object.freeze({
   sequenceLength: 6,

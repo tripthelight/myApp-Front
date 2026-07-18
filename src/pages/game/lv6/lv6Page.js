@@ -10,7 +10,7 @@ import {
   startLv6HoldSound,
   stopLv6HoldSound,
   unlockSoundOnNextGesture,
-} from "../../../module/sound/sound.js";
+} from "../../../module/sound/levels/lv6Sound.js";
 
 // lv6을 다른 레벨에서 재사용할 때 이 값만 1~10 사이로 변경하면 됩니다.
 // 1: 가장 느린 이동 속도와 가장 긴 출현 간격

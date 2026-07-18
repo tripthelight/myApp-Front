@@ -10,7 +10,7 @@ import {
   playStartSound,
   readySound,
   unlockSoundOnNextGesture,
-} from "../../../module/sound/sound.js";
+} from "../../../module/sound/levels/lv8Sound.js";
 
 const CONFIG = Object.freeze({
   eventCount: 10,

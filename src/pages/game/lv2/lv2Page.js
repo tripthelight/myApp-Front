@@ -9,7 +9,7 @@ import {
   playStartSound,
   readySound,
   unlockSoundOnNextGesture,
-} from "../../../module/sound/sound.js";
+} from "../../../module/sound/levels/lv2Sound.js";
 
 const LEVEL_CONFIG = Object.freeze({
   // 이 배열의 길이가 circle 개수입니다.

@@ -8,7 +8,7 @@ import {
   playStartSound,
   playOkSound,
   playFailSound,
-} from "../../../module/sound/sound.js";
+} from "../../../module/sound/levels/lv1Sound.js";
 
 const RECT_TRANSITION_MS = 200;
 const TOUCH_TARGET_MS = 800;

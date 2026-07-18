@@ -10,7 +10,7 @@ import {
   readySound,
   stopLv15Sounds,
   unlockSoundOnNextGesture,
-} from "../../../module/sound/sound.js";
+} from "../../../module/sound/levels/lv15Sound.js";
 
 const WHITE_KEY_WIDTH = 70;
 const WHITE_KEY_HEIGHT = 285;

@@ -9,7 +9,7 @@ import {
   playTouchDotAppearSound,
   readySound,
   unlockSoundOnNextGesture,
-} from "../../../module/sound/sound.js";
+} from "../../../module/sound/levels/lv3Sound.js";
 
 const LEVEL_CONFIG = Object.freeze({
   // 각 숫자는 해당 rectangle이 나타나기 전까지 기다릴 시간입니다.

@@ -11,7 +11,7 @@ import {
   playStartSound,
   readySound,
   unlockSoundOnNextGesture,
-} from "../../../module/sound/sound.js";
+} from "../../../module/sound/levels/lv13Sound.js";
 
 const CONFIG = Object.freeze({
   nodeCount: 12,

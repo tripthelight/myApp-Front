@@ -12,7 +12,7 @@ import {
   readySound,
   stopLv18Sounds,
   unlockSoundOnNextGesture,
-} from "../../../module/sound/sound.js";
+} from "../../../module/sound/levels/lv18Sound.js";
 
 const WHITE_KEY_WIDTH = 70;
 const BLACK_KEY_WIDTH = 43;

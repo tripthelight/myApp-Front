@@ -9,7 +9,7 @@ import {
   playStartSound,
   readySound,
   unlockSoundOnNextGesture,
-} from "../../../module/sound/sound.js";
+} from "../../../module/sound/levels/lv14Sound.js";
 
 const DIRECTIONS = ["left", "down", "up", "right"];
 const GLYPHS = { left: "←", down: "↓", up: "↑", right: "→" };

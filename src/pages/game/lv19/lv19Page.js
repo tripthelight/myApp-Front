@@ -12,7 +12,7 @@ import {
   readySound,
   stopLv19Sounds,
   unlockSoundOnNextGesture,
-} from "../../../module/sound/sound.js";
+} from "../../../module/sound/levels/lv19Sound.js";
 
 const TOTAL_STEPS = 4;
 const BEAT_MS = 1000;

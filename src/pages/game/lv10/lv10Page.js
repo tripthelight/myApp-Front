@@ -9,7 +9,7 @@ import {
   playStartSound,
   readySound,
   unlockSoundOnNextGesture,
-} from "../../../module/sound/sound.js";
+} from "../../../module/sound/levels/lv10Sound.js";
 
 const CONFIG = Object.freeze({
   waves: [7, 5, 6],

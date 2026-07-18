@@ -9,7 +9,7 @@ import {
   playStartSound,
   readySound,
   unlockSoundOnNextGesture,
-} from "../../../module/sound/sound.js";
+} from "../../../module/sound/levels/lv4Sound.js";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 const CONFIG = Object.freeze({
