@@ -1,0 +1,80 @@
+<section id="lv23Page" class="lv23-page app-view" aria-label="Level 23 code flow rhythm game">
+  <div class="lv23-ambient" aria-hidden="true"><i></i><i></i><i></i></div>
+
+  <header class="lv23-hud">
+    <div class="lv23-brand"><span>LEVEL 23</span><strong>CODE FLOW</strong></div>
+    <div class="lv23-status">
+      <span id="lv23PhaseText">READY</span>
+      <i><em id="lv23ProgressBar"></em></i>
+      <b id="lv23RoundText">ROUND 1 / 3</b>
+    </div>
+  </header>
+
+  <main class="lv23-stage">
+    <section id="lv23Terminal" class="lv23-terminal" aria-label="실행 코드">
+      <div class="lv23-terminal-bar" aria-hidden="true">
+        <i></i><i></i><i></i><span id="lv23FileName">round_01.flow</span>
+      </div>
+      <div id="lv23Code" class="lv23-code" role="group" aria-label="터치할 코드 영역"></div>
+      <section id="lv23Output" class="lv23-output" aria-label="코드 출력 결과" aria-live="polite">
+        <div class="lv23-output-label"><i></i><span>OUTPUT</span></div>
+        <div id="lv23OutputContent" class="lv23-output-content">
+          <span class="lv23-output-placeholder">Waiting for print...</span>
+        </div>
+      </section>
+      <div class="lv23-scanline" aria-hidden="true"></div>
+    </section>
+
+    <div class="lv23-flow-panel" aria-live="polite">
+      <div id="lv23Countdown" class="lv23-countdown" hidden aria-label="플레이 시작 카운트">
+        <strong id="lv23CountdownValue">3</strong>
+      </div>
+      <span id="lv23Cue">WATCH THE FLOW</span>
+      <div class="lv23-step-dots" id="lv23StepDots" aria-hidden="true"></div>
+    </div>
+
+    <section id="lv23RoundCard" class="lv23-round-card" hidden aria-live="polite">
+      <span>NEXT FLOW</span><strong id="lv23RoundCardTitle">ROUND 2</strong><small id="lv23RoundCardSub">CONDITION</small>
+    </section>
+  </main>
+
+  <section id="lv23Ready" class="lv23-overlay">
+    <div class="lv23-panel">
+      <span class="lv23-kicker">CODE FLOW TUTORIAL</span>
+      <h1>코드가 실행되는 순서를<br>리듬처럼 따라가세요</h1>
+      <p>먼저 코드가 한 글자씩 완성되고, 실행 순서가 차례로 빛납니다.<br><b>그 순서를 기억한 뒤 같은 박자에 코드 영역을 터치하세요.</b></p>
+
+      <div class="lv23-demo" aria-hidden="true">
+        <div class="lv23-demo-code">
+          <span><i>ONE</i> = 1</span>
+          <span>TWO = 2</span>
+          <span>SUM = ONE + TWO</span>
+          <span>print(ONE + TWO = SUM)</span>
+        </div>
+        <div class="lv23-demo-cursor"></div>
+        <div class="lv23-demo-finger"></div>
+      </div>
+
+      <div class="lv23-guide-tags">
+        <span><i>1</i> 코드가 완성됩니다</span>
+        <span><i>2</i> 실행 순서를 봅니다</span>
+        <span><i>3</i> 같은 순서로 터치합니다</span>
+      </div>
+      <button id="lv23StartButton" class="lv23-primary-button" type="button">START</button>
+    </div>
+  </section>
+
+  <section id="lv23Result" class="lv23-overlay" hidden>
+    <div class="lv23-panel is-result">
+      <span id="lv23ResultKicker" class="lv23-kicker">CODE FLOW COMPLETE</span>
+      <h2 id="lv23ResultTitle">완벽한 실행 순서입니다</h2>
+      <p id="lv23ResultDescription"></p>
+      <div class="lv23-result-code" aria-hidden="true"><i>&lt;</i><span>/</span><i>&gt;</i></div>
+      <div class="lv23-actions">
+        <button id="lv23NextButton" class="lv23-primary-button" type="button">NEXT</button>
+        <button id="lv23RetryButton" class="lv23-primary-button is-retry" type="button" hidden>RETRY</button>
+        <button id="lv23HomeButton" class="lv23-secondary-button" type="button">HOME</button>
+      </div>
+    </div>
+  </section>
+</section>
