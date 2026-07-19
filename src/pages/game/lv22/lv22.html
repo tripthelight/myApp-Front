@@ -1,0 +1,67 @@
+<section id="lv22Page" class="lv22-page app-view" aria-label="Level 22 echo pulse rhythm game">
+  <div class="lv22-glow" aria-hidden="true"><i></i><i></i><i></i></div>
+
+  <header class="lv22-hud">
+    <div class="lv22-brand"><span>LEVEL 22</span><strong>ECHO PULSE</strong></div>
+    <div class="lv22-status">
+      <span id="lv22PhaseText">READY</span>
+      <i><em id="lv22ProgressBar"></em></i>
+      <b id="lv22RoundText">ROUND 1 / 5</b>
+    </div>
+  </header>
+
+  <main id="lv22Stage" class="lv22-stage">
+    <div id="lv22Blocks" class="lv22-blocks" role="group" aria-label="다섯 개의 리듬 블록">
+      <button class="lv22-block" type="button" data-block="0" aria-label="첫 번째 블록"></button>
+      <button class="lv22-block" type="button" data-block="1" aria-label="두 번째 블록"></button>
+      <button class="lv22-block" type="button" data-block="2" aria-label="세 번째 블록"></button>
+      <button class="lv22-block" type="button" data-block="3" aria-label="네 번째 블록"></button>
+      <button class="lv22-block" type="button" data-block="4" aria-label="다섯 번째 블록"></button>
+    </div>
+    <div class="lv22-beat-rail" aria-hidden="true"><i id="lv22BeatRail"></i></div>
+    <div id="lv22Cue" class="lv22-cue" aria-live="polite">LISTEN</div>
+
+    <div id="lv22RoundTransition" class="lv22-round-transition" hidden aria-live="polite">
+      <span>NEXT</span>
+      <strong id="lv22TransitionRound">ROUND 2</strong>
+      <i aria-hidden="true"><em></em><em></em><em></em><em></em><em></em></i>
+      <small id="lv22TransitionTempo">0.8s BEAT</small>
+    </div>
+  </main>
+
+  <section id="lv22Ready" class="lv22-overlay">
+    <div class="lv22-panel">
+      <span class="lv22-kicker">ECHO PULSE TUTORIAL</span>
+      <h1>두 번째 리듬의<br>마지막 블록을 터치하세요</h1>
+      <p>다섯 블록이 임의의 순서로 두 번 반짝입니다.<br><b>두 번째 연주의 마지막 박자에, 마지막으로 반짝이는 블록을 정확히 터치하세요.</b></p>
+
+      <div class="lv22-demo" aria-hidden="true">
+        <div class="lv22-demo-blocks"><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="lv22-demo-notes"><span>●</span><span>●</span><span>–</span><span>●</span><span>●</span></div>
+        <div class="lv22-demo-finger"></div>
+      </div>
+
+      <div class="lv22-guide-tags">
+        <span><i>1</i> 순서를 듣고 보기</span>
+        <span><i>2</i> 같은 리듬 한 번 더</span>
+        <span><i>3</i> 마지막 박자 터치</span>
+        <span><i>–</i> 무음도 한 박자 유지</span>
+      </div>
+      <button id="lv22StartButton" class="lv22-primary-button" type="button">START</button>
+    </div>
+  </section>
+
+  <section id="lv22Result" class="lv22-overlay" hidden>
+    <div class="lv22-panel is-result">
+      <span id="lv22ResultKicker" class="lv22-kicker">ECHO PULSE COMPLETE</span>
+      <h2 id="lv22ResultTitle">완벽한 마지막 박자입니다</h2>
+      <p id="lv22ResultDescription"></p>
+      <div class="lv22-result-pulse" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="lv22-actions">
+        <button id="lv22NextButton" class="lv22-primary-button" type="button">NEXT</button>
+        <button id="lv22RetryButton" class="lv22-primary-button is-retry" type="button" hidden>RETRY</button>
+        <button id="lv22HomeButton" class="lv22-secondary-button" type="button">HOME</button>
+      </div>
+    </div>
+  </section>
+</section>
