@@ -1,0 +1,46 @@
+<section id="lv24Page" class="lv24-page app-view" aria-label="Level 24 alignment rhythm game">
+  <div class="lv24-ambient" aria-hidden="true"><i></i><i></i><i></i></div>
+
+  <header class="lv24-hud" aria-live="polite">
+    <div class="lv24-brand"><span>LEVEL 24</span><strong>ALIGN / SLICE</strong></div>
+    <div class="lv24-status">
+      <span id="lv24Phase">READY</span>
+      <i><em id="lv24Progress"></em></i>
+      <b id="lv24Count">00 / 31</b>
+    </div>
+  </header>
+
+  <main id="lv24Stage" class="lv24-stage" aria-label="ACTIVE 도형 타이밍 전체 화면 터치 영역">
+    <div id="lv24ClusterLayer" class="lv24-cluster-layer" aria-hidden="true"></div>
+    <p id="lv24Hint" class="lv24-hint">ACTIVE 도형이 한 줄이 되는 순간 화면 아무 곳이나 터치하세요</p>
+  </main>
+
+  <section id="lv24Ready" class="lv24-overlay">
+    <div class="lv24-panel">
+      <span class="lv24-kicker">RHYTHM ALIGNMENT</span>
+      <h1>한 줄이 되는 순간,<br>도형을 잘라내세요.</h1>
+      <div class="lv24-demo" aria-hidden="true">
+        <div class="lv24-demo-line"></div>
+        <div class="lv24-demo-cluster">
+          <i></i><i></i><i></i><i></i><i></i>
+        </div>
+        <div class="lv24-demo-tap"><span></span></div>
+      </div>
+      <p>정렬선과 수직인 화면 밖에서 날아온 도형 중 <b>ACTIVE 묶음이 정확히 한 줄로 멈춘 순간</b> 화면 아무 곳이나 터치하세요.<br>도형 묶음의 출현 간격은 진행될수록 불규칙하게 짧아집니다.</p>
+      <button id="lv24StartButton" class="lv24-primary" type="button">START</button>
+    </div>
+  </section>
+
+  <section id="lv24Result" class="lv24-overlay" hidden>
+    <div class="lv24-panel lv24-result-panel">
+      <span class="lv24-kicker">SEQUENCE COMPLETE</span>
+      <h2 id="lv24ResultTitle">PERFECT ALIGN</h2>
+      <p id="lv24ResultText">모든 도형을 정확한 타이밍에 잘라냈습니다.</p>
+      <div class="lv24-actions">
+        <button id="lv24NextButton" class="lv24-primary" type="button">NEXT</button>
+        <button id="lv24RetryButton" class="lv24-primary" type="button" hidden>RETRY</button>
+        <button id="lv24HomeButton" class="lv24-secondary" type="button">HOME</button>
+      </div>
+    </div>
+  </section>
+</section>
