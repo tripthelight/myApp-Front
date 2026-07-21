@@ -1,0 +1,79 @@
+<section id="lv26Page" class="lv26-page app-view" aria-label="Level 26 three lane sound reaction rhythm game">
+  <div class="lv26-ambient" aria-hidden="true"><i></i><i></i><i></i></div>
+
+  <header class="lv26-hud" aria-live="polite">
+    <div class="lv26-brand"><span>LEVEL 26</span><strong>LISTEN / DRIVE</strong></div>
+    <div class="lv26-status">
+      <span id="lv26Phase">READY</span>
+      <i><em id="lv26Progress"></em></i>
+      <b id="lv26Time">01:00</b>
+    </div>
+  </header>
+
+  <main id="lv26Stage" class="lv26-stage" aria-label="소리를 듣고 왼쪽, 가운데, 오른쪽 길을 터치하는 게임 영역">
+    <div class="lv26-road-shell" aria-hidden="true">
+      <div class="lv26-road-glow"></div>
+      <div id="lv26Road" class="lv26-road">
+        <button class="lv26-lane lv26-lane-left" type="button" data-lane="0" aria-label="왼쪽 길">
+          <span class="lv26-lane-label">LEFT</span>
+        </button>
+        <button class="lv26-lane lv26-lane-center" type="button" data-lane="1" aria-label="가운데 길">
+          <span class="lv26-lane-label">CENTER</span>
+        </button>
+        <button class="lv26-lane lv26-lane-right" type="button" data-lane="2" aria-label="오른쪽 길">
+          <span class="lv26-lane-label">RIGHT</span>
+        </button>
+        <svg class="lv26-road-edges" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          <line class="lv26-road-edge-line" x1="22" y1="0" x2="0" y2="100"></line>
+          <line class="lv26-road-edge-line" x1="78" y1="0" x2="100" y2="100"></line>
+        </svg>
+        <svg class="lv26-divider" viewBox="0 -20 100 140" preserveAspectRatio="none" aria-hidden="true">
+          <line class="lv26-divider-line" x1="42.13" y1="-20" x2="31.87" y2="120" pathLength="100"></line>
+          <line class="lv26-divider-line" x1="57.87" y1="-20" x2="68.13" y2="120" pathLength="100"></line>
+        </svg>
+        <div id="lv26Runner" class="lv26-runner lane-1"><span></span></div>
+      </div>
+    </div>
+    <p id="lv26Hint" class="lv26-hint">세 가지 길의 소리를 기억하세요</p>
+    <div id="lv26Judge" class="lv26-judge" aria-live="polite"></div>
+  </main>
+
+  <section id="lv26Ready" class="lv26-overlay">
+    <div class="lv26-panel">
+      <span class="lv26-kicker">SOUND REACTION</span>
+      <h1>소리를 듣고<br>같은 길로 이동하세요.</h1>
+      <div class="lv26-demo" aria-hidden="true">
+        <div class="lv26-demo-road">
+          <i></i><i></i>
+          <span class="lv26-demo-runner"></span>
+          <b class="lv26-demo-signal"><em></em><em></em><em></em></b>
+        </div>
+      </div>
+      <p><b>왼쪽·가운데·오른쪽 길은 서로 다른 음</b>을 냅니다.<br>먼저 세 음을 알려드린 뒤, 들린 음과 같은 길을 빠르게 터치하세요. 게임은 1분 동안 점점 빨라집니다.</p>
+      <button id="lv26StartButton" class="lv26-primary" type="button">START</button>
+    </div>
+  </section>
+
+  <section id="lv26Lesson" class="lv26-lesson" hidden aria-live="polite">
+    <span>LISTEN</span>
+    <strong id="lv26LessonTitle">LEFT</strong>
+    <small id="lv26LessonStep">1 / 3</small>
+  </section>
+
+  <section id="lv26Result" class="lv26-overlay" hidden>
+    <div class="lv26-panel lv26-result-panel">
+      <span class="lv26-kicker">ONE MINUTE COMPLETE</span>
+      <h2 id="lv26ResultTitle">PERFECT DRIVE</h2>
+      <p id="lv26ResultText">모든 도로음을 정확하게 따라갔습니다.</p>
+      <div class="lv26-result-stats">
+        <span><small>SUCCESS</small><b id="lv26SuccessCount">0</b></span>
+        <span><small>MISS</small><b id="lv26FailCount">0</b></span>
+      </div>
+      <div class="lv26-actions">
+        <button id="lv26NextButton" class="lv26-primary" type="button">NEXT</button>
+        <button id="lv26RetryButton" class="lv26-primary" type="button" hidden>RETRY</button>
+        <button id="lv26HomeButton" class="lv26-secondary" type="button">HOME</button>
+      </div>
+    </div>
+  </section>
+</section>
