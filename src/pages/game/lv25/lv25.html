@@ -1,0 +1,54 @@
+<section id="lv25Page" class="lv25-page app-view" aria-label="Level 25 rectangle timing rhythm game">
+  <div class="lv25-ambient" aria-hidden="true"><i></i><i></i><i></i></div>
+
+  <header class="lv25-hud" aria-live="polite">
+    <div class="lv25-brand"><span>LEVEL 25</span><strong>PASS / MATCH</strong></div>
+    <div class="lv25-status">
+      <span id="lv25Phase">READY</span>
+      <i><em id="lv25Progress"></em></i>
+      <b id="lv25RoundText">ROUND 1 / 3</b>
+    </div>
+  </header>
+
+  <main id="lv25Stage" class="lv25-stage" aria-label="사각형이 중앙 기준 영역을 지날 때 터치하는 게임 영역">
+    <div class="lv25-third-grid" aria-hidden="true"><i></i><i></i></div>
+    <div id="lv25Target" class="lv25-target" aria-hidden="true"></div>
+    <div id="lv25RunnerLayer" class="lv25-runner-layer" aria-hidden="true"></div>
+    <div id="lv25TouchPulse" class="lv25-touch-pulse" aria-hidden="true"></div>
+    <p id="lv25Hint" class="lv25-hint">마지막 사각형이 화면 가운데 영역을 지날 때 터치하세요</p>
+  </main>
+
+  <section id="lv25Ready" class="lv25-overlay">
+    <div class="lv25-panel">
+      <span class="lv25-kicker">REACTION RHYTHM</span>
+      <h1>같은 색이 겹치는<br>한순간을 잡으세요.</h1>
+      <div class="lv25-demo" aria-hidden="true">
+        <div class="lv25-demo-grid"><i></i><i></i></div>
+        <div class="lv25-demo-target"></div>
+        <div class="lv25-demo-pack"><i></i><i></i><i></i></div>
+        <div class="lv25-demo-touch"><span></span></div>
+      </div>
+      <p>가로 화면에서는 오른쪽에서 왼쪽으로, 세로 화면에서는 아래에서 위로 사각형들이 지나갑니다.<br><b>맨 마지막 사각형이 화면의 가운데 1/3 영역을 지나는 동안</b> 화면 아무 곳이나 한 번 터치하세요.</p>
+      <button id="lv25StartButton" class="lv25-primary" type="button">START</button>
+    </div>
+  </section>
+
+  <section id="lv25RoundOverlay" class="lv25-round-overlay" hidden aria-live="polite">
+    <span>NEXT FLOW</span>
+    <strong id="lv25RoundTitle">ROUND 2</strong>
+    <small id="lv25RoundSub">4 RECTANGLES</small>
+  </section>
+
+  <section id="lv25Result" class="lv25-overlay" hidden>
+    <div class="lv25-panel lv25-result-panel">
+      <span class="lv25-kicker">ALL ROUNDS COMPLETE</span>
+      <h2 id="lv25ResultTitle">PERFECT PASS</h2>
+      <p id="lv25ResultText">모든 마지막 사각형을 정확한 순간에 잡았습니다.</p>
+      <div class="lv25-actions">
+        <button id="lv25NextButton" class="lv25-primary" type="button">NEXT</button>
+        <button id="lv25RetryButton" class="lv25-primary" type="button" hidden>RETRY</button>
+        <button id="lv25HomeButton" class="lv25-secondary" type="button">HOME</button>
+      </div>
+    </div>
+  </section>
+</section>
