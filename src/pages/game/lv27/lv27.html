@@ -1,0 +1,119 @@
+<section id="lv27Page" class="lv27-page app-view" aria-label="Level 27 memory rhythm game">
+  <div class="lv27-ambient" aria-hidden="true"><i></i><i></i><i></i></div>
+
+  <header class="lv27-hud" aria-live="polite">
+    <div class="lv27-brand"><span>LEVEL 27</span><strong>REMEMBER / TAP</strong></div>
+    <div class="lv27-status">
+      <span id="lv27Phase">READY</span>
+      <i><em id="lv27RoundProgress"></em></i>
+      <b id="lv27Round">0 / 4</b>
+    </div>
+  </header>
+
+  <main id="lv27Stage" class="lv27-stage" aria-label="기억한 네 박자에 맞춰 화면을 터치하는 게임 영역">
+    <div id="lv27Blank" class="lv27-blank">
+      <div class="lv27-listen-orbit" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      <p id="lv27Hint">네 박자의 간격을 기억하세요</p>
+    </div>
+
+    <section id="lv27Scene" class="lv27-scene" hidden>
+      <div class="lv27-scene-head">
+        <span id="lv27SceneIndex">SCENE 1</span>
+        <strong id="lv27SceneName">LOADING</strong>
+      </div>
+
+      <div id="lv27LoadingScene" class="lv27-scene-card lv27-loading-scene" hidden>
+        <div class="lv27-window-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+        <div class="lv27-loading-copy"><span>LOADING MEMORY</span><b id="lv27LoadingPercent">0%</b></div>
+        <div class="lv27-progress-track"><i id="lv27LoadingFill"></i>
+          <span class="lv27-rhythm-markers" aria-hidden="true">
+            <i data-marker="0"></i><i data-marker="1"></i><i data-marker="2"></i><i data-marker="3"></i>
+          </span>
+        </div>
+        <div class="lv27-loading-blocks" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      </div>
+
+      <div id="lv27MonsterScene" class="lv27-scene-card lv27-monster-scene" hidden>
+        <div id="lv27Monster" class="lv27-monster" aria-hidden="true">
+          <i class="lv27-monster-horn left"></i><i class="lv27-monster-horn right"></i>
+          <span class="lv27-monster-eye left"></span><span class="lv27-monster-eye right"></span>
+          <b></b>
+        </div>
+        <div class="lv27-hp-label"><span>PASTEL SLIME</span><b id="lv27HpPercent">100%</b></div>
+        <div class="lv27-hp-track"><i id="lv27HpFill"></i>
+          <span class="lv27-rhythm-markers" data-direction="reverse" aria-hidden="true">
+            <i data-marker="0"></i><i data-marker="1"></i><i data-marker="2"></i><i data-marker="3"></i>
+          </span>
+        </div>
+      </div>
+
+      <div id="lv27SaberScene" class="lv27-scene-card lv27-saber-scene" hidden>
+        <div class="lv27-stars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="lv27-saber" aria-hidden="true"><span class="lv27-saber-hilt"></span><i id="lv27SaberBlade" class="lv27-saber-blade"></i>
+          <span class="lv27-rhythm-markers lv27-saber-markers" aria-hidden="true">
+            <i data-marker="0"></i><i data-marker="1"></i><i data-marker="2"></i><i data-marker="3"></i>
+          </span>
+        </div>
+        <p>ENERGY BLADE</p>
+      </div>
+
+
+      <div id="lv27VolumeScene" class="lv27-scene-card lv27-volume-scene" hidden>
+        <div class="lv27-volume-copy">
+          <span>VOLUME SIGNAL</span>
+          <b id="lv27VolumePercent">0%</b>
+        </div>
+        <div id="lv27VolumeBars" class="lv27-volume-bars" aria-label="음 길이에 비례한 네 터치 지점이 표시된 볼륨 신호">
+          <i data-volume-bar="0" style="--lv27-volume-height:18.00%"></i><i data-volume-bar="1" style="--lv27-volume-height:20.10%"></i><i data-volume-bar="2" style="--lv27-volume-height:22.21%"></i><i data-volume-bar="3" style="--lv27-volume-height:24.31%"></i><i data-volume-bar="4" style="--lv27-volume-height:26.41%"></i><i data-volume-bar="5" style="--lv27-volume-height:28.51%"></i><i data-volume-bar="6" style="--lv27-volume-height:30.62%"></i><i data-volume-bar="7" style="--lv27-volume-height:32.72%"></i><i data-volume-bar="8" style="--lv27-volume-height:34.82%"></i><i data-volume-bar="9" style="--lv27-volume-height:36.92%"></i><i data-volume-bar="10" style="--lv27-volume-height:39.03%"></i><i data-volume-bar="11" style="--lv27-volume-height:41.13%"></i><i data-volume-bar="12" style="--lv27-volume-height:43.23%"></i><i data-volume-bar="13" style="--lv27-volume-height:45.33%"></i><i data-volume-bar="14" style="--lv27-volume-height:47.44%"></i><i data-volume-bar="15" style="--lv27-volume-height:49.54%"></i><i data-volume-bar="16" style="--lv27-volume-height:51.64%"></i><i data-volume-bar="17" style="--lv27-volume-height:53.74%"></i><i data-volume-bar="18" style="--lv27-volume-height:55.85%"></i><i data-volume-bar="19" style="--lv27-volume-height:57.95%"></i><i data-volume-bar="20" style="--lv27-volume-height:60.05%"></i><i data-volume-bar="21" style="--lv27-volume-height:62.15%"></i><i data-volume-bar="22" style="--lv27-volume-height:64.26%"></i><i data-volume-bar="23" style="--lv27-volume-height:66.36%"></i><i data-volume-bar="24" style="--lv27-volume-height:68.46%"></i><i data-volume-bar="25" style="--lv27-volume-height:70.56%"></i><i data-volume-bar="26" style="--lv27-volume-height:72.67%"></i><i data-volume-bar="27" style="--lv27-volume-height:74.77%"></i><i data-volume-bar="28" style="--lv27-volume-height:76.87%"></i><i data-volume-bar="29" style="--lv27-volume-height:78.97%"></i><i data-volume-bar="30" style="--lv27-volume-height:81.08%"></i><i data-volume-bar="31" style="--lv27-volume-height:83.18%"></i><i data-volume-bar="32" style="--lv27-volume-height:85.28%"></i><i data-volume-bar="33" style="--lv27-volume-height:87.38%"></i><i data-volume-bar="34" style="--lv27-volume-height:89.49%"></i><i data-volume-bar="35" style="--lv27-volume-height:91.59%"></i><i data-volume-bar="36" style="--lv27-volume-height:93.69%"></i><i data-volume-bar="37" style="--lv27-volume-height:95.79%"></i><i data-volume-bar="38" style="--lv27-volume-height:97.90%"></i><i data-volume-bar="39" style="--lv27-volume-height:100.00%"></i>
+        </div>
+        <p>BUILD THE SIGNAL</p>
+      </div>
+
+      <div class="lv27-beat-dots" aria-label="네 박자 진행 상태">
+        <i data-beat="0"></i><i data-beat="1"></i><i data-beat="2"></i><i data-beat="3"></i>
+      </div>
+      <p id="lv27SceneHint" class="lv27-scene-hint">기억한 타이밍에 화면을 터치하세요</p>
+    </section>
+
+    <div id="lv27Judge" class="lv27-judge" aria-live="polite"></div>
+    <button id="lv27TouchLayer" class="lv27-touch-layer" type="button" aria-label="리듬 터치 영역" disabled></button>
+  </main>
+
+  <section id="lv27Ready" class="lv27-overlay">
+    <div class="lv27-panel">
+      <span class="lv27-kicker">MEMORY RHYTHM</span>
+      <h1>네 박자를 기억하고<br>장면의 순간을 완성하세요.</h1>
+      <div class="lv27-demo" aria-hidden="true">
+        <div class="lv27-demo-beats"><i></i><i></i><i></i><i></i></div>
+        <div class="lv27-demo-track"><span></span></div>
+        <div class="lv27-demo-hand"><i></i></div>
+      </div>
+      <p>먼저 <b>간격이 서로 다른 네 박자</b>를 들려드립니다.<br>그 리듬을 기억한 뒤, 네 가지 장면에서 같은 타이밍으로 화면을 터치하세요.</p>
+      <button id="lv27StartButton" class="lv27-primary" type="button">START</button>
+    </div>
+  </section>
+
+  <section id="lv27Lesson" class="lv27-lesson" hidden aria-live="polite">
+    <span>HOW TO PLAY</span>
+    <strong id="lv27LessonTitle">LISTEN</strong>
+    <div class="lv27-lesson-visual" aria-hidden="true"><i></i><i></i><i></i><i></i><b></b></div>
+    <small id="lv27LessonText">네 박자의 간격을 기억하세요</small>
+  </section>
+
+  <section id="lv27Result" class="lv27-overlay" hidden>
+    <div class="lv27-panel lv27-result-panel">
+      <span class="lv27-kicker">FOUR SCENES COMPLETE</span>
+      <h2 id="lv27ResultTitle">PERFECT MEMORY</h2>
+      <p id="lv27ResultText">모든 박자를 정확한 타이밍에 완성했습니다.</p>
+      <div class="lv27-result-stats">
+        <span><small>PERFECT</small><b id="lv27SuccessCount">0</b></span>
+        <span><small>MISS</small><b id="lv27FailCount">0</b></span>
+      </div>
+      <div class="lv27-actions">
+        <button id="lv27NextButton" class="lv27-primary" type="button">NEXT</button>
+        <button id="lv27RetryButton" class="lv27-primary" type="button" hidden>RETRY</button>
+        <button id="lv27HomeButton" class="lv27-secondary" type="button">HOME</button>
+      </div>
+    </div>
+  </section>
+</section>
