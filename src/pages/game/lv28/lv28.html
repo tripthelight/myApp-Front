@@ -1,0 +1,57 @@
+<section id="lv28Page" class="lv28-page app-view" aria-label="Level 28 falling rhythm game">
+  <div class="lv28-ambient" aria-hidden="true"><i></i><i></i><i></i></div>
+
+  <header class="lv28-hud" aria-live="polite">
+    <div class="lv28-brand"><span>LEVEL 28</span><strong>LISTEN / CATCH</strong></div>
+    <div class="lv28-status">
+      <span id="lv28Phase">READY</span>
+      <i><em id="lv28Progress"></em></i>
+      <b id="lv28Round">0 / 4</b>
+    </div>
+  </header>
+
+  <main id="lv28Stage" class="lv28-stage" aria-label="떨어지는 막대를 순서대로 터치하는 게임 영역">
+    <div id="lv28LaneGrid" class="lv28-lane-grid"></div>
+    <div class="lv28-catch-line" aria-hidden="true"><span>CATCH ZONE</span></div>
+    <p id="lv28Hint" class="lv28-hint">먼저 리듬을 기억하세요</p>
+    <div id="lv28Judge" class="lv28-judge" aria-live="polite"></div>
+  </main>
+
+  <section id="lv28Ready" class="lv28-overlay">
+    <div class="lv28-panel">
+      <span class="lv28-kicker">REACTION RHYTHM</span>
+      <h1>리듬을 기억하고<br>떨어지는 막대를 잡으세요.</h1>
+      <div class="lv28-demo" aria-hidden="true">
+        <div class="lv28-demo-rail"><i></i><i></i></div>
+        <div class="lv28-demo-notes"><i></i><i></i></div>
+        <span class="lv28-demo-touch"></span>
+      </div>
+      <p>각 ROUND마다 먼저 음의 <b>순서와 간격</b>을 들려드립니다.<br>막대가 떨어지기 시작하면, 들었던 순서대로 터치하세요.</p>
+      <button id="lv28StartButton" class="lv28-primary" type="button">START</button>
+    </div>
+  </section>
+
+  <section id="lv28Lesson" class="lv28-lesson" hidden aria-live="polite">
+    <span>HOW TO PLAY</span>
+    <strong id="lv28LessonTitle">LISTEN</strong>
+    <div class="lv28-lesson-board" aria-hidden="true"><i></i><i></i><b></b></div>
+    <small id="lv28LessonText">두 음의 순서와 간격을 기억하세요</small>
+  </section>
+
+  <section id="lv28Result" class="lv28-overlay" hidden>
+    <div class="lv28-panel lv28-result-panel">
+      <span class="lv28-kicker">FOUR ROUNDS COMPLETE</span>
+      <h2 id="lv28ResultTitle">PERFECT CATCH</h2>
+      <p id="lv28ResultText">모든 막대를 정확한 순서로 잡았습니다.</p>
+      <div class="lv28-result-stats">
+        <span><small>CATCH</small><b id="lv28SuccessCount">0</b></span>
+        <span><small>MISS</small><b id="lv28FailCount">0</b></span>
+      </div>
+      <div class="lv28-actions">
+        <button id="lv28NextButton" class="lv28-primary" type="button">NEXT</button>
+        <button id="lv28RetryButton" class="lv28-primary" type="button" hidden>RETRY</button>
+        <button id="lv28HomeButton" class="lv28-secondary" type="button">HOME</button>
+      </div>
+    </div>
+  </section>
+</section>
