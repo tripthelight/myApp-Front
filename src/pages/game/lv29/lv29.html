@@ -1,0 +1,70 @@
+<section id="lv29Page" class="lv29-page app-view" aria-label="Level 29 turntable rhythm game">
+  <div class="lv29-ambient" aria-hidden="true"><i></i><i></i><i></i></div>
+
+  <header class="lv29-hud" aria-live="polite">
+    <div class="lv29-brand"><span>LEVEL 29</span><strong>SPIN / TOUCH</strong></div>
+    <div class="lv29-status">
+      <span id="lv29Phase">READY</span>
+      <i><em id="lv29Progress"></em></i>
+      <b id="lv29Time">30.0</b>
+    </div>
+  </header>
+
+  <main id="lv29Stage" class="lv29-stage">
+    <div id="lv29Deck" class="lv29-deck" aria-label="회전하는 LP판">
+      <div class="lv29-platter-shadow" aria-hidden="true"></div>
+      <div id="lv29Disc" class="lv29-disc">
+        <div class="lv29-grooves" aria-hidden="true"></div>
+        <div class="lv29-center-art" aria-hidden="true">
+          <i></i><i></i><i></i><i></i><b></b>
+        </div>
+        <div id="lv29Nodes" class="lv29-nodes"></div>
+      </div>
+      <div class="lv29-spindle" aria-hidden="true"></div>
+      <div class="lv29-touch-line" aria-hidden="true"><span></span><b>TOUCH</b></div>
+    </div>
+    <div id="lv29Judge" class="lv29-judge" aria-live="polite"></div>
+    <p id="lv29Hint" class="lv29-hint">라인에 도착하는 노드를 터치하세요</p>
+  </main>
+
+  <section id="lv29Ready" class="lv29-overlay">
+    <div class="lv29-panel">
+      <span class="lv29-kicker">TURNTABLE RHYTHM</span>
+      <h1>회전하는 노드가<br>터치 라인에 닿는 순간 누르세요.</h1>
+      <div class="lv29-demo" aria-hidden="true">
+        <div class="lv29-demo-disc"><i></i><b></b><span></span></div>
+        <div class="lv29-demo-line"></div>
+        <div class="lv29-demo-touch"></div>
+      </div>
+      <p>LP판은 점점 빨라지고 노드도 늘어납니다.<br><b>라인에 닿기 전</b>이나 <b>지나간 뒤</b>의 터치는 실패입니다.</p>
+      <button id="lv29StartButton" class="lv29-primary" type="button">START</button>
+    </div>
+  </section>
+
+  <section id="lv29Lesson" class="lv29-lesson" hidden aria-live="polite">
+    <span>HOW TO PLAY</span>
+    <strong id="lv29LessonTitle">WATCH</strong>
+    <div class="lv29-lesson-board" aria-hidden="true">
+      <div class="lv29-lesson-disc"><i></i><b></b></div>
+      <em></em><u></u>
+    </div>
+    <small id="lv29LessonText">회전하는 노드를 바라보세요</small>
+  </section>
+
+  <section id="lv29Result" class="lv29-overlay" hidden>
+    <div class="lv29-panel lv29-result-panel">
+      <span class="lv29-kicker">30 SECONDS COMPLETE</span>
+      <h2 id="lv29ResultTitle">PERFECT SPIN</h2>
+      <p id="lv29ResultText">모든 노드를 정확한 타이밍에 터치했습니다.</p>
+      <div class="lv29-result-stats">
+        <span><small>HIT</small><b id="lv29SuccessCount">0</b></span>
+        <span><small>MISS</small><b id="lv29FailCount">0</b></span>
+      </div>
+      <div class="lv29-actions">
+        <button id="lv29NextButton" class="lv29-primary" type="button">NEXT</button>
+        <button id="lv29RetryButton" class="lv29-primary" type="button" hidden>RETRY</button>
+        <button id="lv29HomeButton" class="lv29-secondary" type="button">HOME</button>
+      </div>
+    </div>
+  </section>
+</section>
