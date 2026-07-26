@@ -164,7 +164,7 @@
 .is-success-finale .lv15-ambient { filter: saturate(1.18); }
 .is-fail-finale .lv15-wave { opacity: .3; }
 
-@media (prefers-color-scheme: dark) {
+html[data-theme="dark"] {
   #lv15Page {
     --lv15-bg: #171722; --lv15-bg-deep: #15211f; --lv15-ink: #f0edf7; --lv15-muted: #aaa6ba;
     --lv15-panel: rgba(35,34,48,.72); --lv15-line: rgba(225,218,244,.12);
@@ -421,7 +421,7 @@
   }
 }
 
-@media (prefers-color-scheme: dark) {
+html[data-theme="dark"] {
   .lv15-phase-copy span {
     color: #9bdcc7;
   }

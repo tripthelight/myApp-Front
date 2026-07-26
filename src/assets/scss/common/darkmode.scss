@@ -3,9 +3,7 @@
   --bottomSheetColor: #fff;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bottomSheetBg: #fff;
-    --bottomSheetColor: #000;
-  }
+html[data-theme="dark"] {
+  --bottomSheetBg: #fff;
+  --bottomSheetColor: #000;
 }

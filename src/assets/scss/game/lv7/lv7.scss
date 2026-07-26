@@ -287,7 +287,7 @@
   .lv7-panel > p { margin-bottom: 12px; }
 }
 
-@media (prefers-color-scheme: dark) {
+html[data-theme="dark"] {
   .lv7-page {
     --bg: #171925;
     --bg-deep: #222638;

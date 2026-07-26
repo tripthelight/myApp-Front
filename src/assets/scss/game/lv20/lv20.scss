@@ -115,7 +115,7 @@
 @media (max-width:560px){.lv20-brand strong{font-size:14px}.lv20-progress{width:55vw;grid-template-columns:1fr auto}.lv20-progress>span{display:none}.lv20-panel{border-radius:22px}.lv20-guide-tags span{font-size:9px}.lv20-line{stroke-width:4px}}
 @media (max-height:650px){.lv20-hud{min-height:60px}.lv20-panel{padding:18px}.lv20-demo{height:116px}.lv20-panel p{margin:8px 0 10px}.lv20-guide-tags{margin-bottom:10px}.lv20-primary-button,.lv20-secondary-button{height:42px}}
 @media (prefers-reduced-motion:reduce){.lv20-page *{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}}
-@media (prefers-color-scheme:dark){
+html[data-theme="dark"] {
   .lv20-page{--ink:#eef1ff;--muted:rgba(229,233,255,.67);background:radial-gradient(circle at 14% 17%,rgba(174,88,130,.22),transparent 31%),radial-gradient(circle at 86% 22%,rgba(72,119,170,.27),transparent 31%),radial-gradient(circle at 52% 92%,rgba(62,138,115,.21),transparent 34%),linear-gradient(145deg,#151824,#1d2232 52%,#172725)}
   .lv20-line{stroke:rgba(239,242,255,.88);filter:drop-shadow(0 4px 12px rgba(0,0,0,.35))}.lv20-overlay{background:rgba(15,18,28,.59)}.lv20-panel{background:rgba(31,36,53,.78);border-color:rgba(255,255,255,.12);box-shadow:0 28px 80px rgba(0,0,0,.36)}
   .lv20-demo{background:linear-gradient(180deg,rgba(44,52,76,.83),rgba(31,36,53,.93));border-color:rgba(255,255,255,.1)}.lv20-demo polyline{stroke:#e4e8f7}.lv20-guide-tags span{background:rgba(255,255,255,.08);color:#c7cee8}.lv20-guide-tags i{background:rgba(255,255,255,.1)}.lv20-secondary-button{color:#d6dcf2;background:rgba(255,255,255,.09)}.lv20-feedback{color:#eef1ff;background:rgba(31,36,53,.84);border-color:rgba(255,255,255,.12);box-shadow:0 22px 60px rgba(0,0,0,.34)}.lv20-feedback.is-good{background:linear-gradient(180deg,rgba(35,61,56,.92),rgba(31,36,53,.86))}.lv20-feedback.is-bad{background:linear-gradient(180deg,rgba(72,39,52,.92),rgba(31,36,53,.86))}
@@ -167,7 +167,7 @@
   72% { transform: translateX(-1px) scale(1); }
 }
 
-@media (prefers-color-scheme: dark) {
+html[data-theme="dark"] {
   .lv20-stage.is-feedback-good .lv20-line {
     stroke: #7ce8c1;
     filter:

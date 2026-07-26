@@ -1,5 +1,94 @@
 <section id="mainScorePage" class="main-score-page" aria-label="레벨 선택 악보">
   <div class="score-ambient" aria-hidden="true"><i></i><i></i><i></i></div>
 
+  <button
+    id="mainMenuButton"
+    class="main-menu-button"
+    type="button"
+    aria-label="메뉴 열기"
+    aria-controls="mainSidebar"
+    aria-expanded="false"
+  >
+    <span></span><span></span><span></span>
+  </button>
+
+  <div id="mainSidebarBackdrop" class="main-sidebar-backdrop" hidden></div>
+
+  <aside id="mainSidebar" class="main-sidebar" aria-hidden="true" aria-label="게임 소개 및 설정">
+    <div class="main-sidebar__header">
+      <div>
+        <span class="main-sidebar__eyebrow">RHYTHM MENU</span>
+        <h1>About & Settings</h1>
+      </div>
+      <button id="mainSidebarCloseButton" class="main-sidebar__close" type="button" aria-label="메뉴 닫기">×</button>
+    </div>
+
+    <div class="main-sidebar__content">
+      <section class="main-sidebar__section" aria-labelledby="aboutTitle">
+        <span class="main-sidebar__section-icon" aria-hidden="true">♪</span>
+        <div>
+          <h2 id="aboutTitle">About</h2>
+          <p>
+            이 게임은 100% ChatGPT를 활용해 제작했습니다. 누구나 저장소를 Fork하여 원본 코드에 영향을 주지 않고
+            자유롭게 수정하거나 실험할 수 있습니다. 변경 사항을 원본 저장소에 반영하고 싶다면 Pull Request를 보내 주세요.
+          </p>
+          <a href="https://github.com/tripthelight/myApp-Front" target="_blank" rel="noopener noreferrer">
+            <span>GitHub Repository</span><b aria-hidden="true">↗</b>
+          </a>
+        </div>
+      </section>
+
+      <section class="main-sidebar__section main-sidebar__settings" aria-labelledby="settingsTitle">
+        <span class="main-sidebar__section-icon" aria-hidden="true">♬</span>
+        <div class="main-sidebar__setting-copy">
+          <h2 id="settingsTitle">Settings</h2>
+          <label class="theme-toggle" for="darkModeToggle">
+            <span>
+              <b>Dark mode</b>
+              <small id="darkModeStatus">기기 설정에 맞춰 적용됩니다.</small>
+            </span>
+            <input id="darkModeToggle" type="checkbox" role="switch" aria-describedby="darkModeStatus" />
+            <i aria-hidden="true"><em>☀</em><em>☾</em></i>
+          </label>
+        </div>
+      </section>
+
+      <section class="main-sidebar__section main-sidebar__language" aria-labelledby="languageTitle">
+        <span class="main-sidebar__section-icon" aria-hidden="true">文</span>
+        <div class="language-setting">
+          <h2 id="languageTitle">Language</h2>
+          <div class="language-picker">
+            <button id="languageButton" class="language-picker__button" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="languageList">
+              <span><b>Language</b><small id="languageCurrent">System Language</small></span>
+              <i aria-hidden="true">⌃</i>
+            </button>
+            <div id="languageList" class="language-picker__list" role="listbox" aria-label="Language" hidden></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="pwaInstallSection" class="main-sidebar__section main-sidebar__pwa" aria-labelledby="pwaInstallTitle" hidden>
+        <span class="main-sidebar__section-icon" aria-hidden="true">↧</span>
+        <div>
+          <h2 id="pwaInstallTitle">Install on iPhone</h2>
+          <p id="pwaInstallStatus">Safari의 공유 메뉴에서 홈 화면에 추가할 수 있습니다.</p>
+          <ol class="pwa-install-steps">
+            <li>Safari 하단의 공유 버튼을 누릅니다.</li>
+            <li><b>홈 화면에 추가</b>를 선택합니다.</li>
+            <li>오른쪽 위의 <b>추가</b>를 누릅니다.</li>
+          </ol>
+          <p id="pwaSecurityWarning" class="pwa-security-warning" hidden>
+            현재 연결은 iPhone에서 안전한 HTTPS로 인정되지 않아 오프라인 기능이 비활성화됩니다. PC에서
+            <code>npm run setup:https</code>를 실행하고 생성된 루트 인증서를 iPhone에서 신뢰해 주세요.
+          </p>
+        </div>
+      </section>
+    </div>
+
+    <div class="main-sidebar__footer" aria-hidden="true">
+      <span>𝄞</span><i></i><i></i><i></i><i></i><i></i>
+    </div>
+  </aside>
+
   <main id="scoreSheet" class="score-sheet" aria-label="30개 레벨이 배치된 악보"></main>
 </section>

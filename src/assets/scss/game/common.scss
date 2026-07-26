@@ -116,7 +116,7 @@
 .lv4-result-buttons,
 .lv5-result-buttons { display:flex; justify-content:center; gap:10px; flex-wrap:wrap; }
 
-@media (prefers-color-scheme: dark) {
+html[data-theme="dark"] {
   .app-view {
     --game-bg:#181a24;
     --game-ink:#eef0f8;

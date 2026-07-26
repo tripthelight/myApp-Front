@@ -4,9 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite --host 127.0.0.1 --port 5173",
+    "dev": "vite --host 0.0.0.0 --port 5173",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "setup:https": "node scripts/setup-lan-https.mjs",
+    "dev:https": "node scripts/start-https.mjs"
   },
   "devDependencies": {
     "sass": "^1.101.0",

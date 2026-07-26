@@ -126,7 +126,7 @@
   .lv17-floor-timer { grid-column:1 / -1; }
 }
 
-@media (prefers-color-scheme: dark) {
+html[data-theme="dark"] {
   #lv17Page { --ink:#edf0f8; --muted:#aab2c3; --panel:rgba(29,34,47,.84); --line:rgba(231,235,246,.11); background:radial-gradient(circle at 18% 12%,rgba(148,83,112,.3),transparent 27%),radial-gradient(circle at 84% 20%,rgba(74,104,154,.32),transparent 30%),radial-gradient(circle at 60% 88%,rgba(65,125,108,.25),transparent 31%),linear-gradient(145deg,#171b25,#202635 55%,#1c202b); }
   .lv17-status,.lv17-panel,.lv17-rules span,.lv17-secondary { background:rgba(31,37,51,.66); }
   .lv17-overlay { background:rgba(15,18,25,.56); }
@@ -265,7 +265,7 @@
   .lv17-touch-rail::after { display: none; }
 }
 
-@media (prefers-color-scheme: dark) {
+html[data-theme="dark"] {
   .lv17-touch-rail::before {
     background: linear-gradient(90deg,
       rgba(207, 218, 242, .06),

@@ -34,7 +34,7 @@
 .lv24-primary,.lv24-secondary{min-width:132px;height:48px;margin-top:24px;padding:0 28px;border-radius:99px;font-size:12px;font-weight:850;letter-spacing:.16em;cursor:pointer;transition:transform .18s ease,box-shadow .18s ease,background .18s ease}.lv24-primary{border:0;color:#fff;background:linear-gradient(135deg,#9b8bd8,#7968bc);box-shadow:0 12px 28px rgba(121,104,188,.26)}.lv24-secondary{border:1px solid var(--lv24-line);color:var(--lv24-text);background:rgba(255,255,255,.42)}.lv24-primary:hover,.lv24-secondary:hover{transform:translateY(-2px)}.lv24-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}.lv24-actions button{margin-top:24px}.lv24-result-panel{width:min(90vw,530px)}
 @media (max-width:620px){.lv24-status{min-width:48vw;grid-template-columns:auto minmax(42px,1fr)}.lv24-status b{display:none}.lv24-stage::after{inset:5% 4%}.lv24-hint{max-width:86vw;overflow:hidden;text-overflow:ellipsis}.lv24-panel{padding:26px 20px}.lv24-demo{height:140px}.lv24-primary,.lv24-secondary{min-width:116px}}
 @media (prefers-reduced-motion:reduce){.lv24-ambient i,.lv24-demo-cluster i,.lv24-demo-tap{animation-duration:8s}.lv24-piece{transition-duration:.01ms!important}}
-@media (prefers-color-scheme:dark){.lv24-page{--lv24-bg:#17151e;--lv24-panel:rgba(37,34,48,.8);--lv24-text:#eeeaf6;--lv24-muted:#aaa3b8;--lv24-line:rgba(231,225,245,.13);--lv24-accent:#b5a5f0;--lv24-shadow:0 26px 80px rgba(0,0,0,.38)}.lv24-overlay{background:rgba(23,21,30,.68)}.lv24-stage::after{border-color:rgba(255,255,255,.055)}.lv24-secondary{background:rgba(255,255,255,.05)}.lv24-ambient i{opacity:.17}}
+html[data-theme="dark"] {.lv24-page{--lv24-bg:#17151e;--lv24-panel:rgba(37,34,48,.8);--lv24-text:#eeeaf6;--lv24-muted:#aaa3b8;--lv24-line:rgba(231,225,245,.13);--lv24-accent:#b5a5f0;--lv24-shadow:0 26px 80px rgba(0,0,0,.38)}.lv24-overlay{background:rgba(23,21,30,.68)}.lv24-stage::after{border-color:rgba(255,255,255,.055)}.lv24-secondary{background:rgba(255,255,255,.05)}.lv24-ambient i{opacity:.17}}
 
 /* Multi-bundle positioning */
 .lv24-cluster-layer {
@@ -174,7 +174,7 @@
     height:clamp(205px,48vmin,310px);
   }
 }
-@media (prefers-color-scheme:dark) {
+html[data-theme="dark"] {
   .lv24-cluster.is-passive-target { opacity:.28; filter:saturate(.35) brightness(.9); }
   .lv24-cluster.is-active-target .lv24-cluster-guide {
     background:linear-gradient(90deg,transparent,rgba(190,173,245,.78),transparent);

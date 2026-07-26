@@ -3,6 +3,8 @@ import mainTemplate from "./main.html?raw";
 import { renderView } from "../../shared/dom.js";
 import { navigate } from "../../app/router.js";
 import { getClearedLevels, isLevelUnlocked } from "../../game/levelProgress.js";
+import { getTheme, setTheme } from "../../app/theme.js";
+import { getLanguageOptions, getSelectedLanguage, setLanguage, t } from "../../i18n/i18n.js";
 
 const LEVEL_COUNT = 30;
 const NOTE_SYMBOLS = ["♪", "♫", "♩", "♬", "♭", "♯"];
@@ -11,6 +13,128 @@ export function renderMainPage() {
   renderView(mainTemplate, mainStyle);
   const clearedLevels = getClearedLevels();
   renderScore(clearedLevels);
+  bindMainMenu();
+  updatePwaInstallGuide();
+}
+
+
+function updatePwaInstallGuide() {
+  const section = document.getElementById("pwaInstallSection");
+  const status = document.getElementById("pwaInstallStatus");
+  const warning = document.getElementById("pwaSecurityWarning");
+  if (!section || !status || !warning) return;
+
+  const userAgent = navigator.userAgent;
+  const isIos = /iPhone|iPad|iPod/i.test(userAgent) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  const isStandalone = window.matchMedia("(display-mode: standalone)").matches ||
+    window.navigator.standalone === true;
+
+  if (!isIos || isStandalone) {
+    section.hidden = true;
+    return;
+  }
+
+  section.hidden = false;
+  warning.hidden = window.isSecureContext;
+  status.textContent = window.isSecureContext
+    ? "Safari의 공유 메뉴에서 홈 화면에 추가하면 앱처럼 실행할 수 있습니다."
+    : "현재 주소는 iPhone에서 안전한 HTTPS로 인정되지 않았습니다.";
+}
+
+function bindMainMenu() {
+  const page = document.getElementById("mainScorePage");
+  const menuButton = document.getElementById("mainMenuButton");
+  const closeButton = document.getElementById("mainSidebarCloseButton");
+  const sidebar = document.getElementById("mainSidebar");
+  const backdrop = document.getElementById("mainSidebarBackdrop");
+  const darkModeToggle = document.getElementById("darkModeToggle");
+  const darkModeStatus = document.getElementById("darkModeStatus");
+  const languageButton = document.getElementById("languageButton");
+  const languageList = document.getElementById("languageList");
+  const languageCurrent = document.getElementById("languageCurrent");
+
+  if (!page || !menuButton || !closeButton || !sidebar || !backdrop || !darkModeToggle || !darkModeStatus || !languageButton || !languageList || !languageCurrent) return;
+
+  const updateThemeControl = () => {
+    const isDark = getTheme() === "dark";
+    darkModeToggle.checked = isDark;
+    darkModeStatus.textContent = t(isDark ? "어두운 파스텔 테마가 적용되었습니다." : "밝은 파스텔 테마가 적용되었습니다.");
+  };
+
+  const openMenu = () => {
+    page.classList.add("is-menu-open");
+    sidebar.setAttribute("aria-hidden", "false");
+    menuButton.setAttribute("aria-expanded", "true");
+    menuButton.setAttribute("aria-label", t("메뉴 닫기"));
+    backdrop.hidden = false;
+    window.requestAnimationFrame(() => closeButton.focus({ preventScroll: true }));
+  };
+
+  const closeMenu = () => {
+    page.classList.remove("is-menu-open");
+    sidebar.setAttribute("aria-hidden", "true");
+    menuButton.setAttribute("aria-expanded", "false");
+    menuButton.setAttribute("aria-label", t("메뉴 열기"));
+    backdrop.hidden = true;
+    menuButton.focus({ preventScroll: true });
+  };
+
+  const renderLanguageList = () => {
+    const selected = getSelectedLanguage();
+    const options = getLanguageOptions();
+    languageCurrent.textContent = options.find((option) => option.value === selected)?.label || "System Language";
+    languageList.replaceChildren(...options.map((option) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.role = "option";
+      button.dataset.language = option.value;
+      button.className = option.value === selected ? "is-selected" : "";
+      button.setAttribute("aria-selected", String(option.value === selected));
+      button.innerHTML = `<span>${option.label}</span>${option.value === selected ? '<b aria-hidden="true">✓</b>' : ""}`;
+      return button;
+    }));
+  };
+
+  const closeLanguageList = () => {
+    languageList.hidden = true;
+    languageButton.setAttribute("aria-expanded", "false");
+  };
+
+  languageButton.addEventListener("click", () => {
+    const willOpen = languageList.hidden;
+    languageList.hidden = !willOpen;
+    languageButton.setAttribute("aria-expanded", String(willOpen));
+  });
+  languageList.addEventListener("click", async (event) => {
+    const option = event.target.closest("[data-language]");
+    if (!option) return;
+    await setLanguage(option.dataset.language);
+    renderLanguageList();
+    closeLanguageList();
+    updateThemeControl();
+  });
+  document.addEventListener("click", (event) => {
+    if (!event.target.closest(".language-picker")) closeLanguageList();
+  });
+  window.addEventListener("app-language-change", renderLanguageList, { once: true });
+  renderLanguageList();
+
+  menuButton.addEventListener("click", () => {
+    if (page.classList.contains("is-menu-open")) closeMenu();
+    else openMenu();
+  });
+  closeButton.addEventListener("click", closeMenu);
+  backdrop.addEventListener("click", closeMenu);
+  darkModeToggle.addEventListener("change", () => {
+    setTheme(darkModeToggle.checked ? "dark" : "light");
+    updateThemeControl();
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && page.isConnected && page.classList.contains("is-menu-open")) closeMenu();
+  });
+
+  updateThemeControl();
 }
 
 function renderScore(clearedLevels) {
@@ -63,7 +187,7 @@ function getNotesPerStaff(width) {
 function createStaff() {
   const staff = document.createElement("section");
   staff.className = "score-staff";
-  staff.setAttribute("aria-label", "오선보");
+  staff.setAttribute("aria-label", t("오선보"));
   staff.innerHTML = `
     <span class="score-staff__clef" aria-hidden="true">𝄞</span>
     <span class="score-staff__bar score-staff__bar--start" aria-hidden="true"></span>
@@ -86,7 +210,7 @@ function createNote(level, cleared, unlocked) {
   note.style.setProperty("--staff-step", staffStep);
   note.style.setProperty("--note-tilt", `${(-5 + seeded(level + 91) * 10).toFixed(2)}deg`);
   note.style.setProperty("--note-delay", `${(-seeded(level + 51) * 5).toFixed(2)}s`);
-  note.setAttribute("aria-label", unlocked ? `레벨 ${level}${cleared ? ", 클리어 완료" : ""}` : `레벨 ${level}, 잠김`);
+  note.setAttribute("aria-label", unlocked ? `${t("레벨")} ${level}${cleared ? `, ${t("클리어 완료")}` : ""}` : `${t("레벨")} ${level}, ${t("잠김")}`);
   note.innerHTML = `
     <span class="score-note__stem" aria-hidden="true"><i>${NOTE_SYMBOLS[level % NOTE_SYMBOLS.length]}</i></span>
     <span class="score-note__head">

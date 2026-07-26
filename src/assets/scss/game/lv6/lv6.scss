@@ -554,7 +554,7 @@
   .lv6-action-button { min-height: 42px; }
 }
 
-@media (prefers-color-scheme: dark) {
+html[data-theme="dark"] {
   .lv6-page {
     --lv6-bg: #171924;
     --lv6-panel: rgba(34, 37, 51, 0.9);

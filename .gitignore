@@ -24,6 +24,7 @@ dist-ssr
 *.sw?
 
 # Local HTTPS certificates
+certs/*
 certs/*.pem
 certs/*.key
 certs/*.csr
@@ -31,3 +32,6 @@ certs/*.srl
 certs/*.ext
 certs/*.crt
 certs/*.cer
+
+.local-ca/*
+tools/*

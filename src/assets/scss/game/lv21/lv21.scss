@@ -119,7 +119,7 @@
 @keyframes lv21DemoPip{0%,40%{background:#d0d5e0;transform:scale(1)}48%,58%{background:#72bca5;transform:scale(1.45)}65%,100%{background:#d0d5e0;transform:scale(1)}}
 @media (max-width:700px){.lv21-brand strong{font-size:14px}.lv21-status{width:52vw}.lv21-status span{display:none}.lv21-lanes{inset:clamp(144px,20vh,180px) 0 0}.lv21-card-stack{width:min(78%,104px)}.lv21-castanet{width:min(72%,102px)}.lv21-deck{top:clamp(72px,10vh,88px)}}
 @media (max-height:620px){.lv21-hud{min-height:58px;padding-top:max(8px,env(safe-area-inset-top))}.lv21-deck{top:62px;width:52px}.lv21-lanes{inset:128px 0 0}.lv21-card-stack{top:2%;width:min(56%,88px)}.lv21-castanet{bottom:40px;width:min(50%,88px)}.lv21-timer{bottom:6px}.lv21-panel{padding-top:20px;padding-bottom:20px}.lv21-demo{height:132px;margin-bottom:14px}.lv21-panel p{margin:10px 0 14px}.lv21-guide-tags{margin-bottom:14px}}
-@media (prefers-color-scheme:dark){
+html[data-theme="dark"] {
   .lv21-page{--surface:rgba(39,43,57,.78);--ink:#eef1f8;--muted:#b7bdcd;background:radial-gradient(circle at 18% 16%,rgba(156,91,118,.2),transparent 34%),radial-gradient(circle at 82% 26%,rgba(72,127,149,.18),transparent 36%),radial-gradient(circle at 54% 92%,rgba(72,132,108,.16),transparent 38%),linear-gradient(145deg,#181a23,#1c202b 58%,#1a1d25)}
   .lv21-deck > i{background:#343948}
   .lv21-deck small{background:rgba(43,48,63,.9);color:#d7dbe7}

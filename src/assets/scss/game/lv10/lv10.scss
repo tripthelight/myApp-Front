@@ -133,7 +133,7 @@
 @keyframes lv10-demo-hand { 0%,28% { left:24%; opacity:0; } 36% { left:34%; opacity:1; } 68% { left:82%; opacity:1; } 78%,100% { left:88%; opacity:0; } }
 @keyframes lv10-demo-trail { 0%,38% { left:34%; opacity:0; } 50% { opacity:.75; } 72%,100% { left:78%; opacity:0; } }
 
-@media (prefers-color-scheme: dark) {
+html[data-theme="dark"] {
   .lv10-page { --lv10-bg:#12171e; --lv10-ink:#edf3f5; --lv10-muted:#a9b1bc; --lv10-line:rgba(226,235,241,.15); --lv10-panel:rgba(24,31,40,.86); }
   .lv10-backdrop { background:radial-gradient(circle at 50% 47%, #25313b, #151c23 58%, #0e1319); }.lv10-backdrop i { opacity:.16; }
   .lv10-arena { background:linear-gradient(145deg, rgba(255,255,255,.055), rgba(255,255,255,.015)); box-shadow:inset 0 0 0 1px rgba(255,255,255,.04), 0 28px 90px rgba(0,0,0,.24); }

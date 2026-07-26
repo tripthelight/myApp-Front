@@ -72,7 +72,7 @@
 @media (max-width:640px){.lv27-status{min-width:48vw;grid-template-columns:auto minmax(42px,1fr)}.lv27-brand strong{font-size:13px}.lv27-scene-card{width:92vw;height:min(52vh,390px)}.lv27-panel{padding:26px 20px}.lv27-demo{height:150px}.lv27-primary,.lv27-secondary{min-width:116px}.lv27-saber{width:84%}.lv27-loading-blocks{gap:7px}.lv27-result-stats span{min-width:96px}}
 @media (max-height:620px){.lv27-hud{height:60px}.lv27-stage{inset:60px 0 0}.lv27-scene{gap:8px;padding-top:8px}.lv27-scene-card{height:min(58vh,300px)}.lv27-panel{padding:20px}.lv27-demo{height:104px;margin:14px auto 10px}.lv27-panel p{margin-top:10px;line-height:1.55}.lv27-primary,.lv27-secondary{height:42px;margin-top:14px}.lv27-monster{width:104px;height:94px;margin-bottom:16px}.lv27-loading-blocks{margin-top:16px}.lv27-scene-hint{font-size:10px}}
 @media (prefers-reduced-motion:reduce){.lv27-ambient i,.lv27-loading-blocks i,.lv27-monster,.lv27-stars i{animation-duration:8s}}
-@media (prefers-color-scheme:dark){
+html[data-theme="dark"] {
   .lv27-page{--lv27-bg:#181820;--lv27-panel:rgba(37,37,49,.86);--lv27-text:#efedf5;--lv27-muted:#aaa7b5;--lv27-line:rgba(235,231,244,.13);--lv27-accent:#b7a8e9;--lv27-blue:#95cce2;--lv27-mint:#9fd5c3;--lv27-pink:#dbaabb;--lv27-yellow:#dac98f;--lv27-shadow:0 28px 82px rgba(0,0,0,.4)}
   .lv27-overlay,.lv27-lesson{background:rgba(24,24,32,.72)}.lv27-secondary{background:rgba(255,255,255,.05)}.lv27-ambient i{opacity:.15}.lv27-listen-orbit{box-shadow:inset 0 0 0 22px rgba(255,255,255,.025)}.lv27-listen-orbit::before{background:linear-gradient(145deg,#4d4c5b,#2f303d);box-shadow:0 16px 36px rgba(0,0,0,.25)}.lv27-demo{background:rgba(255,255,255,.03)}.lv27-result-stats span{background:rgba(255,255,255,.04)}.lv27-loading-blocks i{background:rgba(183,168,233,.08)}.lv27-progress-track,.lv27-hp-track{background:rgba(255,255,255,.07)}
 }
@@ -88,7 +88,7 @@
 .lv27-saber-markers{left:clamp(70px,13vw,112px);right:0;top:50%;height:clamp(14px,3vw,24px);inset-block:auto;transform:translateY(-50%)}
 .lv27-saber-markers i{height:calc(100% + 10px);background:rgba(225,248,255,.42)}
 @media (max-width:640px){.lv27-rhythm-markers i{height:calc(100% + 6px)}.lv27-saber-markers i{height:calc(100% + 8px)}}
-@media (prefers-color-scheme:dark){.lv27-rhythm-markers i{background:rgba(242,239,250,.34)}.lv27-saber-markers i{background:rgba(219,247,255,.36)}}
+html[data-theme="dark"] {.lv27-rhythm-markers i{background:rgba(242,239,250,.34)}.lv27-saber-markers i{background:rgba(219,247,255,.36)}}
 
 /* 몬스터 HP의 실제 박자 경계에 맞춘 4단계 표정 */
 .lv27-monster {
@@ -246,7 +246,7 @@
 .lv27-monster.is-dead .lv27-monster-horn.left { transform:rotate(-42deg) translateY(8px); opacity:.72; }
 .lv27-monster.is-dead .lv27-monster-horn.right { transform:rotate(42deg) translateY(8px); opacity:.72; }
 
-@media (prefers-color-scheme:dark) {
+html[data-theme="dark"] {
   .lv27-monster.is-dead::before {
     color:rgba(239,237,245,.72);
     background:rgba(31,31,40,.52);
@@ -325,7 +325,7 @@
   .lv27-volume-copy { margin-bottom:14px; }
   .lv27-volume-scene>p { margin-top:14px; }
 }
-@media (prefers-color-scheme:dark) {
+html[data-theme="dark"] {
   .lv27-volume-scene {
     background:linear-gradient(145deg,rgba(43,41,56,.94),rgba(33,43,48,.9));
   }

@@ -141,7 +141,7 @@
   .lv23-panel { transform: scale(.9); }
 }
 
-@media (prefers-color-scheme: dark) {
+html[data-theme="dark"] {
   .app-view.lv23-page {
     --lv23-bg: #171621;
     --lv23-panel: rgba(35, 33, 47, .86);
@@ -289,7 +289,7 @@
   .lv23-output-content { padding-top: 6px; padding-bottom: 6px; }
 }
 
-@media (prefers-color-scheme: dark) {
+html[data-theme="dark"] {
   .lv23-output { background: rgba(170,155,232,.055); }
   .lv23-output.has-output { background: rgba(119,205,181,.075); }
 }

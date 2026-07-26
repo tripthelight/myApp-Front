@@ -335,7 +335,7 @@
   to { opacity: 0.86; transform: translateY(-2px) scale(1); }
 }
 
-@media (prefers-color-scheme: dark) {
+html[data-theme="dark"] {
   .lv5-page {
     --page-bg: #171923;
     --page-glow: rgba(63, 68, 91, 0.42);
@@ -414,7 +414,7 @@
 .lv5-progress__fill { position:absolute; inset:0; display:block; transform:scaleX(0); transform-origin:left center; background:linear-gradient(90deg,#d7c9f4,#bcd8ee,#b9e3d0); }
 .lv5-progress__segment::after { content:""; position:absolute; right:0; top:0; bottom:0; width:2px; background:rgba(255,255,255,.88); }
 
-@media (prefers-color-scheme: dark) {
+html[data-theme="dark"] {
   .lv5-progress { background:rgba(25,28,39,.82); }
   .lv5-progress__segment { background:rgba(255,255,255,.05); border-right-color:rgba(255,255,255,.12); }
   .lv5-progress__fill { background:linear-gradient(90deg,#695d8e,#526f8d,#527a68); }

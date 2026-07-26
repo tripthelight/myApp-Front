@@ -132,7 +132,7 @@
 @keyframes lv9-feedback { 0% { opacity: 0; transform: translate(-50%,-50%) translateZ(90px) scale(.8); } 24%,68% { opacity: 1; transform: translate(-50%,-50%) translateZ(90px) scale(1); } 100% { opacity: 0; transform: translate(-50%,-56%) translateZ(90px) scale(1.06); } }
 @keyframes lv9-impact { 0% { opacity: 0; transform: scale(.94); } 30% { opacity: 1; } 100% { opacity: 0; transform: scale(1.04); } }
 
-@media (prefers-color-scheme: dark) {
+html[data-theme="dark"] {
   .lv9-page { --lv9-bg: #11171b; --lv9-ink: #eef4f2; --lv9-muted: #a7b1b5; --lv9-line: rgba(223,235,232,.16); --lv9-panel: rgba(22,30,35,.82); }
   .lv9-backdrop { background: radial-gradient(circle at 50% 45%, #202c31, #12191d 62%, #0d1215); }
   .lv9-backdrop span { opacity: .18; }

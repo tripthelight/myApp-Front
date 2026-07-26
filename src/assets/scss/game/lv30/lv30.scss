@@ -305,7 +305,7 @@
 .lv30-page.is-short .lv30-footer p { display: none; }
 .lv30-page.is-short .lv30-home { min-height: 38px; padding-block: 8px; }
 
-@media (prefers-color-scheme: dark) {
+html[data-theme="dark"] {
   .lv30-page {
     --ink: #fff0f7;
     --muted: rgba(255, 231, 243, 0.66);

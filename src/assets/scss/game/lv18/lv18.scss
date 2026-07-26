@@ -102,7 +102,7 @@
 @media (max-width: 560px) { .lv18-brand strong{font-size:14px}.lv18-meter{width:52vw;grid-template-columns:1fr auto}.lv18-meter>span{display:none}.lv18-panel{border-radius:22px}.lv18-guide-tags span{font-size:9px} }
 @media (prefers-reduced-motion: reduce) { .lv18-page *{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important} }
 
-@media (prefers-color-scheme: dark) {
+html[data-theme="dark"] {
   .lv18-page { --ink:#eef1ff; --muted:rgba(229,233,255,.65); --glass:rgba(30,34,52,.68); background:radial-gradient(circle at 15% 18%,rgba(173,91,129,.2),transparent 30%),radial-gradient(circle at 85% 25%,rgba(75,116,170,.24),transparent 32%),linear-gradient(145deg,#151824,#1d2232 50%,#172725); }
   .lv18-keyboard-shell { background:rgba(26,30,45,.8);border-color:rgba(255,255,255,.08); }
   .lv18-white-key { border-color:rgba(255,255,255,.09); background:linear-gradient(180deg,#e4e7f0,#cdd2df); }  .lv18-black-key { background:linear-gradient(180deg,#333849,#141722); }
