@@ -5,6 +5,7 @@ import { restoreSession, logoutSession } from "./session.js";
 import { normalizeRoute, routeFromPath, renderRoutePage, isGameRoute } from "./routes.js";
 import { resolveRouteForSession } from "./routeGuard.js";
 import { replaceHistory, writeHistory } from "./browserHistory.js";
+import { isLevelUnlocked, stopLevelClearWatcher, watchLevelClearState } from "../game/levelProgress.js";
 
 export async function startApp() {
   bindLayoutEvents();
@@ -75,6 +76,17 @@ export async function renderCurrentRoute(options = {}) {
 }
 
 async function renderRoute(route, requestedRoute = route) {
+  stopLevelClearWatcher();
+  if (isGameRoute(route)) {
+    const level = Number(route.replace("lv", ""));
+    if (!isLevelUnlocked(level)) {
+      replaceHistory("home");
+      await renderRoutePage("home");
+      updateHeader();
+      return;
+    }
+  }
+
   if (route === "auth" && requestedRoute !== "auth") {
     await renderRoutePage("auth", "로그인 후 이용할 수 있습니다.");
     updateHeader();
@@ -82,6 +94,7 @@ async function renderRoute(route, requestedRoute = route) {
   }
 
   await renderRoutePage(route);
+  watchLevelClearState(route);
   updateHeader();
 }
 

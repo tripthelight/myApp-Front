@@ -2,6 +2,7 @@ import lv30Style from "../../../assets/scss/game/lv30/common.scss?inline";
 import lv30Template from "./lv30.html?raw";
 import { navigate } from "../../../app/router.js";
 import { renderView } from "../../../shared/dom.js";
+import { markLevelCleared } from "../../../game/levelProgress.js";
 import {
   playLv30Home,
   playLv30Letter,
@@ -138,6 +139,7 @@ function startBloomSequence(token) {
   schedule(() => {
     if (!isActive(token)) return;
     document.getElementById("lv30Page")?.classList.add("is-complete");
+    markLevelCleared(30);
   }, BLOOM_START_DELAY_MS + LETTER_COUNT * BLOOM_STEP_MS + 420);
 }
 
