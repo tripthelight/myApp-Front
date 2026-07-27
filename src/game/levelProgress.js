@@ -9,6 +9,8 @@ const FORMAT_TAG = "r3";
 const MIXING_KEY = "c9V!4mQ#7xL@2sD$8nH%5zK";
 
 let clearStateObserver = null;
+let clearStateClickRoot = null;
+let clearStateClickHandler = null;
 
 function hashText(text) {
   let hash = 2166136261;
@@ -190,7 +192,10 @@ function isActuallyVisible(element) {
     if (current.hidden) return false;
 
     const style = window.getComputedStyle(current);
-    if (style.display === "none" || style.visibility === "hidden" || Number(style.opacity) === 0) {
+    // opacity는 결과창의 fade-in 시작 프레임에서 0일 수 있습니다.
+    // opacity를 가시성 기준으로 사용하면 NEXT가 열린 순간 Clear 저장을 놓치고,
+    // 이후 CSS transition은 MutationObserver가 감지하지 못합니다.
+    if (style.display === "none" || style.visibility === "hidden") {
       return false;
     }
     current = current.parentElement;
@@ -228,6 +233,12 @@ export function markLevelCleared(level) {
 export function stopLevelClearWatcher() {
   clearStateObserver?.disconnect();
   clearStateObserver = null;
+
+  if (clearStateClickRoot && clearStateClickHandler) {
+    clearStateClickRoot.removeEventListener("click", clearStateClickHandler, true);
+  }
+  clearStateClickRoot = null;
+  clearStateClickHandler = null;
 }
 
 export function watchLevelClearState(route) {
@@ -246,6 +257,24 @@ export function watchLevelClearState(route) {
     stopLevelClearWatcher();
     return true;
   };
+
+  // NEXT 클릭은 각 Level의 navigate 핸들러보다 먼저 처리해야 합니다.
+  // capture 단계에서 Clear를 동기 저장하면 NEXT로 다음 Level에 진입할 때
+  // route guard가 아직 잠긴 상태로 오판하는 문제도 방지할 수 있습니다.
+  clearStateClickRoot = appView;
+  clearStateClickHandler = (event) => {
+    const target = event.target instanceof Element
+      ? event.target.closest("button, a, [role='button']")
+      : null;
+    if (!target || !appView.contains(target)) return;
+
+    const visibleNext = findVisibleNextButton(appView);
+    if (target !== visibleNext) return;
+
+    markLevelCleared(level);
+    stopLevelClearWatcher();
+  };
+  appView.addEventListener("click", clearStateClickHandler, true);
 
   if (recordClearWhenSuccessIsVisible()) return;
 

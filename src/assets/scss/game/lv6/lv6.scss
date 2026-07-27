@@ -588,10 +588,10 @@ html[data-theme="dark"] {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  /* 설명용 반복 장식만 느리게 재생하며 게임 진행 모션은 유지한다. */
   .lv6-center-guide span,
   .lv6-demo-node,
   .lv6-demo-touch {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
+    animation-duration: 8s;
   }
 }

@@ -163,9 +163,6 @@ html[data-theme="dark"] {
   .lv23-secondary-button { color: var(--lv23-text); background: rgba(255,255,255,.08); }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .lv23-page *, .lv23-page *::before, .lv23-page *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
-}
 
 @keyframes lv23Float { to { transform: translate3d(5vw, 4vh, 0) scale(1.08); } }
 @keyframes lv23Scan { from { transform: translateY(-100%); } to { transform: translateY(700%); } }

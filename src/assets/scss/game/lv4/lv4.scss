@@ -279,10 +279,103 @@
   }
 }
 
+/*
+ * 원 그리기, 교집합 팝업, 터치 큐는 게임 규칙을 전달하는 필수 모션이다.
+ * OS의 모션 축소 설정에서도 순간 표시로 바꾸지 않고 원래 시간을 유지한다.
+ */
 @media (prefers-reduced-motion: reduce) {
-  .lv4-circle-reveal,
-  .lv4-overlap-svg.is-memory .lv4-overlap-path,
+  .lv4-circle-reveal {
+    animation-duration: var(--draw-ms, 920ms);
+  }
+
+  .lv4-overlap-svg.is-memory .lv4-overlap-path {
+    animation-duration: var(--overlap-draw-ms, 520ms);
+  }
+
   .lv4-touch-path.is-cue {
-    animation-duration: 1ms;
+    animation-duration: var(--touch-cue-ms, 420ms);
+  }
+}
+
+html[data-theme="dark"] {
+  .app-view {
+    background: #0f121a;
+  }
+
+  .lv4-page {
+    background:
+      radial-gradient(circle at 50% 38%, rgba(45, 51, 68, 0.96), rgba(24, 29, 40, 0.97) 58%, rgba(13, 17, 25, 0.99));
+  }
+
+  .lv4-page::before {
+    background-image: radial-gradient(rgba(218, 226, 241, 0.1) 0.75px, transparent 0.75px);
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.74), transparent 76%);
+  }
+
+  .lv4-status {
+    border-color: rgba(226, 232, 240, 0.12);
+    background: rgba(27, 32, 44, 0.8);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    color: #dce4f1;
+  }
+
+  .lv4-circle-fill {
+    filter: drop-shadow(0 18px 34px rgba(0, 0, 0, 0.2));
+  }
+
+  .lv4-overlap-svg.is-memory .lv4-overlap-path {
+    filter: drop-shadow(0 11px 22px rgba(0, 0, 0, 0.3));
+  }
+
+  .lv4-page.is-success-flash {
+    box-shadow: inset 0 0 64px rgba(82, 190, 139, 0.24);
+  }
+
+  .lv4-page.is-fail-flash {
+    box-shadow: inset 0 0 64px rgba(222, 103, 119, 0.24);
+  }
+
+  .lv4-overlay {
+    background: rgba(8, 11, 17, 0.58);
+  }
+
+  .lv4-panel {
+    border-color: rgba(226, 232, 240, 0.12);
+    background: rgba(28, 33, 45, 0.91);
+    box-shadow: 0 28px 84px rgba(0, 0, 0, 0.44);
+    color: #eef3fa;
+  }
+
+  .lv4-level-label {
+    color: #99a5ba;
+  }
+
+  .lv4-panel p {
+    color: #afbacd;
+  }
+
+  .lv4-action-button {
+    background: #607fb6;
+    box-shadow: 0 10px 24px rgba(35, 50, 82, 0.38);
+  }
+
+  .lv4-action-button:hover {
+    background: #7190c6;
+  }
+
+  .lv4-action-button.is-retry {
+    background: #a95764;
+  }
+
+  .lv4-action-button.is-retry:hover {
+    background: #bb6875;
+  }
+
+  .lv4-action-button.is-home {
+    background: #566174;
+  }
+
+  .lv4-action-button.is-home:hover {
+    background: #667287;
   }
 }

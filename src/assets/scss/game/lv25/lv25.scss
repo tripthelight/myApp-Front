@@ -94,7 +94,7 @@
 @media (orientation:portrait) and (max-width:620px){
   .lv25-runner{box-shadow:0 14px 30px rgba(75,63,107,.13),inset 0 0 0 5px rgba(255,255,255,.11)}
 }
-@media (prefers-reduced-motion:reduce){.lv25-ambient i,.lv25-demo-pack,.lv25-demo-touch{animation-duration:8s}.lv25-touch-pulse{animation-duration:.01ms!important}}
+@media (prefers-reduced-motion:reduce){.lv25-ambient i,.lv25-demo-pack,.lv25-demo-touch{animation-duration:8s}}
 html[data-theme="dark"] {
   .lv25-page{--lv25-bg:#17151e;--lv25-panel:rgba(37,34,48,.82);--lv25-text:#eeeaf6;--lv25-muted:#aaa3b8;--lv25-line:rgba(231,225,245,.13);--lv25-accent:#b5a5f0;--lv25-shadow:0 26px 80px rgba(0,0,0,.38)}
   .lv25-overlay,.lv25-round-overlay{background:rgba(23,21,30,.68)}.lv25-stage::after{border-color:rgba(255,255,255,.055)}.lv25-third-grid i{background:linear-gradient(180deg,transparent,rgba(230,225,242,.09) 18%,rgba(230,225,242,.09) 82%,transparent)}.lv25-page.is-portrait .lv25-third-grid i{background:linear-gradient(90deg,transparent,rgba(230,225,242,.09) 18%,rgba(230,225,242,.09) 82%,transparent)}.lv25-secondary{background:rgba(255,255,255,.05)}.lv25-ambient i{opacity:.16}.lv25-target{border-color:rgba(255,255,255,.26);filter:brightness(.88) saturate(.9)}.lv25-runner{border-color:rgba(255,255,255,.26);filter:brightness(.88) saturate(.9)}.lv25-runner.is-final,.lv25-runner.is-success{filter:brightness(.96) saturate(1.08)}

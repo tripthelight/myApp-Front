@@ -579,9 +579,10 @@ html[data-theme="dark"] .main-sidebar__section-icon { color: #2d2a38; }
   .theme-toggle { align-items: flex-start; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .main-sidebar, .main-sidebar-backdrop, .main-menu-button span, .theme-toggle i::before { transition-duration: .01ms; }
-}
+/*
+ * 사이드바 열기/닫기와 메뉴 아이콘 변형은 내비게이션 상태를 전달하는 기능성 모션이다.
+ * 사용자 OS의 모션 축소 설정과 무관하게 원래 transition을 유지한다.
+ */
 
 .main-sidebar__pwa[hidden] { display: none; }
 .pwa-install-steps {

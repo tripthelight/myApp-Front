@@ -156,5 +156,6 @@ html[data-theme="dark"] {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .lv10-backdrop i, .lv10-orbit, .lv10-jewel::after, .lv10-jewel .facet, .lv10-jewel-shadow, .demo-thief, .demo-hand, .demo-trail i { animation-duration:1ms; animation-iteration-count:1; }
+  /* 배경과 설명용 반복 장식만 완화하고 실제 보석 게임 모션은 유지한다. */
+  .lv10-backdrop i, .demo-thief, .demo-hand, .demo-trail i { animation-duration:8s; }
 }

@@ -30,16 +30,28 @@ const CONFIG = Object.freeze({
   feedbackMs: 360,
 });
 
-const PASTELS = Object.freeze([
+const LIGHT_PASTELS = Object.freeze([
   [255, 180, 190], [255, 215, 170], [255, 241, 170],
   [183, 235, 201], [170, 219, 255], [194, 198, 255],
   [231, 190, 255], [255, 192, 224], [177, 238, 235],
   [211, 222, 246], [244, 205, 178], [202, 231, 190],
 ]);
 
-const FEEDBACK = Object.freeze({
+const DARK_PASTELS = Object.freeze([
+  [156, 84, 105], [155, 108, 69], [144, 130, 68],
+  [72, 135, 99], [65, 113, 158], [91, 94, 160],
+  [139, 82, 151], [151, 80, 124], [56, 132, 132],
+  [91, 107, 151], [146, 96, 70], [88, 132, 86],
+]);
+
+const LIGHT_FEEDBACK = Object.freeze({
   success: "rgba(34, 166, 105, 0.9)",
   fail: "rgba(220, 76, 76, 0.9)",
+});
+
+const DARK_FEEDBACK = Object.freeze({
+  success: "rgba(82, 190, 139, 0.94)",
+  fail: "rgba(222, 103, 119, 0.94)",
 });
 
 let activeGameId = 0;
@@ -462,7 +474,8 @@ async function showFeedback(overlapId, success) {
     return;
   }
 
-  path.style.setProperty("--feedback-color", success ? FEEDBACK.success : FEEDBACK.fail);
+  const feedback = isDarkMode() ? DARK_FEEDBACK : LIGHT_FEEDBACK;
+  path.style.setProperty("--feedback-color", success ? feedback.success : feedback.fail);
   path.classList.add(success ? "is-success" : "is-fail");
   await delay(CONFIG.feedbackMs);
   path.classList.remove("is-success", "is-fail");
@@ -625,8 +638,15 @@ function pointInCircle(point, circle) {
 }
 
 function pastelColor(index, alpha) {
-  const [r, g, b] = PASTELS[index % PASTELS.length];
-  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  const darkMode = isDarkMode();
+  const palette = darkMode ? DARK_PASTELS : LIGHT_PASTELS;
+  const [r, g, b] = palette[index % palette.length];
+  const themedAlpha = darkMode ? Math.min(alpha + 0.08, 0.8) : alpha;
+  return `rgba(${r}, ${g}, ${b}, ${themedAlpha})`;
+}
+
+function isDarkMode() {
+  return document.documentElement.dataset.theme === "dark";
 }
 
 function shuffle(values) {

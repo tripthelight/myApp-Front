@@ -2,6 +2,12 @@
   position: relative;
 
   [class^="rectangle-"] {
+    --lv1-base-color: rgba(0, 0, 255, 0);
+    --lv1-success-color: rgba(111, 225, 183, 0.98);
+    --lv1-success-highlight: rgba(190, 255, 226, 0.98);
+    --lv1-fail-color: rgba(245, 151, 169, 0.98);
+    --lv1-fail-highlight: rgba(255, 205, 213, 0.98);
+
     position: absolute;
     left: 0;
     top: 0;
@@ -11,27 +17,9 @@
     transition-property: left, background-color;
     transition-duration: 0.2s;
     transition-timing-function: ease-in;
+    will-change: left, background-color;
   }
 
-  .judge-feedback {
-    position: fixed;
-    left: 50%;
-    top: 50%;
-    z-index: 9999;
-    transform: translate(-50%, -50%);
-    font-size: 72px;
-    font-weight: 800;
-    line-height: 1;
-    pointer-events: none;
-  }
-
-  .judge-feedback.is-ok {
-    color: #1fbf75;
-  }
-
-  .judge-feedback.is-fail {
-    color: #ff3b3b;
-  }
 
   .result-button-wrap {
     position: fixed;
@@ -72,6 +60,8 @@
     background: #64748b;
   }
 }
+
+
 .lv1-page {
   position: relative;
   width: 100%;
@@ -103,4 +93,12 @@ html[data-theme="dark"] {
   .lv1-page { background: radial-gradient(circle at 50% 38%, rgba(78,83,108,.4), transparent 48%), #181a24; }
   .lv1-guide span { filter:saturate(.75) brightness(.68); }
   .lv1-guide i { border-color:#d9def0; }
+
+  .app-view [class^="rectangle-"] {
+    --lv1-success-color: rgba(83, 190, 151, 0.96);
+    --lv1-success-highlight: rgba(134, 224, 190, 0.98);
+    --lv1-fail-color: rgba(205, 105, 128, 0.96);
+    --lv1-fail-highlight: rgba(238, 151, 169, 0.98);
+  }
 }
+

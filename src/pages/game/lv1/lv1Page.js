@@ -13,7 +13,9 @@ import {
 const RECT_TRANSITION_MS = 200;
 const TOUCH_TARGET_MS = 800;
 const TOUCH_TOLERANCE_MS = 80;
-const FEEDBACK_MS = 700;
+const BLOCK_FEEDBACK_IN_MS = 420;
+const BLOCK_FEEDBACK_HOLD_MS = 160;
+const BLOCK_FEEDBACK_OUT_MS = 520;
 
 let activeGameRunId = 0;
 let activeAbortController = null;
@@ -143,6 +145,9 @@ function resetRects(rects) {
     rect.style.transition = "none";
     rect.style.left = "0%";
     rect.style.backgroundColor = "rgba(0,0,255,0)";
+    rect.style.setProperty("--lv1-base-color", "rgba(0,0,255,0)");
+    rect.dataset.lv1Active = "false";
+    rect.classList.remove("is-judge-success", "is-judge-fail");
   });
 
   document.body.offsetWidth;
@@ -165,6 +170,9 @@ async function playRect(rects, index, run) {
   rect.style.transition = "none";
   rect.style.left = `${startLeft}%`;
   rect.style.backgroundColor = "rgba(0,0,255,0)";
+  rect.style.setProperty("--lv1-base-color", "rgba(0,0,255,0)");
+  rect.dataset.lv1Active = "false";
+  rect.classList.remove("is-judge-success", "is-judge-fail");
 
   rect.offsetWidth;
 
@@ -178,65 +186,87 @@ async function playRect(rects, index, run) {
 
   if (!isCurrentGameRun(run)) return;
 
+  const baseColor = `rgba(0,0,255,${alpha})`;
+
   rect.style.left = `${endLeft}%`;
-  rect.style.backgroundColor = `rgba(0,0,255,${alpha})`;
+  rect.style.backgroundColor = baseColor;
+  rect.style.setProperty("--lv1-base-color", baseColor);
+  rect.dataset.lv1Active = "true";
 
   await transitionEnd;
 }
 
-async function showResult(result, run) {
-  const WRAP = document.getElementById("appView");
-  if (!WRAP || !isCurrentGameRun(run)) return;
-
-  const oldResult = WRAP.querySelector(".success-pop, .fail-pop");
-  oldResult?.remove();
-
-  const resultWrap = document.createElement("div");
-
-  if (result) {
-    resultWrap.className = "success-pop";
-
-    const mark = document.createElement("div");
-    mark.className = "success-pop__mark";
-
-    const sparks = [
-      ["#ff4d6d", 0, -110, 0],
-      ["#ffd166", 76, -88, 35],
-      ["#06d6a0", 112, -20, 75],
-      ["#4cc9f0", 94, 70, 120],
-      ["#b517ff", 32, 116, 165],
-      ["#ff9f1c", -46, 108, 210],
-      ["#2ec4b6", -106, 48, 255],
-      ["#f72585", -112, -30, 300],
-      ["#8ac926", -66, -96, 335],
-      ["#ff70a6", 46, -126, 20],
-      ["#70d6ff", 126, 30, 95],
-      ["#e9ff70", -126, 12, 280],
-    ];
-
-    sparks.forEach(([color, x, y, rotate], index) => {
-      const spark = document.createElement("span");
-      spark.className = "success-pop__spark";
-      spark.style.setProperty("--c", color);
-      spark.style.setProperty("--x", `${x}px`);
-      spark.style.setProperty("--y", `${y}px`);
-      spark.style.setProperty("--r", `${rotate}deg`);
-      spark.style.setProperty("--delay", `${index * 12}ms`);
-      resultWrap.appendChild(spark);
-    });
-
-    resultWrap.appendChild(mark);
-  } else {
-    resultWrap.className = "fail-pop";
+async function waitForFeedbackTarget(rect, run) {
+  while (isCurrentGameRun(run) && rect.dataset.lv1Active !== "true") {
+    await nextFrame(run.signal);
   }
+}
 
-  WRAP.appendChild(resultWrap);
+async function showBlockFeedback(rect, result, run) {
+  if (!rect || !isCurrentGameRun(run)) return;
 
-  await delay(FEEDBACK_MS, run.signal);
+  await waitForFeedbackTarget(rect, run);
 
   if (!isCurrentGameRun(run)) return;
 
-  resultWrap.remove();
+  const baseColor = rect.style.getPropertyValue("--lv1-base-color")
+    || getComputedStyle(rect).getPropertyValue("--lv1-base-color").trim()
+    || rect.style.backgroundColor;
+  const feedbackVariable = result ? "--lv1-success-color" : "--lv1-fail-color";
+  const feedbackColor = getComputedStyle(rect).getPropertyValue(feedbackVariable).trim();
+  const totalDuration =
+    BLOCK_FEEDBACK_IN_MS + BLOCK_FEEDBACK_HOLD_MS + BLOCK_FEEDBACK_OUT_MS;
+  const feedbackInOffset = BLOCK_FEEDBACK_IN_MS / totalDuration;
+  const feedbackHoldOffset =
+    (BLOCK_FEEDBACK_IN_MS + BLOCK_FEEDBACK_HOLD_MS) / totalDuration;
+
+  rect.classList.remove("is-judge-success", "is-judge-fail");
+  rect.style.backgroundColor = baseColor;
+
+  // 공통 SCSS의 prefers-reduced-motion 규칙이 CSS transition-duration을
+  // 1ms !important로 덮어쓸 수 있으므로, 판정색 왕복은 Web Animations API로
+  // 직접 보간한다. 이렇게 하면 어떤 OS/브라우저 모션 설정에서도
+  // 기본색 → 판정색 → 기본색 변화가 실제 시간 동안 부드럽게 표시된다.
+  const feedbackAnimation = rect.animate(
+    [
+      {
+        backgroundColor: baseColor,
+        offset: 0,
+        easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+      },
+      {
+        backgroundColor: feedbackColor,
+        offset: feedbackInOffset,
+        easing: "linear",
+      },
+      {
+        backgroundColor: feedbackColor,
+        offset: feedbackHoldOffset,
+        easing: "cubic-bezier(0.4, 0, 0.2, 1)",
+      },
+      {
+        backgroundColor: baseColor,
+        offset: 1,
+      },
+    ],
+    {
+      duration: totalDuration,
+      iterations: 1,
+      fill: "none",
+    }
+  );
+
+  const cancelFeedback = () => feedbackAnimation.cancel();
+  run.signal.addEventListener("abort", cancelFeedback, { once: true });
+
+  try {
+    await feedbackAnimation.finished;
+  } catch {
+    // 화면 이동이나 RETRY로 취소된 애니메이션은 정상적인 종료 흐름이다.
+  } finally {
+    run.signal.removeEventListener("abort", cancelFeedback);
+    rect.style.backgroundColor = baseColor;
+  }
 }
 
 function playJudgeSound(result, run) {
@@ -251,7 +281,7 @@ function playJudgeSound(result, run) {
   });
 }
 
-function startTouchJudge(run) {
+function startTouchJudge(feedbackRect, run) {
   const targetTime = performance.now() + TOUCH_TARGET_MS;
 
   return new Promise((resolve) => {
@@ -275,7 +305,7 @@ function startTouchJudge(run) {
       }
 
       playJudgeSound(result, run);
-      showResult(result, run).then(() => resolve(result));
+      showBlockFeedback(feedbackRect, result, run).then(() => resolve(result));
     };
 
     const onPointerDown = () => {
@@ -330,7 +360,7 @@ async function rectangleAni() {
     await playRect(RECTS, i, run);
 
     if (i < 3) {
-      judgePromises.push(startTouchJudge(run));
+      judgePromises.push(startTouchJudge(RECTS[i + 1], run));
       await delay(TOUCH_TARGET_MS, run.signal);
     }
   }

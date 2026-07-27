@@ -26,7 +26,7 @@ const LEVEL_CONFIG = Object.freeze({
   positions: ["t", "l", "b", "r"],
 });
 
-const PASTEL_COLORS = Object.freeze([
+const LIGHT_PASTEL_COLORS = Object.freeze([
   [255, 179, 186],
   [255, 223, 186],
   [255, 255, 186],
@@ -39,6 +39,21 @@ const PASTEL_COLORS = Object.freeze([
   [230, 230, 250],
   [255, 218, 185],
   [216, 191, 216],
+]);
+
+const DARK_PASTEL_COLORS = Object.freeze([
+  [158, 91, 111],
+  [153, 108, 72],
+  [139, 127, 73],
+  [74, 132, 101],
+  [72, 111, 151],
+  [95, 91, 154],
+  [145, 86, 123],
+  [116, 91, 151],
+  [66, 126, 132],
+  [105, 105, 139],
+  [145, 101, 76],
+  [122, 91, 122],
 ]);
 
 let activeGameId = 0;
@@ -490,8 +505,12 @@ function setStatus(message) {
 }
 
 function createRectangleColor(index) {
-  const rgb = PASTEL_COLORS[randomInteger(0, PASTEL_COLORS.length - 1)];
-  const alpha = Math.min(0.28 + index * 0.08, 0.58);
+  const isDarkMode = document.documentElement.dataset.theme === "dark";
+  const palette = isDarkMode ? DARK_PASTEL_COLORS : LIGHT_PASTEL_COLORS;
+  const rgb = palette[randomInteger(0, palette.length - 1)];
+  const alpha = isDarkMode
+    ? Math.min(0.46 + index * 0.09, 0.76)
+    : Math.min(0.28 + index * 0.08, 0.58);
 
   return `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${alpha})`;
 }

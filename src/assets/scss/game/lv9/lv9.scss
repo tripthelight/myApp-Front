@@ -157,6 +157,7 @@ html[data-theme="dark"] {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .lv9-world, .lv9-frame { transition-duration: 1ms; }
-  .demo-board, .demo-node { animation-duration: 1ms; }
+  /* 설명 화면의 반복 장식만 줄이고 실제 게임 전환은 유지한다. */
+  .demo-board,
+  .demo-node { animation-duration: 8s; }
 }

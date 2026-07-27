@@ -280,3 +280,91 @@
     min-width: 104px;
   }
 }
+
+
+
+html[data-theme="dark"] {
+  .app-view {
+    background: #10131b;
+  }
+
+  .lv3-page {
+    background:
+      radial-gradient(circle at 50% 42%, rgba(49, 55, 72, 0.94), rgba(25, 29, 40, 0.96) 62%, rgba(15, 18, 26, 0.99));
+  }
+
+  .lv3-status {
+    border-color: rgba(226, 232, 240, 0.12);
+    background: rgba(27, 32, 44, 0.78);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
+    color: #dce3ef;
+  }
+
+  .lv3-touch-dot {
+    --dot-color: rgba(216, 224, 237, 0.74);
+  }
+
+  .lv3-touch-dot::before {
+    box-shadow:
+      0 7px 22px rgba(0, 0, 0, 0.36),
+      inset 0 0 0 5px rgba(20, 25, 35, 0.62);
+  }
+
+  .lv3-touch-dot::after {
+    border-color: rgba(219, 227, 240, 0.24);
+  }
+
+  .lv3-touch-dot.is-success::before {
+    background: #54b98a;
+    box-shadow:
+      0 8px 28px rgba(84, 185, 138, 0.34),
+      inset 0 0 0 5px rgba(18, 31, 27, 0.62);
+  }
+
+  .lv3-touch-dot.is-fail::before {
+    background: #d96b78;
+    box-shadow:
+      0 8px 28px rgba(217, 107, 120, 0.34),
+      inset 0 0 0 5px rgba(37, 20, 25, 0.62);
+  }
+
+  .lv3-overlay {
+    background: rgba(9, 12, 18, 0.58);
+  }
+
+  .lv3-panel {
+    border-color: rgba(226, 232, 240, 0.12);
+    background: rgba(28, 33, 45, 0.9);
+    box-shadow: 0 26px 76px rgba(0, 0, 0, 0.42);
+    color: #eef2f8;
+  }
+
+  .lv3-panel p {
+    color: #aeb8ca;
+  }
+
+  .lv3-action-button {
+    background: #607fb6;
+    box-shadow: 0 9px 24px rgba(42, 60, 94, 0.34);
+  }
+
+  .lv3-action-button:hover {
+    background: #708fc5;
+  }
+
+  .lv3-action-button.is-retry {
+    background: #a95764;
+  }
+
+  .lv3-action-button.is-retry:hover {
+    background: #ba6673;
+  }
+
+  .lv3-action-button.is-home {
+    background: #566174;
+  }
+
+  .lv3-action-button.is-home:hover {
+    background: #657186;
+  }
+}

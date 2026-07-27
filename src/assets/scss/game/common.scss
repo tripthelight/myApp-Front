@@ -145,6 +145,13 @@ html[data-theme="dark"] {
   .result-button { min-width:104px; min-height:46px; padding:12px 18px; }
 }
 
+/*
+ * 게임 진행에 필요한 transition/animation은 각 Level에서 직접 관리한다.
+ * 전역에서 duration을 1ms !important로 강제하면 위치 이동, 등장, 판정 큐처럼
+ * 플레이에 필수인 모션까지 사라지므로 공통 스타일에서는 스크롤 동작만 줄인다.
+ */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration:1ms !important; animation-iteration-count:1 !important; transition-duration:1ms !important; }
+  html:focus-within {
+    scroll-behavior: auto;
+  }
 }

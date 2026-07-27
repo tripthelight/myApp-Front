@@ -336,16 +336,6 @@ html[data-theme="dark"] {
   .lv30-sound-hint { color: rgba(255, 231, 243, 0.42); }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .lv30-page *,
-  .lv30-page *::before,
-  .lv30-page *::after {
-    animation-duration: 1ms !important;
-    animation-delay: 0ms !important;
-    scroll-behavior: auto !important;
-  }
-  .lv30-letter { opacity: 1; transform: none; }
-}
 
 @keyframes lv30Bloom {
   0% { opacity: 0; transform: scale(0.02) rotate(-18deg); filter: blur(8px); }

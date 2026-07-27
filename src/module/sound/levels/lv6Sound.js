@@ -57,6 +57,22 @@ const lv6FailSynth = new Tone.MembraneSynth({
 }).connect(masterLimiter);
 
 let lv6HoldActive = false;
+let lv6HoldStartedAt = -Infinity;
+
+function getSafeHoldTime(offsetSeconds = 0.01) {
+  const now = Tone.now();
+  const requestedTime = now + Math.max(0, offsetSeconds);
+  return Math.max(requestedTime, lv6HoldStartedAt + 0.005);
+}
+
+function releaseLv6HoldSound(offsetSeconds = 0.01) {
+  if (!lv6HoldActive) {
+    return;
+  }
+
+  lv6HoldSynth.triggerRelease(getSafeHoldTime(offsetSeconds));
+  lv6HoldActive = false;
+}
 
 export function playLv6TapSound(step = 0) {
   if (!canPlaySound()) {
@@ -84,24 +100,28 @@ export function startLv6HoldSound(step = 0) {
     return;
   }
 
-  if (lv6HoldActive) {
-    lv6HoldSynth.triggerRelease(safeNow(0.005));
-  }
+  releaseLv6HoldSound(0.005);
 
   const notes = ["C3", "D3", "E3", "G3", "A3"];
   const startTime = getStrictStartTime("lv6-hold", 0.06);
   lv6HoldSynth.triggerAttack(notes[step % notes.length], startTime, 0.48);
+  lv6HoldStartedAt = startTime;
   lv6HoldActive = true;
 }
 
 export function stopLv6HoldSound() {
-  if (!lv6HoldActive || !canPlaySound()) {
-    lv6HoldActive = false;
+  if (!lv6HoldActive) {
     return;
   }
 
-  lv6HoldSynth.triggerRelease(safeNow(0.04));
-  lv6HoldActive = false;
+  if (!canPlaySound()) {
+    lv6HoldActive = false;
+    lv6HoldStartedAt = -Infinity;
+    return;
+  }
+
+  releaseLv6HoldSound(0.04);
+  lv6HoldStartedAt = -Infinity;
 }
 
 export function playLv6FailSound() {

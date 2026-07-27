@@ -206,9 +206,6 @@ html[data-theme="dark"] {
   .lv15-guide-tags span { padding-block: 6px; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  #lv15Page *, #lv15Page *::before, #lv15Page *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
-}
 
 @keyframes lv15Wave { to { transform: translate3d(2%, 18%, 0) scaleY(1.2); } }
 @keyframes lv15Orbit { to { transform: rotate(360deg); } }

@@ -25,6 +25,8 @@ const CONFIG = Object.freeze({
   minReleaseSpeed: 150,
   maxReleaseSpeed: 1550,
   frictionPerFrame: 0.986,
+  minFlightSpeed: 260,
+  maxFlightDurationMs: 2800,
   outPadding: 72,
   collisionPadding: 3,
   resultDelayMs: 1050,
@@ -247,6 +249,13 @@ function tick(now) {
       const friction = Math.pow(CONFIG.frictionPerFrame, dt * 60);
       thief.vx *= friction;
       thief.vy *= friction;
+
+      const flightSpeed = Math.hypot(thief.vx, thief.vy);
+      if (flightSpeed < CONFIG.minFlightSpeed) {
+        const direction = getOutwardDirection(thief, rect.width, rect.height);
+        thief.vx = direction.x * CONFIG.minFlightSpeed;
+        thief.vy = direction.y * CONFIG.minFlightSpeed;
+      }
     }
 
     renderThief(thief);
@@ -259,7 +268,12 @@ function tick(now) {
     }
 
     const pad = CONFIG.outPadding + thief.size;
-    if (thief.wasSwiped && (thief.x < -pad || thief.x > rect.width + pad || thief.y < -pad || thief.y > rect.height + pad)) {
+    const isOutside = thief.x < -pad || thief.x > rect.width + pad || thief.y < -pad || thief.y > rect.height + pad;
+    const flightTimedOut = thief.wasSwiped
+      && Number.isFinite(thief.releasedAt)
+      && now - thief.releasedAt >= CONFIG.maxFlightDurationMs;
+
+    if (thief.wasSwiped && (isOutside || flightTimedOut)) {
       resolveSuccess(thief);
     }
   });
@@ -313,21 +327,27 @@ function handlePointerUp(event) {
 
   const first = thief.samples[0];
   const last = thief.samples.at(-1);
-  const elapsed = Math.max((last.t - first.t) / 1000, 0.025);
-  let vx = ((last.x - first.x) / elapsed) * CONFIG.swipeVelocityScale;
-  let vy = ((last.y - first.y) / elapsed) * CONFIG.swipeVelocityScale;
-  const speed = Math.hypot(vx, vy);
+  const hasUsableSamples = first && last && first !== last;
+  const elapsed = hasUsableSamples ? Math.max((last.t - first.t) / 1000, 0.025) : 0;
+  let vx = hasUsableSamples ? ((last.x - first.x) / elapsed) * CONFIG.swipeVelocityScale : 0;
+  let vy = hasUsableSamples ? ((last.y - first.y) / elapsed) * CONFIG.swipeVelocityScale : 0;
+  let speed = Math.hypot(vx, vy);
 
-  if (speed < CONFIG.minReleaseSpeed) {
-    const fallback = CONFIG.minReleaseSpeed / Math.max(speed, 1);
-    vx *= fallback;
-    vy *= fallback;
+  const arena = document.getElementById("lv10Arena");
+  const arenaRect = arena?.getBoundingClientRect();
+  if (!Number.isFinite(speed) || speed < 1) {
+    const direction = getOutwardDirection(thief, arenaRect?.width ?? innerWidth, arenaRect?.height ?? innerHeight);
+    vx = direction.x * CONFIG.minReleaseSpeed;
+    vy = direction.y * CONFIG.minReleaseSpeed;
+    speed = CONFIG.minReleaseSpeed;
   }
-  const limitedSpeed = Math.min(Math.max(Math.hypot(vx, vy), CONFIG.minReleaseSpeed), CONFIG.maxReleaseSpeed);
+
+  const limitedSpeed = clamp(speed, CONFIG.minReleaseSpeed, CONFIG.maxReleaseSpeed);
   const normalized = normalize(vx, vy);
   thief.vx = normalized.x * limitedSpeed;
   thief.vy = normalized.y * limitedSpeed;
   thief.wasSwiped = true;
+  thief.releasedAt = performance.now();
   thief.element.classList.add("is-released");
   playLv10SwipeSound(limitedSpeed / CONFIG.maxReleaseSpeed);
   showFeedback(limitedSpeed > 820 ? "GREAT SWIPE" : "KEEP PUSHING", limitedSpeed > 820 ? "FAST" : "STEADY", "success");
@@ -515,6 +535,23 @@ function schedule(callback, delay) {
 
 function isActive(id) {
   return running && id === gameId && document.getElementById("lv10Page");
+}
+
+function getOutwardDirection(thief, width, height) {
+  const outwardX = thief.x - width / 2;
+  const outwardY = thief.y - height / 2;
+  const outwardLength = Math.hypot(outwardX, outwardY);
+
+  if (outwardLength > 0.001) {
+    return { x: outwardX / outwardLength, y: outwardY / outwardLength };
+  }
+
+  const velocityLength = Math.hypot(thief.vx, thief.vy);
+  if (velocityLength > 0.001) {
+    return { x: thief.vx / velocityLength, y: thief.vy / velocityLength };
+  }
+
+  return { x: 0, y: -1 };
 }
 
 function normalize(x, y) {

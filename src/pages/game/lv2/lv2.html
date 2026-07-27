@@ -4,8 +4,31 @@
   <ul id="circlesWrap" class="circles-wrap" aria-label="터치 원 영역"></ul>
 
   <div class="lv2-ready" id="lv2Ready">
-    <button type="button" id="lv2StartButton" class="lv2-action-button">START</button>
-    <p>원이 나타나는 위치와 순서를 기억한 뒤, 다시 나타날 때 안쪽 원을 터치하세요.</p>
+    <div class="lv2-ready__panel">
+      <span class="lv2-ready__kicker">HOW TO PLAY</span>
+      <strong class="lv2-ready__title">원의 위치와 순서를 기억하세요</strong>
+      <p class="lv2-ready__description">원이 차례대로 나타나는 위치를 기억한 뒤, 같은 순서로 다시 나타날 때 <b>가장 안쪽의 밝은 원</b>을 터치하세요.</p>
+
+      <div class="lv2-demo" aria-hidden="true">
+        <span class="lv2-demo__label is-memory">MEMORY</span>
+        <span class="lv2-demo__label is-touch">TOUCH</span>
+        <div class="lv2-demo__stage">
+          <i class="lv2-demo__circle is-one"><span><b></b></span></i>
+          <i class="lv2-demo__circle is-two"><span><b></b></span></i>
+          <i class="lv2-demo__circle is-three"><span><b></b></span></i>
+          <i class="lv2-demo__path"></i>
+          <i class="lv2-demo__finger"></i>
+        </div>
+      </div>
+
+      <div class="lv2-ready__steps">
+        <span><i>1</i> 위치와 순서 기억</span>
+        <span><i>2</i> 다시 나타날 때 대기</span>
+        <span><i>3</i> 안쪽 원 터치</span>
+      </div>
+
+      <button type="button" id="lv2StartButton" class="lv2-action-button">START</button>
+    </div>
   </div>
 
   <div class="lv2-result" id="lv2Result" hidden>

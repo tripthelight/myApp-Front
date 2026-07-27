@@ -380,14 +380,6 @@ html[data-theme="dark"] {
   .lv5-quadrant.is-rb { border-radius: 11px 11px 28px 11px; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .lv5-quadrant,
-  .lv5-phase-motion,
-  .lv5-phase-motion span {
-    animation-duration: 1ms !important;
-    transition-duration: 1ms !important;
-  }
-}
 
 .lv5-progress {
   position: fixed;
