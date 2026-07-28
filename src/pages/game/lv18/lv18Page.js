@@ -21,6 +21,8 @@ const CENTER_WHITE_END = 7;
 const WHITE_NOTES = Object.freeze(["C", "D", "E", "F", "G", "A", "B"]);
 const SOLFEGE = Object.freeze(["도", "레", "미", "파", "솔", "라", "시"]);
 const SHARP_AFTER = new Set(["C", "D", "F", "G", "A"]);
+const DESKTOP_KEY_BINDINGS = Object.freeze(["a", "s", "d", "f", "g", "h", "j", "k"]);
+const DESKTOP_INPUT_QUERY = "(hover: hover) and (pointer: fine)";
 const GAME_DURATION = 60_000;
 const START_TOLERANCE = 210;
 const RELEASE_TOLERANCE = 250;
@@ -56,6 +58,7 @@ let totalNodes = 0;
 let feedbackTimer = 0;
 let colorMap = new Map();
 let lastSpawnTarget = 0;
+let desktopInputEnabled = false;
 
 export function renderPage() {
   destroyPage();
@@ -63,6 +66,7 @@ export function renderPage() {
   mountedPathname = window.location.pathname;
   bindLifecycle();
   bindViewport();
+  updateDesktopInputMode();
   configureKeyboard();
   bindControls();
 }
@@ -93,9 +97,11 @@ function bindViewport() {
     window.cancelAnimationFrame(resizeFrame);
     resizeFrame = window.requestAnimationFrame(() => {
       resizeFrame = 0;
+      updateDesktopInputMode();
       configureKeyboard();
       refreshPendingNodeKeys();
       positionNodes(performance.now());
+      updatePressedKeyBar();
     });
   };
   sync();
@@ -129,14 +135,37 @@ function configureKeyboard() {
   keyboard.innerHTML = `<div class="lv18-keyboard-track">
     ${renderedKeys.filter((key) => key.type === "white").map((key) => {
       const left = (key.whiteIndex - 3.5) * WHITE_KEY_WIDTH;
-      return `<button class="lv18-key lv18-white-key" type="button" data-key-id="${key.id}" style="--key-left:${left}px;--key-color:${colorFor(key.id)}" aria-label="${key.solfege} ${key.note} 건반"></button>`;
+      const keyboardKey = keyboardKeyForWhiteIndex(key.whiteIndex);
+      const keyboardLabel = keyboardKey
+        ? `<span class="lv18-keyboard-hint" aria-hidden="true"><kbd>${keyboardKey.toUpperCase()}</kbd><small>${key.solfege}</small></span>`
+        : "";
+      return `<button class="lv18-key lv18-white-key" type="button" data-key-id="${key.id}"${keyboardKey ? ` data-keyboard-key="${keyboardKey}"` : ""} style="--key-left:${left}px;--key-color:${colorFor(key.id)}" aria-label="${key.solfege} ${key.note} 건반${keyboardKey ? `, 키보드 ${keyboardKey.toUpperCase()} 키` : ""}">${keyboardLabel}</button>`;
     }).join("")}
     ${renderedKeys.filter((key) => key.type === "black").map((key) => {
-      const left = (key.whiteIndex - 3.5 + 1) * WHITE_KEY_WIDTH;
+      const left = (key.whiteIndex - 3.5 + 0.5) * WHITE_KEY_WIDTH;
       return `<button class="lv18-key lv18-black-key" type="button" data-key-id="${key.id}" style="--key-left:${left}px" aria-label="${key.solfege} ${key.note} 검은 건반"></button>`;
     }).join("")}
   </div>`;
   selectPlayableWhiteKeys(width);
+  syncKeyboardHints();
+}
+
+
+function keyboardKeyForWhiteIndex(whiteIndex) {
+  if (whiteIndex < CENTER_WHITE_START || whiteIndex > CENTER_WHITE_END) return "";
+  return DESKTOP_KEY_BINDINGS[whiteIndex - CENTER_WHITE_START] ?? "";
+}
+
+function updateDesktopInputMode() {
+  desktopInputEnabled = Boolean(window.matchMedia?.(DESKTOP_INPUT_QUERY)?.matches);
+  document.getElementById("lv18Page")?.classList.toggle("is-keyboard-enabled", desktopInputEnabled);
+}
+
+function syncKeyboardHints() {
+  const playableIds = new Set(playableKeys.map((key) => key.id));
+  document.querySelectorAll(".lv18-white-key[data-keyboard-key]").forEach((key) => {
+    key.classList.toggle("is-keyboard-playable", desktopInputEnabled && playableIds.has(key.dataset.keyId));
+  });
 }
 
 function createWhiteKey(index) {
@@ -179,6 +208,8 @@ function bindControls() {
   keyboard?.addEventListener("pointercancel", handlePointerUp, { signal });
   keyboard?.addEventListener("lostpointercapture", handlePointerUp, { signal });
   keyboard?.addEventListener("contextmenu", (event) => event.preventDefault(), { signal });
+  document.addEventListener("keydown", handleKeyboardDown, { signal });
+  document.addEventListener("keyup", handleKeyboardUp, { signal });
 }
 
 async function startGame() {
@@ -335,10 +366,41 @@ function handlePointerDown(event) {
   if (!key || !running || activeHold) return;
   event.preventDefault();
   key.setPointerCapture?.(event.pointerId);
-  const keyId = key.dataset.keyId;
+  beginKeyHold(key.dataset.keyId, "pointer", event.pointerId);
+}
+
+function handlePointerUp(event) {
+  if (!activeHold || activeHold.source !== "pointer" || event.pointerId !== activeHold.inputId) return;
+  event.preventDefault();
+  endKeyHold();
+}
+
+function handleKeyboardDown(event) {
+  if (!desktopInputEnabled || event.repeat || !running || activeHold || isEditableTarget(event.target)) return;
+  const keyboardKey = event.key.toLowerCase();
+  const whiteIndex = DESKTOP_KEY_BINDINGS.indexOf(keyboardKey);
+  if (whiteIndex < 0) return;
+  const keyId = `w:${CENTER_WHITE_START + whiteIndex}`;
+  if (!playableKeys.some((key) => key.id === keyId)) return;
+  event.preventDefault();
+  beginKeyHold(keyId, "keyboard", keyboardKey);
+}
+
+function handleKeyboardUp(event) {
+  if (!desktopInputEnabled || !activeHold || activeHold.source !== "keyboard") return;
+  const keyboardKey = event.key.toLowerCase();
+  if (keyboardKey !== activeHold.inputId) return;
+  event.preventDefault();
+  endKeyHold();
+}
+
+function beginKeyHold(keyId, source, inputId) {
+  const key = keyElement(keyId);
+  if (!key || !running || activeHold) return;
   const definition = keyDefinitions.get(keyId);
   const now = performance.now();
   key.classList.add("is-active");
+  showPressedKeyBar(keyId);
   playLv18HoldStartSound(definition?.note ?? "C4");
 
   const candidate = nearestUnjudgedNode(now);
@@ -349,7 +411,8 @@ function handlePointerDown(event) {
   const node = correctStart ? matching : (candidate && Math.abs(now - candidate.targetStart) <= START_TOLERANCE ? candidate : null);
 
   activeHold = {
-    pointerId: event.pointerId,
+    source,
+    inputId,
     keyId,
     key,
     node,
@@ -364,13 +427,13 @@ function handlePointerDown(event) {
   }
 }
 
-function handlePointerUp(event) {
-  if (!activeHold || event.pointerId !== activeHold.pointerId) return;
-  event.preventDefault();
+function endKeyHold() {
+  if (!activeHold) return;
   const hold = activeHold;
   activeHold = null;
   const now = performance.now();
   hold.key.classList.remove("is-active");
+  hidePressedKeyBar();
   playLv18HoldEndSound(keyDefinitions.get(hold.keyId)?.note ?? "C4");
 
   if (!hold.node) {
@@ -383,6 +446,38 @@ function handlePointerUp(event) {
   const releaseCorrect = Math.abs(now - node.targetEnd) <= RELEASE_TOLERANCE;
   const success = hold.startCorrect && !hold.wrongKey && releaseCorrect;
   judgeNode(node, success, hold.keyId, now - hold.pressedAt);
+}
+
+function showPressedKeyBar(keyId) {
+  const bar = document.getElementById("lv18PressedKeyBar");
+  if (!bar) return;
+  bar.dataset.keyId = keyId;
+  bar.style.setProperty("--pressed-key-color", colorFor(keyId));
+  updatePressedKeyBar();
+  bar.classList.add("is-visible");
+}
+
+function updatePressedKeyBar() {
+  const bar = document.getElementById("lv18PressedKeyBar");
+  const field = document.getElementById("lv18LaneField");
+  const keyId = activeHold?.keyId ?? bar?.dataset.keyId;
+  const key = keyId ? keyElement(keyId) : null;
+  if (!bar || !field || !key) return;
+  const keyRect = key.getBoundingClientRect();
+  const fieldRect = field.getBoundingClientRect();
+  bar.style.setProperty("--pressed-key-x", `${(keyRect.left - fieldRect.left).toFixed(3)}px`);
+  bar.style.setProperty("--pressed-key-w", `${keyRect.width.toFixed(3)}px`);
+}
+
+function hidePressedKeyBar() {
+  const bar = document.getElementById("lv18PressedKeyBar");
+  if (!bar) return;
+  bar.classList.remove("is-visible");
+  delete bar.dataset.keyId;
+}
+
+function isEditableTarget(target) {
+  return target instanceof Element && Boolean(target.closest("input, textarea, select, [contenteditable='true']"));
 }
 
 function nearestUnjudgedNode(now) {
@@ -494,7 +589,10 @@ function hide(id) { document.getElementById(id)?.setAttribute("hidden", ""); }
 function show(id) { document.getElementById(id)?.removeAttribute("hidden"); }
 function toggleHidden(id, hidden) { const element = document.getElementById(id); if (element) element.hidden = hidden; }
 function pulseClass(element, className, duration) { if (!element) return; element.classList.remove(className); void element.offsetWidth; element.classList.add(className); window.setTimeout(() => element.classList.remove(className), duration); }
-function clearKeyStates() { document.querySelectorAll(".lv18-key").forEach((key) => key.classList.remove("is-active", "is-success", "is-fail")); }
+function clearKeyStates() {
+  document.querySelectorAll(".lv18-key").forEach((key) => key.classList.remove("is-active", "is-success", "is-fail"));
+  hidePressedKeyBar();
+}
 function clearNodeElements() { document.getElementById("lv18Nodes")?.replaceChildren(); }
 function removeNode(node) { node.state = "removed"; node.element?.remove(); node.element = null; }
 function isActive(token) { return running && token === gameToken && document.getElementById("lv18Page"); }
@@ -510,6 +608,7 @@ function cancelGame() {
   timers.forEach((timer) => window.clearTimeout(timer));
   timers.clear();
   activeHold = null;
+  hidePressedKeyBar();
   stopLv18Sounds();
 }
 

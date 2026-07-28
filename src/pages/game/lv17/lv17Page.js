@@ -11,7 +11,9 @@ import {
 const GAME_MS = 60000;
 const BALL_TOTAL = 5;
 const HIT_EARLY_MS = 190;
-const HIT_LATE_MS = 230;
+const TARGET_ACTIVE_MS = 900;
+const HIT_LATE_MS = TARGET_ACTIVE_MS;
+const TARGET_VISIBLE_MS = TARGET_ACTIVE_MS;
 const POSITION_TOLERANCE = 1.45;
 const COLORS = ["#f1b9cf", "#aec9f4", "#a9dfcf", "#d0bff0", "#f3d0a7"];
 
@@ -34,6 +36,7 @@ let routeWatchTimer = 0;
 let arenaWidth = 0;
 let arenaHeight = 0;
 let floorBoundaryY = 0;
+let activeTargetUntil = 0;
 
 export function renderPage() {
   destroyPage();
@@ -110,6 +113,7 @@ async function startGame() {
   successes = 0;
   balls = [];
   pendingHits = [];
+  activeTargetUntil = 0;
   document.getElementById("lv17Balls").innerHTML = "";
   document.getElementById("lv17Ready")?.setAttribute("hidden", "");
   document.getElementById("lv17Result")?.setAttribute("hidden", "");
@@ -249,6 +253,11 @@ function moveBall(ball, dt, now) {
 }
 
 function createFloorHit(ball, now) {
+  // 하나의 터치 타깃이 표시되는 동안 발생한 다른 바닥 충돌은
+  // PC의 단일 포인터 환경에서도 처리 가능한 리듬을 유지하도록 완전히 무시합니다.
+  if (now < activeTargetUntil) return;
+
+  activeTargetUntil = now + TARGET_VISIBLE_MS;
   pendingHits.push({ ballId: ball.id, x: ball.x, radius: ball.radius, time: now, resolved: false });
   playLv17FloorSound(ball.index);
   pulseBall(ball, "is-floor-hit");
@@ -262,6 +271,7 @@ function createFloorHit(ball, now) {
   rail?.style.setProperty("--target-x", `${ball.x}px`);
   rail?.style.setProperty("--target-width", `${Math.max(54, ball.radius * POSITION_TOLERANCE * 2)}px`);
   rail?.style.setProperty("--target-color", ball.color);
+  rail?.style.setProperty("--target-visible-ms", `${TARGET_VISIBLE_MS}ms`);
   rail?.classList.remove("is-targeted");
   void rail?.offsetWidth;
   rail?.classList.add("is-targeted");
@@ -288,7 +298,7 @@ function expireHits(now) {
       registerFailure(hit.x, "바닥 충돌을 놓쳤습니다");
     }
   });
-  pendingHits = pendingHits.filter((hit) => now - hit.time < 1200);
+  pendingHits = pendingHits.filter((hit) => now - hit.time < TARGET_VISIBLE_MS + 500);
 }
 
 function registerSuccess(x) {
@@ -331,6 +341,7 @@ function finishGame(id) {
   cancelAnimationFrame(timerFrame);
   pendingHits.forEach((hit) => { if (!hit.resolved) mistakes += 1; });
   pendingHits = [];
+  activeTargetUntil = 0;
   setText("lv17Time", "0");
   playLv17FinishSound(mistakes === 0);
   const ballElements = [...document.querySelectorAll("#lv17Page .lv17-ball")];
@@ -367,6 +378,8 @@ function cancelRun() {
   cancelAnimationFrame(timerFrame);
   spawnTimers.forEach((timer) => window.clearTimeout(timer));
   spawnTimers.clear();
+  pendingHits = [];
+  activeTargetUntil = 0;
   stopLv17Sounds();
   document.querySelectorAll("#lv17Page *").forEach((el) => el.getAnimations?.().forEach((animation) => animation.cancel()));
 }

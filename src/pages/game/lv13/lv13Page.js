@@ -20,10 +20,17 @@ const CONFIG = Object.freeze({
   spawnGapMinMs: 900,
   spawnGapMaxMs: 1550,
   initialDelayMs: 650,
-  spinThreshold: 0.12,
-  propellerInertia: 0.985,
-  propellerMinimalSpeed: 0.035,
+  // 약한 스와이프도 방향 입력으로 인식하되, 미세한 손떨림은 제외합니다.
+  spinThreshold: 0.055,
+  // 실제 플래터처럼 손을 놓은 뒤 충분히 오래 회전하도록 감쇠를 완만하게 합니다.
+  propellerInertia: 0.995,
+  propellerMinimalSpeed: 0.008,
   propellerMaxReferenceSpeed: 18,
+  // Propeller 내부 감쇠가 적용되기 전의 마지막 드래그 속도를 기준으로
+  // 릴리스 관성을 새로 부여해, 반복 조작에도 같은 스와이프는 같은 속도를 냅니다.
+  releaseVelocityMultiplier: 2.25,
+  releaseVelocityMax: 32,
+  releaseSampleMaxAgeMs: 160,
 });
 
 const COLORS = ["#f3b8cb", "#a9ddd1", "#b2ccef", "#cebce9", "#f3d68d", "#efbea8"];
@@ -36,6 +43,8 @@ let viewportController = null;
 let frameId = 0;
 let propellerInstance = null;
 let angularVelocity = 0;
+let latestDragVelocity = 0;
+let latestDragVelocityAt = 0;
 let sequence = [];
 let activeNodes = new Map();
 let resolvedCheckpoints = 0;
@@ -255,20 +264,49 @@ function createTurntablePropeller(turntable, spinInputZone) {
 
 function handlePropellerRotate() {
   angularVelocity = this.speed;
+
+  if (!this.active || Math.abs(this.speed) < CONFIG.propellerMinimalSpeed) return;
+
+  // Propeller는 updateAngleToMouse()에서 드래그 속도를 계산한 직후 같은 프레임에
+  // inertia를 곱합니다. 감쇠 전 입력 속도를 복원해 두었다가 손을 놓을 때 사용합니다.
+  latestDragVelocity = this.speed / CONFIG.propellerInertia;
+  latestDragVelocityAt = performance.now();
 }
 
 function handlePropellerDragStart() {
-  if (!running) {
-    this.stop();
-    return;
-  }
+  // 이전 관성과 이전 스와이프의 속도 기록을 모두 제거합니다.
+  // stop()은 active 상태까지 해제하므로 사용하지 않습니다.
+  this.speed = 0;
   angularVelocity = 0;
+  latestDragVelocity = 0;
+  latestDragVelocityAt = 0;
+
+  if (!running) return;
 }
 
 function handlePropellerDragStop() {
   if (!running || !propellerInstance) return;
 
+  const sampleAge = performance.now() - latestDragVelocityAt;
+  const hasFreshReleaseVelocity = latestDragVelocityAt > 0
+    && sampleAge <= CONFIG.releaseSampleMaxAgeMs;
+
+  if (hasFreshReleaseVelocity) {
+    const releaseVelocity = clamp(
+      latestDragVelocity * CONFIG.releaseVelocityMultiplier,
+      -CONFIG.releaseVelocityMax,
+      CONFIG.releaseVelocityMax,
+    );
+    propellerInstance.speed = releaseVelocity;
+  } else {
+    // 움직이지 않고 잡았다 놓은 경우에는 정지 상태를 유지합니다.
+    propellerInstance.speed = 0;
+  }
+
   angularVelocity = propellerInstance.speed;
+  latestDragVelocity = 0;
+  latestDragVelocityAt = 0;
+
   if (Math.abs(angularVelocity) < CONFIG.spinThreshold) return;
 
   const direction = angularVelocity > 0 ? "right" : "left";
@@ -290,12 +328,16 @@ function handlePropellerDragStop() {
 
 function resetTurntablePropeller() {
   angularVelocity = 0;
+  latestDragVelocity = 0;
+  latestDragVelocityAt = 0;
   if (!propellerInstance) return;
   propellerInstance.speed = 0;
   propellerInstance.angle = 0;
 }
 
 function destroyTurntablePropeller() {
+  latestDragVelocity = 0;
+  latestDragVelocityAt = 0;
   if (!propellerInstance) return;
   propellerInstance.unbind();
   propellerInstance.speed = 0;
@@ -373,6 +415,8 @@ function finishGame(id) {
 
 function cancelGame() {
   running = false;
+  latestDragVelocity = 0;
+  latestDragVelocityAt = 0;
   gameId += 1;
   timers.forEach((timer) => window.clearTimeout(timer));
   timers.clear();

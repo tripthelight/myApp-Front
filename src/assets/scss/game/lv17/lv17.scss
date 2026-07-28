@@ -231,11 +231,11 @@ html[data-theme="dark"] {
 .lv17-touch-target::after { right: 4px; transform: translateY(-50%); }
 
 .lv17-touch-rail.is-targeted .lv17-touch-target {
-  animation: lv17TouchTarget .56s cubic-bezier(.2, .8, .2, 1);
+  animation: lv17TouchTarget var(--target-visible-ms, 900ms) linear;
 }
 
 .lv17-touch-rail.is-targeted::before {
-  animation: lv17TouchRailPulse .56s ease-out;
+  animation: lv17TouchRailPulse var(--target-visible-ms, 900ms) linear;
 }
 
 @keyframes lv17TouchLineFlow {
@@ -245,9 +245,9 @@ html[data-theme="dark"] {
 
 @keyframes lv17TouchTarget {
   0% { opacity: 0; transform: translate(-50%, -50%) scaleX(.18) scaleY(.65); filter: blur(3px); }
-  22% { opacity: 1; transform: translate(-50%, -50%) scaleX(1.08) scaleY(1.05); filter: blur(0); }
-  55% { opacity: 1; transform: translate(-50%, -50%) scaleX(1) scaleY(1); }
-  100% { opacity: 0; transform: translate(-50%, -50%) scaleX(.82) scaleY(.72); }
+  8% { opacity: 1; transform: translate(-50%, -50%) scaleX(1.08) scaleY(1.05); filter: blur(0); }
+  16%, 99.8% { opacity: 1; transform: translate(-50%, -50%) scaleX(1) scaleY(1); filter: blur(0); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scaleX(1) scaleY(1); filter: blur(0); }
 }
 
 @keyframes lv17TouchRailPulse {

@@ -49,6 +49,44 @@
 .lv18-node.is-success { animation: lv18NodeSuccess .5s ease-out forwards; }
 .lv18-node.is-fail { animation: lv18NodeFail .5s ease-out forwards; }
 
+.lv18-pressed-key-bar {
+  --pressed-key-x: 0px;
+  --pressed-key-w: 70px;
+  --pressed-key-color: #a7d7ff;
+  position: absolute;
+  z-index: 4;
+  left: var(--pressed-key-x);
+  bottom: 0;
+  width: var(--pressed-key-w);
+  height: min(72%, 520px);
+  border-right: 1px solid color-mix(in srgb, var(--pressed-key-color), transparent 72%);
+  border-left: 1px solid color-mix(in srgb, var(--pressed-key-color), transparent 72%);
+  background: linear-gradient(180deg,
+    transparent 0%,
+    color-mix(in srgb, var(--pressed-key-color), transparent 96%) 24%,
+    color-mix(in srgb, var(--pressed-key-color), transparent 82%) 58%,
+    color-mix(in srgb, var(--pressed-key-color), transparent 38%) 100%);
+  box-shadow: inset 0 -28px 38px color-mix(in srgb, var(--pressed-key-color), transparent 70%), 0 12px 34px color-mix(in srgb, var(--pressed-key-color), transparent 78%);
+  opacity: 0;
+  transform: translateY(10px) scaleY(.96);
+  transform-origin: bottom;
+  pointer-events: none;
+  transition: opacity .12s ease, transform .16s cubic-bezier(.2,.8,.2,1);
+  will-change: opacity, transform;
+}
+.lv18-pressed-key-bar::after {
+  content: '';
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  bottom: 0;
+  height: 3px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--pressed-key-color), white 24%);
+  box-shadow: 0 0 14px var(--pressed-key-color);
+}
+.lv18-pressed-key-bar.is-visible { opacity: .92; transform: translateY(0) scaleY(1); }
+
 .lv18-hit-line { position: absolute; z-index: 5; left: 0; right: 0; bottom: 0; height: 12px; transform: translateY(50%); display: flex; align-items: center; pointer-events: none; }
 .lv18-hit-line::before { content: ''; position: absolute; inset: 4px 0; background: linear-gradient(90deg, transparent, rgba(125,151,206,.55) 15%, rgba(255,157,194,.65) 50%, rgba(118,203,185,.55) 85%, transparent); box-shadow: 0 0 16px rgba(143,174,222,.28); }
 .lv18-hit-line span, .lv18-hit-line i, .lv18-hit-line b { position: absolute; width: 74px; height: 100%; border-radius: 999px; background: rgba(255,255,255,.76); filter: blur(2px); animation: lv18Rail 2.4s linear infinite; }
@@ -65,10 +103,50 @@
 .lv18-key.is-success { animation: lv18KeyGood .55s ease-out; }
 .lv18-key.is-fail { animation: lv18KeyBad .5s ease-out; }
 
+.lv18-keyboard-hint {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(14px, 2.8vh, 28px);
+  display: none;
+  width: calc(100% - 12px);
+  transform: translateX(-50%);
+  place-items: center;
+  gap: 5px;
+  pointer-events: none;
+}
+.lv18-page.is-keyboard-enabled .lv18-white-key.is-keyboard-playable .lv18-keyboard-hint { display: grid; }
+.lv18-keyboard-hint kbd {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid rgba(91, 98, 128, .2);
+  border-bottom-color: rgba(91, 98, 128, .32);
+  border-radius: 9px;
+  color: #59617e;
+  background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(232,236,247,.96));
+  box-shadow: 0 4px 0 rgba(91,98,128,.13), 0 8px 16px rgba(71,79,112,.1), inset 0 1px rgba(255,255,255,.95);
+  font: 850 13px/1 system-ui, sans-serif;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+}
+.lv18-keyboard-hint small {
+  color: rgba(74, 81, 108, .58);
+  font-size: 9px;
+  font-weight: 850;
+  line-height: 1;
+  letter-spacing: .06em;
+}
+.lv18-page.is-keyboard-enabled .lv18-white-key.is-keyboard-playable.is-active .lv18-keyboard-hint kbd {
+  transform: translateY(3px);
+  border-bottom-color: rgba(91,98,128,.2);
+  box-shadow: 0 1px 0 rgba(91,98,128,.12), inset 0 1px 4px rgba(67,74,102,.08);
+}
+
 .lv18-feedback { position: absolute; z-index: 18; left: 50%; bottom: calc(var(--keyboard-h) + 30px); transform: translate(-50%, 18px) scale(.92); display: grid; place-items: center; opacity: 0; pointer-events: none; transition: .2s ease; }
 .lv18-feedback.is-visible { opacity: 1; transform: translate(-50%,0) scale(1); }
-.lv18-feedback-mark { width: 56px; height: 56px; border: 1px solid rgba(255,255,255,.85); border-radius: 50%; box-shadow: 0 10px 35px rgba(75,82,115,.15); backdrop-filter: blur(10px); }
-.lv18-feedback strong { margin-top: -41px; font-size: 17px; }.lv18-feedback small { margin-top: 25px; font-size: 10px; font-weight: 800; letter-spacing: .08em; }
+.lv18-feedback-mark { position: relative; z-index: 1; width: 56px; height: 56px; border: 1px solid rgba(255,255,255,.85); border-radius: 50%; box-shadow: 0 10px 35px rgba(75,82,115,.15); backdrop-filter: blur(10px); }
+.lv18-feedback strong { position: relative; z-index: 2; margin-top: -41px; font-size: 17px; }.lv18-feedback small { position: relative; z-index: 2; margin-top: 25px; font-size: 10px; font-weight: 800; letter-spacing: .08em; }
 .lv18-feedback.is-good .lv18-feedback-mark { background: rgba(159,232,210,.68); box-shadow: 0 0 0 10px rgba(159,232,210,.12), 0 0 34px rgba(112,213,183,.45); }
 .lv18-feedback.is-bad .lv18-feedback-mark { background: rgba(255,174,194,.68); box-shadow: 0 0 0 10px rgba(255,174,194,.12), 0 0 34px rgba(239,126,158,.36); }
 
@@ -106,6 +184,10 @@ html[data-theme="dark"] {
   .lv18-page { --ink:#eef1ff; --muted:rgba(229,233,255,.65); --glass:rgba(30,34,52,.68); background:radial-gradient(circle at 15% 18%,rgba(173,91,129,.2),transparent 30%),radial-gradient(circle at 85% 25%,rgba(75,116,170,.24),transparent 32%),linear-gradient(145deg,#151824,#1d2232 50%,#172725); }
   .lv18-keyboard-shell { background:rgba(26,30,45,.8);border-color:rgba(255,255,255,.08); }
   .lv18-white-key { border-color:rgba(255,255,255,.09); background:linear-gradient(180deg,#e4e7f0,#cdd2df); }  .lv18-black-key { background:linear-gradient(180deg,#333849,#141722); }
+  .lv18-keyboard-hint kbd { color:#dce2f5; border-color:rgba(255,255,255,.16); border-bottom-color:rgba(255,255,255,.24); background:linear-gradient(180deg,rgba(66,72,92,.96),rgba(42,47,64,.98)); box-shadow:0 4px 0 rgba(0,0,0,.28),0 8px 16px rgba(0,0,0,.2),inset 0 1px rgba(255,255,255,.12); }
+  .lv18-keyboard-hint small { color:rgba(39,44,61,.66); }
+  .lv18-pressed-key-bar { opacity:0; filter:saturate(.92) brightness(.9); }
+  .lv18-pressed-key-bar.is-visible { opacity:.78; }
   .lv18-overlay { background:rgba(15,18,28,.58); }.lv18-panel{background:rgba(31,36,53,.76);border-color:rgba(255,255,255,.12);box-shadow:0 28px 80px rgba(0,0,0,.35)}
   .lv18-demo { background:linear-gradient(180deg,rgba(44,52,76,.8),rgba(31,36,53,.9));border-color:rgba(255,255,255,.1) }.lv18-demo-key{background:#d9dde7}.lv18-guide-tags span{background:rgba(255,255,255,.08);color:#c7cee8}.lv18-guide-tags i{background:rgba(255,255,255,.1)}
   .lv18-secondary-button{color:#d5daf0;background:rgba(255,255,255,.09)}
