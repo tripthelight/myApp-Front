@@ -237,7 +237,6 @@ function lockIcon() {
 }
 
 function thumbnail(level) {
-  const type = (level - 1) % 15;
   const common = `viewBox="0 0 80 58" preserveAspectRatio="xMidYMid meet"`;
   const art = [
     `<rect x="7" y="9" width="14" height="40" rx="4"/><rect x="25" y="9" width="14" height="40" rx="4"/><rect x="43" y="9" width="14" height="40" rx="4"/><rect x="61" y="9" width="12" height="40" rx="4"/>`,
@@ -255,6 +254,22 @@ function thumbnail(level) {
     `<circle cx="40" cy="29" r="22"/><circle cx="40" cy="29" r="14" class="line"/><circle cx="40" cy="29" r="5" class="accent"/><path d="M40 7v44" class="line"/>`,
     `<path d="M11 43h58M18 15h44" class="line"/><path d="m17 35 12-15 11 13 11-10 13 12"/><circle cx="64" cy="35" r="5" class="accent"/>`,
     `<path d="M12 17h56v28H12z"/><path d="M18 23h13v16H18zM35 23h9v16h-9zM48 23h14v16H48z" class="line"/>`,
-  ][type];
-  return `<svg ${common}><g>${art}</g></svg>`;
+    `<rect x="9" y="11" width="12" height="36" rx="5"/><rect x="27" y="18" width="12" height="29" rx="5"/><rect x="45" y="8" width="12" height="39" rx="5"/><rect x="63" y="24" width="8" height="23" rx="4"/><path d="M15 16v18M33 23v14M51 13v22M67 29v10" class="accent"/>`,
+    `<path d="M9 44h62" class="line"/><circle cx="22" cy="18" r="9"/><circle cx="42" cy="29" r="8" class="accent"/><circle cx="61" cy="14" r="7"/><path d="M22 27 26 44M42 37v7M61 21l-4 23" class="line"/>`,
+    `<path d="M7 43h66" class="line"/><rect x="10" y="9" width="10" height="32" rx="3"/><rect x="23" y="16" width="10" height="25" rx="3"/><rect x="36" y="6" width="10" height="35" rx="3"/><rect x="49" y="20" width="10" height="21" rx="3"/><rect x="62" y="12" width="8" height="29" rx="3"/><path d="M8 47h64" class="accent"/>`,
+    `<rect x="9" y="10" width="27" height="17" rx="5"/><rect x="44" y="10" width="27" height="17" rx="5"/><rect x="9" y="32" width="27" height="17" rx="5"/><rect x="44" y="32" width="27" height="17" rx="5"/><circle cx="22" cy="19" r="4" class="accent"/><circle cx="57" cy="41" r="4" class="accent"/>`,
+    `<path d="M14 12h52L18 46h48" class="line"/><path d="M14 12 18 46M66 12 18 46M18 46h48"/><circle cx="52" cy="22" r="5" class="accent"/>`,
+    `<path d="M8 42h64" class="line"/><path d="M17 37c0-10 8-18 18-18s18 8 18 18"/><path d="M27 39c0-8 6-14 13-14s13 6 13 14" class="accent"/><rect x="57" y="13" width="13" height="22" rx="3"/>`,
+    `<rect x="7" y="19" width="11" height="24" rx="4"/><rect x="21" y="12" width="11" height="31" rx="4"/><rect x="35" y="20" width="11" height="23" rx="4"/><rect x="49" y="9" width="11" height="34" rx="4"/><rect x="63" y="16" width="10" height="27" rx="4"/><circle cx="68" cy="20" r="4" class="accent"/>`,
+    `<rect x="8" y="8" width="64" height="42" rx="5" class="line"/><path d="M14 18h26M14 26h38M14 34h31M14 42h45" class="line"/><circle cx="51" cy="26" r="5" class="accent"/><path d="m59 16 7 5-7 5"/>`,
+    `<path d="M9 29h62" class="line"/><circle cx="18" cy="20" r="6"/><rect x="29" y="14" width="12" height="12" rx="3"/><path d="m53 13 8 7-8 7-8-7Z"/><circle cx="67" cy="38" r="5" class="accent"/><path d="M18 26v18M35 26v18M53 27v17M67 43v1" class="line"/>`,
+    `<path d="M8 18h64M8 40h64" class="line"/><rect x="12" y="23" width="14" height="12" rx="3"/><rect x="32" y="23" width="14" height="12" rx="3"/><rect x="52" y="23" width="14" height="12" rx="3"/><rect x="32" y="23" width="14" height="12" rx="3" class="accent"/>`,
+    `<path d="M12 49 25 9h30l13 40" class="line"/><path d="M26 18 18 49M40 18v31M54 18l8 31" class="line"/><circle cx="40" cy="38" r="6"/><path d="M35 12h10" class="accent"/>`,
+    `<rect x="8" y="10" width="64" height="38" rx="8" class="line"/><path d="M15 39h50" class="line"/><rect x="18" y="27" width="9" height="12" rx="3"/><rect x="35" y="16" width="9" height="23" rx="3" class="accent"/><rect x="53" y="22" width="9" height="17" rx="3"/>`,
+    `<path d="M10 15h60M10 43h60" class="line"/><rect x="18" y="8" width="12" height="28" rx="4"/><rect x="50" y="20" width="12" height="30" rx="4" class="accent"/><path d="M24 36v8M56 14v6" class="line"/>`,
+    `<circle cx="40" cy="29" r="23"/><circle cx="40" cy="29" r="17" class="line"/><circle cx="40" cy="29" r="8" class="accent"/><circle cx="40" cy="29" r="2"/><path d="M40 6v8M63 29h8" class="line"/><circle cx="58" cy="20" r="5"/>`,
+    `<circle cx="18" cy="17" r="7"/><circle cx="31" cy="14" r="6" class="accent"/><circle cx="43" cy="18" r="7"/><circle cx="56" cy="15" r="6"/><circle cx="25" cy="31" r="7"/><circle cx="39" cy="30" r="7" class="accent"/><circle cx="53" cy="31" r="7"/><circle cx="32" cy="44" r="6"/><circle cx="47" cy="44" r="6"/>`,
+  ][level - 1];
+
+  return art ? `<svg ${common}><g>${art}</g></svg>` : lockIcon();
 }

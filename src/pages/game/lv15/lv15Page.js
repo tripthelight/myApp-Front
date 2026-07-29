@@ -165,7 +165,7 @@ function renderKeyboard(viewportWidth) {
         style="--key-left:${left}px" aria-label="${key.solfege} ${key.label} ${key.note} 건반"><i></i></button>`;
     }).join("")}
     ${renderedKeys.filter((key) => key.type === "black").map((key) => {
-      const left = (key.whiteIndex - 3.5 + 1) * WHITE_KEY_WIDTH;
+      const left = (key.whiteIndex - 3.5 + 0.5) * WHITE_KEY_WIDTH;
       return `<button class="lv15-key lv15-black-key" type="button" data-key-id="${key.id}"
         style="--key-left:${left}px" aria-label="${key.solfege} ${key.note} 검은 건반"><i></i></button>`;
     }).join("")}
