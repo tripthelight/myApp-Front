@@ -1,0 +1,402 @@
+name: Deploy Front AWS
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: myapp-front-aws-deploy
+  cancel-in-progress: false
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: tripthelight/myapp-front
+
+jobs:
+  build-publish:
+    name: Build and publish Front image
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    outputs:
+      image-reference: ${{ steps.image.outputs.reference }}
+
+    steps:
+      - name: Checkout Front repository
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install Front dependencies
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          npm ci
+
+      - name: Build Front application
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          npm run build
+
+          test -f dist/index.html
+          test -d dist/assets
+
+          grep -qi '<!doctype html' dist/index.html
+
+      - name: Resolve Front image reference
+        id: image
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          IMAGE_REFERENCE="${REGISTRY}/${IMAGE_NAME}:${GITHUB_SHA}"
+
+          echo "reference=$IMAGE_REFERENCE" >> "$GITHUB_OUTPUT"
+          echo "IMAGE_REFERENCE=$IMAGE_REFERENCE"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v4
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and publish Front Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.image.outputs.reference }}
+          provenance: false
+
+      - name: Write build summary
+        shell: bash
+        run: |
+          {
+            echo "## Front image published"
+            echo
+            echo "| Item | Value |"
+            echo "|---|---|"
+            echo "| Commit | \`${GITHUB_SHA}\` |"
+            echo "| Image | \`${{ steps.image.outputs.reference }}\` |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  deploy:
+    name: Deploy Front to AWS
+    needs:
+      - build-publish
+
+    runs-on:
+      - self-hosted
+      - linux
+      - x64
+      - myapp-front-prod
+
+    timeout-minutes: 30
+
+    defaults:
+      run:
+        shell: bash
+
+    env:
+      INFRA_DIR: /home/ubuntu/myapp/infra/current
+      IMAGE_REFERENCE: ${{ needs.build-publish.outputs.image-reference }}
+      GHCR_USERNAME: ${{ secrets.GHCR_USERNAME }}
+      GHCR_READ_TOKEN: ${{ secrets.GHCR_READ_TOKEN }}
+
+    steps:
+      - name: Verify Front deployment inputs
+        run: |
+          set -Eeuo pipefail
+
+          test -n "$IMAGE_REFERENCE"
+          test -n "$GHCR_USERNAME"
+          test -n "$GHCR_READ_TOKEN"
+
+          case "$IMAGE_REFERENCE" in
+            ghcr.io/tripthelight/myapp-front:[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f])
+              echo "OK: valid Front image reference"
+              ;;
+            *)
+              echo "ERROR: invalid Front image reference: $IMAGE_REFERENCE" >&2
+              exit 1
+              ;;
+          esac
+
+      - name: Verify AWS deployment environment
+        run: |
+          set -Eeuo pipefail
+
+          docker version
+          docker network inspect myapp-network >/dev/null
+          docker inspect myapp-nginx >/dev/null
+
+          test -d "$INFRA_DIR"
+          test -f "$INFRA_DIR/scripts/deploy-front.sh"
+          test -f "$INFRA_DIR/scripts/deploy-service.sh"
+          test -f "$INFRA_DIR/scripts/render-nginx-config.sh"
+          test -f "$INFRA_DIR/nginx/conf.d/default.conf"
+
+      - name: Verify Infra repository state
+        run: |
+          set -Eeuo pipefail
+
+          git -C "$INFRA_DIR" fetch origin aws-production-infra
+
+          CURRENT_BRANCH="$(
+            git -C "$INFRA_DIR" branch --show-current
+          )"
+
+          CURRENT_STATUS="$(
+            git -C "$INFRA_DIR" status --short
+          )"
+
+          LOCAL_COMMIT="$(
+            git -C "$INFRA_DIR" rev-parse HEAD
+          )"
+
+          REMOTE_COMMIT="$(
+            git -C "$INFRA_DIR" rev-parse origin/aws-production-infra
+          )"
+
+          echo "CURRENT_BRANCH=$CURRENT_BRANCH"
+          echo "LOCAL_COMMIT=$LOCAL_COMMIT"
+          echo "REMOTE_COMMIT=$REMOTE_COMMIT"
+          printf 'CURRENT_STATUS=%s\n' "${CURRENT_STATUS:-clean}"
+
+          test "$CURRENT_BRANCH" = "aws-production"
+          test -z "$CURRENT_STATUS"
+          test "$LOCAL_COMMIT" = "$REMOTE_COMMIT"
+
+      - name: Create temporary Docker credentials
+        id: docker-config
+        run: |
+          set -Eeuo pipefail
+
+          TEMP_DOCKER_CONFIG="$(
+            mktemp -d
+          )"
+
+          chmod 700 "$TEMP_DOCKER_CONFIG"
+
+          echo "path=$TEMP_DOCKER_CONFIG" >> "$GITHUB_OUTPUT"
+
+          printf '%s' "$GHCR_READ_TOKEN" \
+            | DOCKER_CONFIG="$TEMP_DOCKER_CONFIG" \
+                docker login \
+                  ghcr.io \
+                  --username "$GHCR_USERNAME" \
+                  --password-stdin
+
+      - name: Pull Front image
+        env:
+          DOCKER_CONFIG: ${{ steps.docker-config.outputs.path }}
+        run: |
+          set -Eeuo pipefail
+
+          docker pull "$IMAGE_REFERENCE"
+
+      - name: Deploy Front
+        run: |
+          set -Eeuo pipefail
+
+          IMAGE_OVERRIDE="$IMAGE_REFERENCE" \
+          PRODUCTION_ENV_FILE="/etc/myapp/production.env" \
+            bash "$INFRA_DIR/scripts/deploy-front.sh"
+
+      - name: Verify Front containers
+        run: |
+          set -Eeuo pipefail
+
+          FRONT_CONTAINERS="$(
+            docker ps \
+              --filter 'name=myapp-front-' \
+              --format '{{.Names}}'
+          )"
+
+          printf '%s\n' "$FRONT_CONTAINERS"
+
+          FRONT_CONTAINER_COUNT="$(
+            printf '%s\n' "$FRONT_CONTAINERS" \
+              | sed '/^$/d' \
+              | wc -l
+          )"
+
+          test "$FRONT_CONTAINER_COUNT" -ge 2
+
+          for container_name in $FRONT_CONTAINERS; do
+            CONTAINER_IMAGE="$(
+              docker inspect "$container_name" \
+                --format '{{.Config.Image}}'
+            )"
+
+            CONTAINER_RUNNING="$(
+              docker inspect "$container_name" \
+                --format '{{.State.Running}}'
+            )"
+
+            RESTART_COUNT="$(
+              docker inspect "$container_name" \
+                --format '{{.RestartCount}}'
+            )"
+
+            echo "$container_name image=$CONTAINER_IMAGE running=$CONTAINER_RUNNING restartCount=$RESTART_COUNT"
+
+            test "$CONTAINER_IMAGE" = "$IMAGE_REFERENCE"
+            test "$CONTAINER_RUNNING" = "true"
+            test "$RESTART_COUNT" = "0"
+          done
+
+      - name: Verify Front through Nginx
+        run: |
+          set -Eeuo pipefail
+
+          docker exec myapp-nginx nginx -t
+
+          RESPONSE_FILE="$(
+            mktemp
+          )"
+
+          trap 'rm -f "$RESPONSE_FILE"' EXIT
+
+          for attempt in $(seq 1 10); do
+            HTTP_STATUS="$(
+              curl \
+                --silent \
+                --output "$RESPONSE_FILE" \
+                --write-out '%{http_code}' \
+                --max-time 10 \
+                http://127.0.0.1/
+            )"
+
+            echo "attempt=$attempt status=$HTTP_STATUS"
+
+            if [ "$HTTP_STATUS" = "200" ] &&
+               grep -qi '<!doctype html' "$RESPONSE_FILE"; then
+              echo "OK: Front proxy returned HTML"
+              exit 0
+            fi
+
+            sleep 2
+          done
+
+          echo "ERROR: Front proxy verification failed." >&2
+          cat "$RESPONSE_FILE" >&2
+          exit 1
+
+      - name: Verify Front static assets
+        run: |
+          set -Eeuo pipefail
+
+          FRONT_HTML="$(
+            curl \
+              --fail \
+              --silent \
+              --show-error \
+              --max-time 10 \
+              http://127.0.0.1/
+          )"
+
+          ASSET_PATH="$(
+            printf '%s\n' "$FRONT_HTML" \
+              | grep -oE '(src|href)="[^"]+"' \
+              | sed -E 's/^(src|href)="([^"]+)"$/\2/' \
+              | grep -E '^/assets/' \
+              | head -n 1
+          )"
+
+          echo "ASSET_PATH=$ASSET_PATH"
+
+          test -n "$ASSET_PATH"
+
+          ASSET_STATUS="$(
+            curl \
+              --silent \
+              --output /dev/null \
+              --write-out '%{http_code}' \
+              --max-time 10 \
+              "http://127.0.0.1${ASSET_PATH}"
+          )"
+
+          echo "ASSET_STATUS=$ASSET_STATUS"
+
+          test "$ASSET_STATUS" = "200"
+
+      - name: Show Front deployment evidence
+        if: always()
+        run: |
+          echo
+          echo "===== Front runtime color ====="
+          cat "$INFRA_DIR/runtime/front-color" 2>/dev/null || true
+
+          echo
+          echo "===== Front containers ====="
+          docker ps -a \
+            --filter 'name=myapp-front-' \
+            --format 'table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}' \
+            || true
+
+          echo
+          echo "===== Front Nginx upstream ====="
+          grep -nA5 -B1 \
+            '^upstream front' \
+            "$INFRA_DIR/nginx/conf.d/default.conf" \
+            || true
+
+          echo
+          echo "===== Base containers ====="
+          for container_name in \
+            myapp-nginx \
+            myapp-mariadb \
+            myapp-redis
+          do
+            docker inspect "$container_name" \
+              --format '{{.Name}} running={{.State.Running}} status={{.State.Status}} health={{if .State.Health}}{{.State.Health.Status}}{{else}}none{{end}} restartCount={{.RestartCount}}' \
+              || true
+          done
+
+          echo
+          echo "===== Infra repository ====="
+          git -C "$INFRA_DIR" branch --show-current || true
+          git -C "$INFRA_DIR" log -1 --oneline || true
+          git -C "$INFRA_DIR" status --short || true
+
+      - name: Write deployment summary
+        if: always()
+        run: |
+          {
+            echo "## Front AWS deployment"
+            echo
+            echo "| Item | Value |"
+            echo "|---|---|"
+            echo "| Result | \`${{ job.status }}\` |"
+            echo "| Commit | \`${GITHUB_SHA}\` |"
+            echo "| Image | \`${IMAGE_REFERENCE}\` |"
+            echo "| Runner | \`${RUNNER_NAME:-beatforever-prod-front}\` |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Remove temporary Docker credentials
+        if: always() && steps.docker-config.outputs.path != ''
+        env:
+          TEMP_DOCKER_CONFIG: ${{ steps.docker-config.outputs.path }}
+        run: |
+          set -Eeuo pipefail
+
+          if [ -n "$TEMP_DOCKER_CONFIG" ] &&
+             [ -d "$TEMP_DOCKER_CONFIG" ]; then
+            rm -rf "$TEMP_DOCKER_CONFIG"
+          fi
