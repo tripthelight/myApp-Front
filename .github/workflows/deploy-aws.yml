@@ -1,6 +1,9 @@
 name: Deploy Front AWS
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
