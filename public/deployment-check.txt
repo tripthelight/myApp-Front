@@ -1,2 +1,0 @@
-myApp Front deployment verification
-blue-green-round-trip-test
