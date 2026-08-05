@@ -264,44 +264,237 @@ jobs:
             test "$RESTART_COUNT" = "0"
           done
 
-      - name: Verify Front through Nginx
+      - name: Verify production Nginx HTTPS structure
         run: |
           set -Eeuo pipefail
 
           docker exec myapp-nginx nginx -t
 
+          NGINX_HEALTH="$(
+            docker inspect myapp-nginx \
+              --format '{{if .State.Health}}{{.State.Health.Status}}{{else}}none{{end}}'
+          )"
+
+          HTTPS_LISTEN_COUNT="$(
+            docker exec myapp-nginx \
+              nginx -T \
+              2>&1 \
+            | grep -Ec \
+                '^[[:space:]]*listen[[:space:]]+443([[:space:]]|;)'
+          )"
+
+          SSL_CERTIFICATE_COUNT="$(
+            docker exec myapp-nginx \
+              nginx -T \
+              2>&1 \
+            | grep -Ec \
+                '^[[:space:]]*ssl_certificate[[:space:]]+'
+          )"
+
+          SSL_CERTIFICATE_KEY_COUNT="$(
+            docker exec myapp-nginx \
+              nginx -T \
+              2>&1 \
+            | grep -Ec \
+                '^[[:space:]]*ssl_certificate_key[[:space:]]+'
+          )"
+
+          HSTS_COUNT="$(
+            docker exec myapp-nginx \
+              nginx -T \
+              2>&1 \
+            | grep -c \
+                'Strict-Transport-Security "max-age=604800"' \
+              || true
+          )"
+
+          FRONT_UPSTREAM_IMAGE_COUNT="$(
+            docker exec myapp-nginx \
+              nginx -T \
+              2>&1 \
+            | grep -Ec \
+                'server myapp-front-(blue|green)-[12]:80;'
+          )"
+
+          echo "NGINX_HEALTH=$NGINX_HEALTH"
+          echo "HTTPS_LISTEN_COUNT=$HTTPS_LISTEN_COUNT"
+          echo "SSL_CERTIFICATE_COUNT=$SSL_CERTIFICATE_COUNT"
+          echo "SSL_CERTIFICATE_KEY_COUNT=$SSL_CERTIFICATE_KEY_COUNT"
+          echo "HSTS_COUNT=$HSTS_COUNT"
+          echo "FRONT_UPSTREAM_IMAGE_COUNT=$FRONT_UPSTREAM_IMAGE_COUNT"
+
+          test "$NGINX_HEALTH" = "healthy"
+          test "$HTTPS_LISTEN_COUNT" -eq 2
+          test "$SSL_CERTIFICATE_COUNT" -eq 2
+          test "$SSL_CERTIFICATE_KEY_COUNT" -eq 2
+          test "$HSTS_COUNT" -eq 2
+          test "$FRONT_UPSTREAM_IMAGE_COUNT" -eq 2
+
+      - name: Verify Front through internal HTTPS
+        run: |
+          set -Eeuo pipefail
+
           RESPONSE_FILE="$(
             mktemp
           )"
 
-          trap 'rm -f "$RESPONSE_FILE"' EXIT
+          HEADER_FILE="$(
+            mktemp
+          )"
+
+          trap 'rm -f "$RESPONSE_FILE" "$HEADER_FILE"' EXIT
 
           for attempt in $(seq 1 10); do
-            HTTP_STATUS="$(
+            : > "$RESPONSE_FILE"
+            : > "$HEADER_FILE"
+
+            HTTPS_STATUS="$(
               curl \
                 --silent \
+                --show-error \
+                --dump-header "$HEADER_FILE" \
                 --output "$RESPONSE_FILE" \
                 --write-out '%{http_code}' \
-                --max-time 10 \
-                http://127.0.0.1/
+                --resolve 'www.beatforever.com:443:127.0.0.1' \
+                --connect-timeout 5 \
+                --max-time 15 \
+                'https://www.beatforever.com/'
             )"
 
-            echo "attempt=$attempt status=$HTTP_STATUS"
+            HSTS_VALUE="$(
+              sed -n \
+                's/^Strict-Transport-Security:[[:space:]]*//Ip' \
+                "$HEADER_FILE" \
+              | tr -d '\r' \
+              | head -n 1
+            )"
 
-            if [ "$HTTP_STATUS" = "200" ] &&
-               grep -qi '<!doctype html' "$RESPONSE_FILE"; then
-              echo "OK: Front proxy returned HTML"
-              exit 0
+            echo "attempt=$attempt status=$HTTPS_STATUS hsts=$HSTS_VALUE"
+
+            if [ "$HTTPS_STATUS" = "200" ] &&
+               [ "$HSTS_VALUE" = "max-age=604800" ] &&
+               grep -qi '<!doctype html' "$RESPONSE_FILE"
+            then
+              echo "OK: Front returned HTML through internal HTTPS"
+              break
+            fi
+
+            if [ "$attempt" -eq 10 ]; then
+              echo "ERROR: internal HTTPS Front verification failed." >&2
+              cat "$HEADER_FILE" >&2
+              cat "$RESPONSE_FILE" >&2
+              exit 1
             fi
 
             sleep 2
           done
 
-          echo "ERROR: Front proxy verification failed." >&2
-          cat "$RESPONSE_FILE" >&2
-          exit 1
+      - name: Verify canonical HTTPS redirects
+        run: |
+          set -Eeuo pipefail
 
-      - name: Verify Front static assets
+          HTTP_RESULT="$(
+            curl \
+              --silent \
+              --show-error \
+              --location \
+              --output /dev/null \
+              --write-out \
+                'status=%{http_code} final_url=%{url_effective} redirects=%{num_redirects}' \
+              --connect-timeout 5 \
+              --max-time 20 \
+              'http://beatforever.com/deployment-check?source=github-actions'
+          )"
+
+          ROOT_HTTPS_RESULT="$(
+            curl \
+              --silent \
+              --show-error \
+              --location \
+              --output /dev/null \
+              --write-out \
+                'status=%{http_code} final_url=%{url_effective} redirects=%{num_redirects}' \
+              --connect-timeout 5 \
+              --max-time 20 \
+              'https://beatforever.com/deployment-check?source=github-actions'
+          )"
+
+          echo "HTTP_RESULT=$HTTP_RESULT"
+          echo "ROOT_HTTPS_RESULT=$ROOT_HTTPS_RESULT"
+
+          test \
+            "$HTTP_RESULT" = \
+            'status=200 final_url=https://www.beatforever.com/deployment-check?source=github-actions redirects=1'
+
+          test \
+            "$ROOT_HTTPS_RESULT" = \
+            'status=200 final_url=https://www.beatforever.com/deployment-check?source=github-actions redirects=1'
+
+      - name: Verify public HTTPS endpoints
+        run: |
+          set -Eeuo pipefail
+
+          verify_https_endpoint() {
+            local url="$1"
+            local expected_status="$2"
+
+            local header_file
+            local status
+            local hsts_value
+
+            header_file="$(
+              mktemp
+            )"
+
+            status="$(
+              curl \
+                --silent \
+                --show-error \
+                --dump-header "$header_file" \
+                --output /dev/null \
+                --write-out '%{http_code}' \
+                --connect-timeout 5 \
+                --max-time 20 \
+                "$url"
+            )"
+
+            hsts_value="$(
+              sed -n \
+                's/^Strict-Transport-Security:[[:space:]]*//Ip' \
+                "$header_file" \
+              | tr -d '\r' \
+              | head -n 1
+            )"
+
+            rm -f "$header_file"
+
+            echo "$url status=$status hsts=$hsts_value"
+
+            test "$status" = "$expected_status"
+            test "$hsts_value" = "max-age=604800"
+          }
+
+          verify_https_endpoint \
+            'https://beatforever.com/' \
+            301
+
+          verify_https_endpoint \
+            'https://www.beatforever.com/' \
+            200
+
+          verify_https_endpoint \
+            'https://www.beatforever.com/member/hc' \
+            200
+
+          verify_https_endpoint \
+            'https://www.beatforever.com/board/hc' \
+            200
+
+          verify_https_endpoint \
+            'https://www.beatforever.com/payments/' \
+            503
+
+      - name: Verify Front static assets through HTTPS
         run: |
           set -Eeuo pipefail
 
@@ -310,8 +503,10 @@ jobs:
               --fail \
               --silent \
               --show-error \
-              --max-time 10 \
-              http://127.0.0.1/
+              --resolve 'www.beatforever.com:443:127.0.0.1' \
+              --connect-timeout 5 \
+              --max-time 15 \
+              'https://www.beatforever.com/'
           )"
 
           ASSET_PATH="$(
@@ -329,10 +524,13 @@ jobs:
           ASSET_STATUS="$(
             curl \
               --silent \
+              --show-error \
               --output /dev/null \
               --write-out '%{http_code}' \
-              --max-time 10 \
-              "http://127.0.0.1${ASSET_PATH}"
+              --resolve 'www.beatforever.com:443:127.0.0.1' \
+              --connect-timeout 5 \
+              --max-time 15 \
+              "https://www.beatforever.com${ASSET_PATH}"
           )"
 
           echo "ASSET_STATUS=$ASSET_STATUS"
@@ -358,6 +556,25 @@ jobs:
           grep -nA5 -B1 \
             '^upstream front' \
             "$INFRA_DIR/nginx/conf.d/default.conf" \
+            || true
+
+          echo
+          echo "===== Nginx HTTPS runtime ====="
+          docker exec myapp-nginx \
+            nginx -T \
+            2>&1 \
+          | grep -nE \
+              'listen 443|server_name beatforever|server_name www|ssl_certificate|Strict-Transport-Security' \
+            || true
+
+          echo
+          echo "===== HTTPS response ====="
+          curl \
+            --silent \
+            --show-error \
+            --head \
+            --max-time 20 \
+            'https://www.beatforever.com/' \
             || true
 
           echo
