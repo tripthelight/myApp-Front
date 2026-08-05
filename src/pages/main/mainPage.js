@@ -42,6 +42,20 @@ function updatePwaInstallGuide() {
     : "현재 주소는 iPhone에서 안전한 HTTPS로 인정되지 않았습니다.";
 }
 
+function clearHistory(_btn) {
+  _btn.addEventListener("click", () => {
+    window.localStorage.clear();
+    location.reload();
+  });
+}
+function allClearLevel(_btn) {
+  _btn.addEventListener("click", () => {
+    window.localStorage.clear();
+    window.localStorage.setItem("__m4f8p2_v3", '{"_7qN4":"1NdEqx-ZuXMnsVfU","_p2X9":"JqU_TA","_k8R1":"3tsqh1lndlct"}');
+    location.reload();
+  });
+}
+
 function bindMainMenu() {
   const page = document.getElementById("mainScorePage");
   const menuButton = document.getElementById("mainMenuButton");
@@ -53,6 +67,9 @@ function bindMainMenu() {
   const languageButton = document.getElementById("languageButton");
   const languageList = document.getElementById("languageList");
   const languageCurrent = document.getElementById("languageCurrent");
+
+  const btnAllClear = document.querySelector(".main-sidebar__section button.btn_All_Clear");
+  const btnClearHistory = document.querySelector(".main-sidebar__section button.btn_Clear_History");
 
   if (!page || !menuButton || !closeButton || !sidebar || !backdrop || !darkModeToggle || !darkModeStatus || !languageButton || !languageList || !languageCurrent) return;
 
@@ -123,6 +140,9 @@ function bindMainMenu() {
   menuButton.addEventListener("click", () => {
     if (page.classList.contains("is-menu-open")) closeMenu();
     else openMenu();
+
+    if (btnAllClear) allClearLevel(btnAllClear);
+    if (btnClearHistory) clearHistory(btnClearHistory);
   });
   closeButton.addEventListener("click", closeMenu);
   backdrop.addEventListener("click", closeMenu);
