@@ -12,7 +12,7 @@ import {
 } from "../../../module/sound/levels/lv11Sound.js";
 
 const CONFIG = Object.freeze({
-  stepCount: 1,
+  stepCount: 4,
   judgeWindowMs: 175,
   firstNoteDelayMs: 720,
   playbackTailMs: 760,
