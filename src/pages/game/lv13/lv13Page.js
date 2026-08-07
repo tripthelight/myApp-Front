@@ -17,9 +17,15 @@ const CONFIG = Object.freeze({
   nodeCount: 12,
   fallDurationMinMs: 3900,
   fallDurationMaxMs: 4750,
-  spawnGapMinMs: 900,
-  spawnGapMaxMs: 1550,
   initialDelayMs: 650,
+  // 판정 구간(노드가 회전 영역을 통과하는 구간) 사이에 반드시 전환 시간을 둡니다.
+  // 이전 노드가 끝나기 전에 다음 노드가 같은 영역에 진입하지 않도록
+  // 실제 fall duration을 기준으로 spawn 시점을 역산합니다.
+  judgmentStartProgress: 0.72,
+  judgmentEndProgress: 0.88,
+  transitionGapMinMs: 360,
+  transitionGapMaxMs: 560,
+  visualNodeGapMs: 120,
   // 약한 스와이프도 방향 입력으로 인식하되, 미세한 손떨림은 제외합니다.
   spinThreshold: 0.055,
   // 실제 플래터처럼 손을 놓은 뒤 충분히 오래 회전하도록 감쇠를 완만하게 합니다.
@@ -133,9 +139,12 @@ function createSequence() {
   return Array.from({ length: CONFIG.nodeCount }, (_, index) => {
     const direction = Math.random() < 0.5 ? "left" : "right";
     const duration = randomInt(CONFIG.fallDurationMinMs, CONFIG.fallDurationMaxMs);
+    const height = randomInt(82, 168);
     const checkpointCount = randomInt(2, 4);
     const checkpoints = Array.from({ length: checkpointCount }, (_, checkpointIndex) => ({
-      progress: 0.72 + (checkpointIndex / Math.max(1, checkpointCount - 1)) * 0.16,
+      progress: CONFIG.judgmentStartProgress
+        + (checkpointIndex / Math.max(1, checkpointCount - 1))
+          * (CONFIG.judgmentEndProgress - CONFIG.judgmentStartProgress),
       direction,
       resolved: false,
     }));
@@ -145,6 +154,7 @@ function createSequence() {
       type: "wide",
       direction,
       duration,
+      height,
       color: COLORS[index % COLORS.length],
       checkpoints,
     };
@@ -152,15 +162,55 @@ function createSequence() {
 }
 
 function scheduleSequence(id) {
-  let elapsed = CONFIG.initialDelayMs;
+  let spawnAt = CONFIG.initialDelayMs;
+
   sequence.forEach((item, index) => {
-    schedule(() => spawnNode(id, item), elapsed);
-    if (index < sequence.length - 1) {
-      // 화살표 노드는 화면 안에 여러 개가 이어서 보일 수 있지만,
-      // 판정 구간이 겹쳐 서로 반대 방향을 동시에 요구하지 않도록 간격을 둡니다.
-      elapsed += randomInt(CONFIG.spawnGapMinMs, CONFIG.spawnGapMaxMs);
-    }
+    schedule(() => spawnNode(id, item), spawnAt);
+
+    const nextItem = sequence[index + 1];
+    if (!nextItem) return;
+
+    // 현재 노드의 판정 구간이 완전히 끝난 뒤에만 다음 노드의 판정 구간이
+    // 시작되도록 각 노드의 실제 낙하 시간을 기준으로 spawn 간격을 계산합니다.
+    // fall duration이 서로 달라도 빠른 뒤쪽 노드가 앞 노드를 따라잡지 않습니다.
+    const currentWindowEndAt = spawnAt
+      + item.duration * CONFIG.judgmentEndProgress;
+    const nextWindowLeadTime = nextItem.duration * CONFIG.judgmentStartProgress;
+    const transitionGap = randomInt(
+      CONFIG.transitionGapMinMs,
+      CONFIG.transitionGapMaxMs,
+    );
+
+    const judgmentSafeSpawnAt = currentWindowEndAt
+      + transitionGap
+      - nextWindowLeadTime;
+    const visualSafeSpawnAt = spawnAt
+      + getVisualNodeSeparationMs(item, nextItem);
+
+    // 판정 구간뿐 아니라 실제 화면의 wide node 사각형도 서로 포개지지 않게
+    // 두 조건 중 더 늦은 시점을 다음 spawn 시점으로 사용합니다.
+    spawnAt = Math.max(judgmentSafeSpawnAt, visualSafeSpawnAt);
   });
+}
+
+function getVisualNodeSeparationMs(currentItem, nextItem) {
+  const viewportHeight = Math.max(1, window.visualViewport?.height ?? window.innerHeight);
+  const travelDistance = viewportHeight * 1.05;
+
+  // CSS의 이동식: -25vh -> +80vh (총 105vh).
+  // 뒤 노드의 하단이 앞 노드의 상단을 따라잡지 않도록 필요한 최소 시간차를
+  // 두 노드의 서로 다른 fall duration까지 포함해 계산합니다.
+  const separationAtNextSpawn = currentItem.duration
+    * (nextItem.height / travelDistance);
+  const separationBeforeCurrentExit = currentItem.duration
+    - nextItem.duration
+    + nextItem.duration * (nextItem.height / travelDistance);
+
+  return Math.max(
+    0,
+    separationAtNextSpawn,
+    separationBeforeCurrentExit,
+  ) + CONFIG.visualNodeGapMs;
 }
 
 function spawnNode(id, item) {
@@ -174,7 +224,7 @@ function spawnNode(id, item) {
   node.style.setProperty("--node-color", item.color);
   node.style.setProperty("--fall-duration", `${item.duration}ms`);
 
-  node.style.setProperty("--wide-height", `${randomInt(82, 168)}px`);
+  node.style.setProperty("--wide-height", `${item.height}px`);
   node.innerHTML = `<div class="lv13-arrow-stream is-${item.direction}">${Array.from({ length: 11 }, () => "<span>➜</span>").join("")}</div>`;
 
   layer.appendChild(node);
@@ -319,11 +369,8 @@ function handlePropellerDragStop() {
   playLv13SpinSound(direction, power);
   pulseTurntable(direction);
 
-  if (!hasPendingHitWindow()) {
-    hadFailure = true;
-    showFeedback(false, "early");
-    playLv13FailSound(resolvedCheckpoints + 1);
-  }
+  // 방향 전환을 위해 플래터를 잡고 다시 놓는 동작 자체는 실패가 아닙니다.
+  // 성공/실패는 내려오는 노드의 checkpoint에서만 판정합니다.
 }
 
 function resetTurntablePropeller() {
@@ -343,16 +390,6 @@ function destroyTurntablePropeller() {
   propellerInstance.speed = 0;
   propellerInstance = null;
 }
-
-function hasPendingHitWindow() {
-  const now = performance.now();
-  return [...activeNodes.values()].some((state) => {
-    if (state.completed) return false;
-    const progress = (now - state.startedAt) / state.item.duration;
-    return state.item.checkpoints.some((checkpoint) => !checkpoint.resolved && Math.abs(progress - checkpoint.progress) <= 0.16);
-  });
-}
-
 
 function pulseTurntable(direction) {
   const wrap = document.getElementById("lv13TurntableWrap");
