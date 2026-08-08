@@ -170,18 +170,23 @@ function scheduleSequence(id) {
     const nextItem = sequence[index + 1];
     if (!nextItem) return;
 
-    // 현재 노드의 판정 구간이 완전히 끝난 뒤에만 다음 노드의 판정 구간이
-    // 시작되도록 각 노드의 실제 낙하 시간을 기준으로 spawn 간격을 계산합니다.
+    // 현재 노드의 판정 구간뿐 아니라 node의 전체 height가 회전 영역을
+    // 완전히 빠져나간 뒤에만 다음 노드의 판정 구간이 시작되도록 계산합니다.
     // fall duration이 서로 달라도 빠른 뒤쪽 노드가 앞 노드를 따라잡지 않습니다.
     const currentWindowEndAt = spawnAt
       + item.duration * CONFIG.judgmentEndProgress;
+    const currentNodeClearanceMs = getNodeHeightTravelMs(item);
     const nextWindowLeadTime = nextItem.duration * CONFIG.judgmentStartProgress;
     const transitionGap = randomInt(
       CONFIG.transitionGapMinMs,
       CONFIG.transitionGapMaxMs,
     );
 
+    // 마지막 checkpoint 직후 바로 다음 방향을 요구하지 않습니다.
+    // current node의 실제 height만큼 더 이동해 node의 뒤쪽 끝이
+    // 회전 영역을 완전히 빠져나간 뒤, 추가 전환 여유까지 확보합니다.
     const judgmentSafeSpawnAt = currentWindowEndAt
+      + currentNodeClearanceMs
       + transitionGap
       - nextWindowLeadTime;
     const visualSafeSpawnAt = spawnAt
@@ -191,6 +196,15 @@ function scheduleSequence(id) {
     // 두 조건 중 더 늦은 시점을 다음 spawn 시점으로 사용합니다.
     spawnAt = Math.max(judgmentSafeSpawnAt, visualSafeSpawnAt);
   });
+}
+
+function getNodeHeightTravelMs(item) {
+  const viewportHeight = Math.max(1, window.visualViewport?.height ?? window.innerHeight);
+  const travelDistance = viewportHeight * 1.05;
+
+  // CSS 이동식은 -25vh -> +80vh, 총 105vh입니다.
+  // node의 실제 height만큼 이동하는 데 걸리는 시간을 계산합니다.
+  return item.duration * (item.height / travelDistance);
 }
 
 function getVisualNodeSeparationMs(currentItem, nextItem) {
