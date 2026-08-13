@@ -42,17 +42,68 @@ function updatePwaInstallGuide() {
     : "현재 주소는 iPhone에서 안전한 HTTPS로 인정되지 않았습니다.";
 }
 
-function clearHistory(_btn) {
+function clearLevel(_btn) {
   _btn.addEventListener("click", () => {
-    window.localStorage.clear();
-    location.reload();
-  });
-}
-function allClearLevel(_btn) {
-  _btn.addEventListener("click", () => {
-    window.localStorage.clear();
-    window.localStorage.setItem("__m4f8p2_v3", '{"_7qN4":"1NdEqx-ZuXMnsVfU","_p2X9":"JqU_TA","_k8R1":"3tsqh1lndlct"}');
-    location.reload();
+    const slcLevel = document.querySelector(".main-sidebar__section select#SLC_LEVEL_CLEAR");
+    if (!slcLevel) return;
+    const OPTION = slcLevel.value;
+    if (!OPTION) return;
+
+    const CLEAR_STORAGE_KEY = "__m4f8p2_v3";
+
+    const clearCode = {
+      LEVEL_1: '{"_7qN4":"fdpjVIkHmwMdu64h","_p2X9":"EUzqcQ","_k8R1":"1lqlt4412ov0bs"}',
+      LEVEL_2: '{"_7qN4":"XEbsq_rG5sVMQKQD","_p2X9":"3_HK6A","_k8R1":"6oi5sgjmirwy"}',
+      LEVEL_3: '{"_7qN4":"9VXqLAgmzxOUwNu_","_p2X9":"I6NvPg","_k8R1":"l1z12hoqpqi9"}',
+      LEVEL_4: '{"_7qN4":"KQDGOmTQFMxec3vl","_p2X9":"e7TGGA","_k8R1":"14rb6s21md4ege"}',
+      LEVEL_5: '{"_7qN4":"RJUnt3qXAfm2vrY5","_p2X9":"jbnjuA","_k8R1":"555x2yh69gu0"}',
+      LEVEL_6: '{"_7qN4":"Dj3zW82CKf8569uK","_p2X9":"RtT8tA","_k8R1":"9490ou19gikm2"}',
+      LEVEL_7: '{"_7qN4":"7WyAypLpcU6t7CfI","_p2X9":"W2rezw","_k8R1":"9oh3m41jtqvd0"}',
+      LEVEL_8: '{"_7qN4":"i06SYzXxxRktBv8X","_p2X9":"MbfGZw","_k8R1":"1rpmxqsmybwyo"}',
+      LEVEL_9: '{"_7qN4":"kGWECj9UaEWelk-P","_p2X9":"m3Mn6A","_k8R1":"1d0psdk9hje8q"}',
+      LEVEL_10: '{"_7qN4":"Rr4Bw3Xo6_eDU5dj","_p2X9":"MN4Row","_k8R1":"9o91mxiae54f"}',
+      LEVEL_11: '{"_7qN4":"9owMYLhxTm9udEPS","_p2X9":"bXalhA","_k8R1":"196j6idhmoztx"}',
+      LEVEL_12: '{"_7qN4":"_hKpnXIk5AyS3ij5","_p2X9":"d4cCyA","_k8R1":"8ad648zr8cki"}',
+      LEVEL_13: '{"_7qN4":"YxLPhINGJov5JWVm","_p2X9":"OdR1ug","_k8R1":"195spdurqqvn4"}',
+      LEVEL_14: '{"_7qN4":"O0hYxGdLPUsR_SkQ","_p2X9":"aHxI5g","_k8R1":"s914iacp7jhw"}',
+      LEVEL_15: '{"_7qN4":"gBz5wgXrM7_We1TA","_p2X9":"Gwn70w","_k8R1":"sykyhi1k26e3c"}',
+      LEVEL_16: '{"_7qN4":"kFZp10EHS97nwpku","_p2X9":"p3jrWA","_k8R1":"1cvi31pwbn613"}',
+      LEVEL_17: '{"_7qN4":"u_x4_PmwyFdRwXi_","_p2X9":"VMEQYQ","_k8R1":"5iura12qklvv"}',
+      LEVEL_18: '{"_7qN4":"aNEk7raWmf7mcOO7","_p2X9":"jwytHg","_k8R1":"15g6m5j1qkmb1d"}',
+      LEVEL_19: '{"_7qN4":"k0yn3pdaYuylnNa0","_p2X9":"9w4gZA","_k8R1":"t0ucnd1rt1uz5"}',
+      LEVEL_20: '{"_7qN4":"qapDXDNyCXRyfnYk","_p2X9":"c_fTCg","_k8R1":"g3c9wq1wqembc"}',
+      LEVEL_21: '{"_7qN4":"6qmvzDnzR4x-E4E7","_p2X9":"foYseQ","_k8R1":"49fjn6akcl36"}',
+      LEVEL_22: '{"_7qN4":"DJq7ih75gk6RYkis","_p2X9":"pCRE9g","_k8R1":"881998tilm9i"}',
+      LEVEL_23: '{"_7qN4":"jodakk6NGMuIWhvs","_p2X9":"ta5YsA","_k8R1":"ul452awm5mv6"}',
+      LEVEL_24: '{"_7qN4":"D5fEFmzWIosLUjwp","_p2X9":"MukUFQ","_k8R1":"1jwncup1w6we3v"}',
+      LEVEL_25: '{"_7qN4":"KhomvNWcF1qBNYSf","_p2X9":"79bBzQ","_k8R1":"1c1e3h310airtp"}',
+      LEVEL_26: '{"_7qN4":"m_YtXvYLeJDi7KdF","_p2X9":"Zr0ZdA","_k8R1":"di9014k72ybk"}',
+      LEVEL_27: '{"_7qN4":"FGfJ7gWTslIt-yZ2","_p2X9":"MyrNfQ","_k8R1":"i1ixdagw5pie"}',
+      LEVEL_28: '{"_7qN4":"XlXXm6Qi9SzVIJFo","_p2X9":"L9c27A","_k8R1":"aq0xje11m73mk"}',
+      LEVEL_29: '{"_7qN4":"UuOtBreZJoYB_Hb-","_p2X9":"W0qq-Q","_k8R1":"1ukvrf8h3goxg"}',
+      LEVEL_30: '{"_7qN4":"aW-h-U8hbi6BCy5M","_p2X9":"NSTo1g","_k8R1":"1l0j9tt1rgvm81"}',
+      LEVEL_ALL: '{"_7qN4":"1NdEqx-ZuXMnsVfU","_p2X9":"JqU_TA","_k8R1":"3tsqh1lndlct"}'
+    };
+
+    function applyLevelOption(option) {
+      if (option === "RESET") {
+        window.localStorage.clear();
+        location.reload();
+        return;
+      }
+
+      const value = clearCode[option];
+
+      if (!value) {
+        return;
+      }
+
+      window.localStorage.clear();
+      window.localStorage.setItem(CLEAR_STORAGE_KEY, value);
+      location.reload();
+    }
+
+    applyLevelOption(OPTION);
   });
 }
 
@@ -68,8 +119,7 @@ function bindMainMenu() {
   const languageList = document.getElementById("languageList");
   const languageCurrent = document.getElementById("languageCurrent");
 
-  const btnAllClear = document.querySelector(".main-sidebar__section button.btn_All_Clear");
-  const btnClearHistory = document.querySelector(".main-sidebar__section button.btn_Clear_History");
+  const btnLevelOk = document.querySelector(".main-sidebar__section button.btnOk");
 
   if (!page || !menuButton || !closeButton || !sidebar || !backdrop || !darkModeToggle || !darkModeStatus || !languageButton || !languageList || !languageCurrent) return;
 
@@ -141,8 +191,9 @@ function bindMainMenu() {
     if (page.classList.contains("is-menu-open")) closeMenu();
     else openMenu();
 
-    if (btnAllClear) allClearLevel(btnAllClear);
-    if (btnClearHistory) clearHistory(btnClearHistory);
+    // if (btnAllClear) allClearLevel(btnAllClear);
+    // if (btnClearHistory) clearHistory(btnClearHistory);
+    if (btnLevelOk) clearLevel(btnLevelOk);
   });
   closeButton.addEventListener("click", closeMenu);
   backdrop.addEventListener("click", closeMenu);

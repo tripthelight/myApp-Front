@@ -672,3 +672,22 @@ html[data-theme="dark"] .pwa-security-warning {
 }
 html[data-theme="dark"] .language-picker__button { background: rgba(255,255,255,.045); }
 html[data-theme="dark"] .language-picker__list { background: rgba(39,38,49,.98); box-shadow: 0 22px 58px rgba(0,0,0,.45); }
+
+.main-sidebar__Storage {
+  display: flex;
+  select,
+  button {
+    border-radius: 12px;
+  }
+  select {
+    width: 100%;
+    height: 40px;
+    option {
+      width: 100%;
+    }
+  }
+  button {
+    background: linear-gradient(135deg, color-mix(in srgb, var(--score-note-a) 38%, transparent), color-mix(in srgb, var(--score-note-b) 42%, transparent));
+    padding: 0 20px;
+  }
+}
