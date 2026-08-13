@@ -17,7 +17,6 @@ export function renderMainPage() {
   updatePwaInstallGuide();
 }
 
-
 function updatePwaInstallGuide() {
   const section = document.getElementById("pwaInstallSection");
   const status = document.getElementById("pwaInstallStatus");
@@ -25,10 +24,8 @@ function updatePwaInstallGuide() {
   if (!section || !status || !warning) return;
 
   const userAgent = navigator.userAgent;
-  const isIos = /iPhone|iPad|iPod/i.test(userAgent) ||
-    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-  const isStandalone = window.matchMedia("(display-mode: standalone)").matches ||
-    window.navigator.standalone === true;
+  const isIos = /iPhone|iPad|iPod/i.test(userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  const isStandalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
 
   if (!isIos || isStandalone) {
     section.hidden = true;
