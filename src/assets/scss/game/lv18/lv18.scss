@@ -16,9 +16,15 @@
     radial-gradient(circle at 86% 22%, rgba(178, 214, 255, .36), transparent 30%),
     linear-gradient(145deg, #fff9fc 0%, #f5f8ff 48%, #f6fffd 100%);
   touch-action: none;
-  user-select: none;
-  -webkit-user-select: none;
   isolation: isolate;
+  -webkit-user-select:none;
+  -moz-user-select:none;
+  -ms-user-select:none;
+  user-select:none;
+  -webkit-touch-callout: none; 
+  -webkit-tap-highlight: none;
+  -webkit-tap-highlight-color: transparent; 
+  touch-action: none;
 }
 
 .lv18-page *, .lv18-page *::before, .lv18-page *::after { box-sizing: border-box; }
