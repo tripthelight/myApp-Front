@@ -97,6 +97,17 @@ function bindControls() {
     cancelGame();
     navigate("home", { replace: true });
   }, { signal });
+
+  // Mobile browsers can intermittently miss pointer hit-testing on a narrow
+  // button while it is moving with a CSS transform.  Keep the existing
+  // pointer path for mouse/pen, and add one lightweight touch-coordinate
+  // fallback on the stage.
+  document.getElementById("lv28Stage")?.addEventListener(
+    "touchstart",
+    handleStageTouchStart,
+    { passive: false, signal },
+  );
+
   document.getElementById("lv28Page")?.addEventListener("contextmenu", (event) => event.preventDefault(), { signal });
 }
 
@@ -274,9 +285,67 @@ function beginDropPhase(token) {
 function launchBar(token, item, index) {
   if (!isActive(token) || !running || item.state !== "hanging") return;
   item.state = "falling";
+  syncBarFallDistance(item.element);
   item.element?.classList.add("is-falling");
   playLv28Note(item.note, Math.min(item.noteDuration, 360), `round-${currentRound}-drop-${index}`);
   item.missTimer = schedule(() => missBar(item), item.dropDuration + 80);
+}
+
+function syncBarFallDistance(element) {
+  if (!element) return;
+  const stage = document.getElementById("lv28Stage");
+  if (!stage) return;
+
+  // Keep the bar catchable until it has completely left the visible stage.
+  const distance = Math.max(1, stage.clientHeight - element.offsetTop + 2);
+  element.style.setProperty("--lv28-fall-distance", `${distance}px`);
+}
+
+function handleStageTouchStart(event) {
+  if (!running || lessonRunning || event.touches.length !== 1) return;
+
+  const touch = event.touches[0];
+  const item = findTouchedFallingBar(touch.clientX, touch.clientY);
+  if (!item) return;
+
+  event.preventDefault();
+  handleBarPress(event, item);
+}
+
+function findTouchedFallingBar(clientX, clientY) {
+  let bestItem = null;
+  let bestDistance = Number.POSITIVE_INFINITY;
+
+  for (const item of currentBars) {
+    if (item.state !== "falling" || !item.element) continue;
+
+    const rect = item.element.getBoundingClientRect();
+
+    // A finger needs a slightly larger hit target than a mouse pointer.
+    // The visible bar is not resized; only the touch hit area is expanded.
+    const horizontalPadding = Math.max(8, (44 - rect.width) / 2);
+    const verticalPadding = 8;
+
+    if (
+      clientX < rect.left - horizontalPadding
+      || clientX > rect.right + horizontalPadding
+      || clientY < rect.top - verticalPadding
+      || clientY > rect.bottom + verticalPadding
+    ) {
+      continue;
+    }
+
+    const centerX = (rect.left + rect.right) / 2;
+    const centerY = (rect.top + rect.bottom) / 2;
+    const distance = Math.hypot(clientX - centerX, clientY - centerY);
+
+    if (distance < bestDistance) {
+      bestDistance = distance;
+      bestItem = item;
+    }
+  }
+
+  return bestItem;
 }
 
 function handleBarPress(event, item) {

@@ -20,9 +20,13 @@ const LANE_HINTS = Object.freeze(["왼쪽 길", "가운데 길", "오른쪽 길"
 const MIN_INTERVAL_MS = 1030;
 const MAX_INTERVAL_MS = 1450;
 const ROAD_START_DURATION_MS = 1250;
+const MOBILE_MIN_HIT_WINDOW_MS = 460;
+const MOBILE_MAX_HIT_WINDOW_MS = 720;
+const MOBILE_HIT_WINDOW_RATIO = .7;
 
 let gameToken = 0;
 let running = false;
+let gameEnding = false;
 let lessonRunning = false;
 let gameStartedAt = 0;
 let successCount = 0;
@@ -113,6 +117,7 @@ function bindControls() {
 
 function prepareReadyState() {
   running = false;
+  gameEnding = false;
   lessonRunning = false;
   successCount = 0;
   failCount = 0;
@@ -208,6 +213,7 @@ function finishLesson(token) {
 function beginRun(token) {
   if (!isActive(token)) return;
   running = true;
+  gameEnding = false;
   gameStartedAt = performance.now();
   currentCue = null;
   setText("lv26Phase", "DRIVE");
@@ -224,10 +230,19 @@ function tick(token) {
   setProgress(progress);
   setRoadSpeed(progress);
   setText("lv26Time", formatTime(remaining));
+
   if (elapsed >= GAME_DURATION_MS) {
-    finishGame(token);
+    gameEnding = true;
+    setProgress(1);
+    setText("lv26Time", "00:00");
+
+    // 60초 직전에 열린 마지막 cue는 자신의 판정 시간이 끝날 때까지
+    // 정상적으로 입력받습니다. 게임 시계가 먼저 끝났다는 이유로 강제 MISS
+    // 처리하지 않습니다.
+    if (!currentCue || currentCue.resolved) finishGame(token);
     return;
   }
+
   animationFrame = window.requestAnimationFrame(() => tick(token));
 }
 
@@ -237,15 +252,20 @@ function scheduleNextCue(token, delay = getCueInterval()) {
 
 function emitCue(token) {
   if (!isActive(token) || !running) return;
+
+  // 60초가 지난 뒤에는 새 cue를 만들지 않습니다. 단, 이미 열려 있던
+  // 마지막 cue는 resolveCue()가 끝낼 때까지 유지합니다.
   if (performance.now() - gameStartedAt >= GAME_DURATION_MS) {
-    finishGame(token);
+    gameEnding = true;
+    if (!currentCue || currentCue.resolved) finishGame(token);
     return;
   }
+
   if (currentCue && !currentCue.resolved) resolveCue(false, "late");
 
   const lane = chooseLane();
   const interval = getCueInterval();
-  const hitWindow = Math.max(300, Math.min(620, interval * .58));
+  const hitWindow = getHitWindow(interval);
   const cue = {
     lane,
     openedAt: performance.now(),
@@ -273,10 +293,14 @@ function handleLanePress(event) {
 
   if (!running || lessonRunning) return;
   const cue = currentCue;
-  if (!cue || cue.resolved) {
+  if (!cue) {
     registerLooseFailure(lane);
     return;
   }
+
+  // 직전 cue가 이미 판정된 뒤 다음 cue가 열리기 전의 짧은 공백에서는
+  // 같은 터치가 중복 MISS로 계산되지 않게 합니다.
+  if (cue.resolved) return;
 
   cue.selectedLane = lane;
   const reaction = performance.now() - cue.openedAt;
@@ -308,6 +332,11 @@ function resolveCue(success, reason) {
     playLv26Fail();
     schedule(() => setLaneState(cue.lane, "is-fail", false), 300);
   }
+
+  if (gameEnding || performance.now() - gameStartedAt >= GAME_DURATION_MS) {
+    gameEnding = true;
+    schedule(() => finishGame(gameToken), 0);
+  }
 }
 
 function registerLooseFailure(lane) {
@@ -322,10 +351,18 @@ function registerLooseFailure(lane) {
 
 function finishGame(token) {
   if (!isActive(token) || !running) return;
+
+  // 마지막 cue가 아직 열려 있으면 해당 cue의 timeout/사용자 입력이 먼저
+  // 판정을 끝내도록 기다립니다.
+  if (currentCue && !currentCue.resolved) {
+    gameEnding = true;
+    return;
+  }
+
   running = false;
+  gameEnding = false;
   window.cancelAnimationFrame(animationFrame);
   animationFrame = 0;
-  if (currentCue && !currentCue.resolved) resolveCue(false, "late");
   clearLaneStates();
   currentCue = null;
   setProgress(1);
@@ -343,6 +380,19 @@ function finishGame(token) {
   toggleHidden("lv26NextButton", !perfect);
   toggleHidden("lv26RetryButton", perfect);
   schedule(() => show("lv26Result"), 560);
+}
+
+function getHitWindow(interval) {
+  const coarsePointer = window.matchMedia?.("(pointer: coarse)")?.matches === true;
+
+  if (coarsePointer) {
+    return Math.round(Math.max(
+      MOBILE_MIN_HIT_WINDOW_MS,
+      Math.min(MOBILE_MAX_HIT_WINDOW_MS, interval * MOBILE_HIT_WINDOW_RATIO),
+    ));
+  }
+
+  return Math.round(Math.max(300, Math.min(620, interval * .58)));
 }
 
 function chooseLane() {
@@ -425,6 +475,7 @@ function clearLaneStates() {
 
 function cancelGame() {
   running = false;
+  gameEnding = false;
   lessonRunning = false;
   currentCue = null;
   gameStartedAt = 0;
