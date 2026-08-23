@@ -116,7 +116,7 @@ function bindMainMenu() {
   const languageList = document.getElementById("languageList");
   const languageCurrent = document.getElementById("languageCurrent");
 
-  const btnLevelOk = document.querySelector(".main-sidebar__section button.btnOk");
+  // const btnLevelOk = document.querySelector(".main-sidebar__section button.btnOk");
 
   if (!page || !menuButton || !closeButton || !sidebar || !backdrop || !darkModeToggle || !darkModeStatus || !languageButton || !languageList || !languageCurrent) return;
 
@@ -190,7 +190,7 @@ function bindMainMenu() {
 
     // if (btnAllClear) allClearLevel(btnAllClear);
     // if (btnClearHistory) clearHistory(btnClearHistory);
-    if (btnLevelOk) clearLevel(btnLevelOk);
+    // if (btnLevelOk) clearLevel(btnLevelOk);
   });
   closeButton.addEventListener("click", closeMenu);
   backdrop.addEventListener("click", closeMenu);
