@@ -10,11 +10,23 @@ const LEVEL_COUNT = 30;
 const NOTE_SYMBOLS = ["♪", "♫", "♩", "♬", "♭", "♯"];
 
 export function renderMainPage() {
+  document.title = "Beat Forever";
   renderView(mainTemplate, mainStyle);
   const clearedLevels = getClearedLevels();
   renderScore(clearedLevels);
   bindMainMenu();
+  bindPrivacyPolicyLink();
   updatePwaInstallGuide();
+}
+
+function bindPrivacyPolicyLink() {
+  const privacyLink = document.getElementById("privacyPolicyLink");
+  if (!privacyLink) return;
+
+  privacyLink.addEventListener("click", async (event) => {
+    event.preventDefault();
+    await navigate("privacy");
+  });
 }
 
 function updatePwaInstallGuide() {

@@ -1,0 +1,222 @@
+<section class="privacy-page" aria-labelledby="privacyTitle">
+  <div class="privacy-ambient" aria-hidden="true"><i></i><i></i><i></i></div>
+
+  <div class="privacy-shell">
+    <header class="privacy-header">
+      <a class="privacy-home-link" href="/" data-privacy-home aria-label="Beat Forever 메인으로 돌아가기">
+        <span aria-hidden="true">←</span>
+        <b>Beat Forever</b>
+      </a>
+      <span class="privacy-badge">PRIVACY</span>
+    </header>
+
+    <article class="privacy-card" data-i18n-ignore>
+      <div class="privacy-hero">
+        <p class="privacy-eyebrow">BEAT FOREVER</p>
+        <h1 id="privacyTitle">개인정보처리방침</h1>
+        <p class="privacy-summary">
+          Beat Forever는 서비스 이용에 필요한 정보와 Google AdSense 등 외부 서비스에서 처리될 수 있는 정보에 대해
+          아래와 같이 안내합니다. 본 방침의 한국어 문서를 기준으로 합니다.
+        </p>
+        <p class="privacy-effective-date"><strong>시행일</strong> 2026년 10월 7일</p>
+      </div>
+
+      <nav class="privacy-toc" aria-label="개인정보처리방침 목차">
+        <a href="#privacy-collected">1. 처리하는 정보</a>
+        <a href="#privacy-purpose">2. 이용 목적</a>
+        <a href="#privacy-storage">3. 쿠키 및 브라우저 저장소</a>
+        <a href="#privacy-third-parties">4. 외부 서비스</a>
+        <a href="#privacy-retention">5. 보관 및 삭제</a>
+        <a href="#privacy-rights">6. 이용자 권리</a>
+        <a href="#privacy-security">7. 보호조치</a>
+        <a href="#privacy-changes">8. 방침 변경</a>
+        <a href="#privacy-contact">9. 문의</a>
+      </nav>
+
+      <section id="privacy-collected" class="privacy-section">
+        <h2><span>01</span> 처리하는 정보</h2>
+        <p>Beat Forever는 이용자가 선택하는 기능에 따라 다음 정보가 처리될 수 있습니다.</p>
+
+        <div class="privacy-table-wrap" role="region" aria-label="처리 정보 표" tabindex="0">
+          <table class="privacy-table">
+            <thead>
+              <tr>
+                <th scope="col">구분</th>
+                <th scope="col">처리될 수 있는 정보</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">일반 회원가입·로그인</th>
+                <td>아이디, 비밀번호, 닉네임, 이용자가 입력한 이메일 주소</td>
+              </tr>
+              <tr>
+                <th scope="row">소셜 로그인</th>
+                <td>Google 또는 Naver 로그인 과정에서 이용자가 동의한 범위 내의 계정 식별 정보 및 프로필 정보</td>
+              </tr>
+              <tr>
+                <th scope="row">게시판</th>
+                <td>게시글 제목, 내용, 작성자 계정과 연결되는 정보</td>
+              </tr>
+              <tr>
+                <th scope="row">결제</th>
+                <td>선택한 상품·플랜, 결제 금액 및 통화, 결제 상태, 결제 생성·완료 시각, 결제 처리에 필요한 식별 정보</td>
+              </tr>
+              <tr>
+                <th scope="row">서비스 이용 과정</th>
+                <td>접속 IP 주소, 브라우저·기기 정보, 접속 기록, 오류·보안 관련 기록 등이 서버 또는 외부 서비스에서 생성될 수 있습니다.</td>
+              </tr>
+              <tr>
+                <th scope="row">브라우저 저장소</th>
+                <td>로그인 토큰, 게임 진행도, 테마 설정, 언어 설정, 번역 캐시 등 서비스 이용에 필요한 값</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="privacy-note">
+          카드번호 등 결제수단의 상세 정보는 Stripe가 제공하는 결제 화면에서 처리되며, Beat Forever의 프론트엔드가
+          카드번호를 직접 입력받거나 저장하지 않습니다.
+        </p>
+      </section>
+
+      <section id="privacy-purpose" class="privacy-section">
+        <h2><span>02</span> 정보 이용 목적</h2>
+        <ul>
+          <li>회원가입, 로그인, 본인 계정 확인 및 회원정보 관리</li>
+          <li>Google·Naver 소셜 로그인 제공</li>
+          <li>게시판 글 작성·수정·삭제 및 작성자 권한 확인</li>
+          <li>유료 기능 결제 처리, 결제 상태 확인 및 이용 권한 제공</li>
+          <li>게임 진행도, 화면 테마, 언어 등 이용자 설정 유지</li>
+          <li>서비스 안정성 유지, 오류 대응, 부정 이용 및 보안 위협 방지</li>
+          <li>Google AdSense를 통한 광고 제공, 광고 성과 측정 및 부정 광고 활동 방지</li>
+        </ul>
+      </section>
+
+      <section id="privacy-storage" class="privacy-section">
+        <h2><span>03</span> 쿠키 및 브라우저 저장소</h2>
+        <h3>Beat Forever의 브라우저 저장소 사용</h3>
+        <p>
+          Beat Forever는 로그인 상태와 게임 진행도 등을 유지하기 위해 브라우저의 <code>localStorage</code> 및
+          일부 상황에서 <code>sessionStorage</code>를 사용합니다. 여기에는 로그인용 액세스·리프레시 토큰,
+          클리어한 레벨 정보, 테마, 선택 언어 및 번역 캐시 등이 저장될 수 있습니다.
+        </p>
+        <p>
+          이용자는 브라우저 설정에서 사이트 데이터 또는 저장소를 삭제할 수 있습니다. 저장소를 삭제하면 로그아웃되거나
+          게임 진행도 및 개인 설정이 초기화될 수 있습니다.
+        </p>
+
+        <h3>Google AdSense의 쿠키 및 식별 기술</h3>
+        <p>
+          Beat Forever는 Google AdSense 광고 코드를 사용합니다. Google을 포함한 제3자 광고 사업자는 광고 제공 과정에서
+          이용자의 브라우저에 쿠키를 저장하거나 기존 쿠키를 읽을 수 있으며, 웹 비콘, IP 주소 또는 기타 식별자를 이용하여
+          정보를 처리할 수 있습니다.
+        </p>
+        <p>
+          Google 및 Google의 파트너는 이용자가 Beat Forever 또는 다른 웹사이트를 방문한 기록 등을 바탕으로 광고를
+          제공하기 위해 광고 쿠키를 사용할 수 있습니다. 이용자는 Google의 광고 설정에서 맞춤 광고 사용 여부를 관리할 수 있습니다.
+        </p>
+        <div class="privacy-link-grid">
+          <a href="https://policies.google.com/technologies/partner-sites?hl=ko" target="_blank" rel="noopener noreferrer">
+            <span>Google이 파트너 사이트의 정보를 사용하는 방법</span><b aria-hidden="true">↗</b>
+          </a>
+          <a href="https://adssettings.google.com/" target="_blank" rel="noopener noreferrer">
+            <span>Google 광고 설정</span><b aria-hidden="true">↗</b>
+          </a>
+        </div>
+      </section>
+
+      <section id="privacy-third-parties" class="privacy-section">
+        <h2><span>04</span> 외부 서비스 및 제3자 처리</h2>
+        <p>이용자가 사용하는 기능에 따라 아래 외부 서비스로 연결되거나 해당 사업자가 정보를 처리할 수 있습니다.</p>
+
+        <div class="privacy-provider-list">
+          <article>
+            <div><strong>Google AdSense</strong><span>광고</span></div>
+            <p>광고 제공, 광고 성과 측정, 부정 이용 방지를 위해 쿠키, IP 주소 및 기타 식별 정보가 처리될 수 있습니다.</p>
+          </article>
+          <article>
+            <div><strong>Google</strong><span>소셜 로그인·번역</span></div>
+            <p>Google 로그인을 선택한 경우 인증 과정에서, 서비스의 언어 번역 기능을 사용하는 경우 번역 요청 과정에서 Google 서비스와 통신할 수 있습니다.</p>
+          </article>
+          <article>
+            <div><strong>Naver</strong><span>소셜 로그인</span></div>
+            <p>Naver 로그인을 선택한 경우 인증 및 계정 연결을 위해 Naver의 인증 서비스와 통신할 수 있습니다.</p>
+          </article>
+          <article>
+            <div><strong>Stripe</strong><span>결제</span></div>
+            <p>유료 기능 결제를 선택한 경우 결제 화면 제공, 결제 승인 및 상태 확인을 위해 Stripe가 결제 관련 정보를 처리합니다.</p>
+          </article>
+        </div>
+
+        <p class="privacy-note">
+          위 외부 사업자가 처리하는 정보에는 각 사업자의 개인정보처리방침과 서비스 약관이 적용될 수 있으며,
+          해당 사업자의 서버 위치와 처리 구조에 따라 정보가 대한민국 외 지역에서 처리될 수 있습니다.
+        </p>
+      </section>
+
+      <section id="privacy-retention" class="privacy-section">
+        <h2><span>05</span> 정보의 보관 및 삭제</h2>
+        <p>
+          Beat Forever는 원칙적으로 각 정보의 이용 목적이 달성되거나 더 이상 필요하지 않게 되면 삭제하는 것을 기준으로 합니다.
+          회원정보는 회원 탈퇴 등 계정 이용 목적이 종료될 때까지, 게시물 정보는 게시물이 유지되는 동안,
+          결제 관련 기록은 결제 확인·분쟁 대응 및 관계 법령상 필요한 기간 동안 보관될 수 있습니다.
+        </p>
+        <p>
+          브라우저 <code>localStorage</code> 및 <code>sessionStorage</code>에 저장된 값은 이용자의 기기에 저장되며,
+          로그아웃·기능 동작·브라우저 데이터 삭제 등에 따라 일부 또는 전부 삭제될 수 있습니다.
+          Google AdSense 등 외부 사업자가 처리하는 정보의 보관기간은 해당 사업자의 정책에 따릅니다.
+        </p>
+      </section>
+
+      <section id="privacy-rights" class="privacy-section">
+        <h2><span>06</span> 이용자의 권리와 선택</h2>
+        <ul>
+          <li>로그인 후 제공되는 회원정보 화면에서 자신의 정보를 확인하거나 수정할 수 있습니다.</li>
+          <li>비밀번호 변경 및 회원 탈퇴 기능을 사용할 수 있습니다.</li>
+          <li>본인이 작성한 게시물은 서비스가 제공하는 권한 범위에서 수정하거나 삭제할 수 있습니다.</li>
+          <li>브라우저 설정을 통해 사이트 데이터, 쿠키 및 로컬 저장소를 삭제하거나 제한할 수 있습니다.</li>
+          <li>Google 광고 설정에서 Google의 맞춤 광고 사용 여부를 관리할 수 있습니다.</li>
+        </ul>
+        <p class="privacy-note">
+          쿠키 또는 브라우저 저장 기능을 제한하면 로그인 유지, 게임 진행도 저장, 언어·테마 유지 등 일부 기능이 정상적으로 동작하지 않을 수 있습니다.
+        </p>
+      </section>
+
+      <section id="privacy-security" class="privacy-section">
+        <h2><span>07</span> 정보 보호를 위한 조치</h2>
+        <p>
+          Beat Forever는 서비스 통신과 인증 과정에서 발생하는 정보를 보호하고 불필요한 접근을 줄이기 위해
+          접근 권한을 구분하고 인증 토큰을 사용하는 등 서비스 구조상 필요한 보호조치를 적용합니다.
+          이용자는 공용 PC를 사용하는 경우 이용 종료 후 반드시 로그아웃하고 브라우저에 저장된 사이트 데이터를 확인해 주시기 바랍니다.
+        </p>
+      </section>
+
+      <section id="privacy-changes" class="privacy-section">
+        <h2><span>08</span> 개인정보처리방침 변경</h2>
+        <p>
+          서비스 기능, 광고·결제 사업자 또는 관련 정책이 변경되는 경우 본 방침도 변경될 수 있습니다.
+          중요한 변경이 있는 경우 서비스 내에서 확인할 수 있도록 최신 방침과 시행일을 갱신합니다.
+        </p>
+      </section>
+
+      <section id="privacy-contact" class="privacy-section">
+        <h2><span>09</span> 개인정보 관련 문의</h2>
+        <p>
+          Beat Forever의 서비스 및 개인정보 처리와 관련된 문의는 프로젝트의 공개 GitHub 저장소를 통해 전달할 수 있습니다.
+          공개 저장소에는 비밀번호, 결제정보, 인증 토큰 등 민감한 정보를 게시하지 마십시오.
+        </p>
+        <div class="privacy-link-grid privacy-link-grid--single">
+          <a href="https://github.com/tripthelight/myApp-Front" target="_blank" rel="noopener noreferrer">
+            <span>Beat Forever GitHub Repository</span><b aria-hidden="true">↗</b>
+          </a>
+        </div>
+      </section>
+
+      <footer class="privacy-document-footer">
+        <p>시행일: 2026년 10월 7일</p>
+        <a href="/" data-privacy-home>Beat Forever 메인으로 돌아가기</a>
+      </footer>
+    </article>
+  </div>
+</section>

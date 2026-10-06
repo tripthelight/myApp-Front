@@ -691,3 +691,35 @@ html[data-theme="dark"] .language-picker__list { background: rgba(39,38,49,.98);
     padding: 0 20px;
   }
 }
+
+
+.main-legal-footer {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 18px max(28px, env(safe-area-inset-bottom));
+  color: color-mix(in srgb, var(--score-muted) 76%, transparent);
+  font-size: 0.7rem;
+  line-height: 1.5;
+
+  a {
+    color: color-mix(in srgb, var(--score-ink) 82%, var(--score-muted));
+    font-weight: 800;
+    text-decoration: none;
+    transition: color 0.18s ease, transform 0.18s ease;
+
+    &:hover {
+      color: var(--score-accent);
+      transform: translateY(-1px);
+    }
+
+    &:focus-visible {
+      outline: 3px solid color-mix(in srgb, var(--score-accent) 35%, transparent);
+      outline-offset: 4px;
+      border-radius: 4px;
+    }
+  }
+}

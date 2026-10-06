@@ -5,6 +5,7 @@ const staticPageLoaders = {
   profile: () => import("../pages/member/profilePage.js").then((module) => module.renderProfilePage),
   board: () => import("../pages/board/boardPage.js").then((module) => module.renderBoardPage),
   payments: () => import("../pages/payments/paymentPage.js").then((module) => module.renderPaymentPage),
+  privacy: () => import("../pages/privacy/privacyPage.js").then((module) => module.renderPrivacyPage),
   socialCallback: () => import("../pages/social/socialCallbackPage.js").then((module) => module.renderSocialCallbackPage),
 };
 
@@ -17,6 +18,7 @@ const staticRoutePaths = {
   profile: "/profile",
   board: "/board",
   payments: "/payments",
+  privacy: "/privacy",
 };
 
 export const protectedRoutes = new Set(["profile", "board", "payments"]);
